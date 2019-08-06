@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>242887982151-p37mkte15gtsue1phb690dvdf7bctn4p.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.242887982151-p37mkte15gtsue1phb690dvdf7bctn4p</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDhCwaWmy_z5HEOxGuhQAFtEUbcM85vTMM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>242887982151</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.particle41.FireDB</string>
+	<key>PROJECT_ID</key>
+	<string>firedb-da37d</string>
+	<key>STORAGE_BUCKET</key>
+	<string>firedb-da37d.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:242887982151:ios:c8e48e5a4ac71a06</string>
+	<key>DATABASE_URL</key>
+	<string>https://firedb-da37d.firebaseio.com</string>
+</dict>
+</plist>
