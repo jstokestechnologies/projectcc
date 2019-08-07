@@ -13,5 +13,8 @@ pod 'FacebookShare'
 
 pod 'Firebase/Analytics'
 pod 'Firebase/Firestore'
+pod 'Firebase/Auth'
+
+pod 'SkyFloatingLabelTextField', '~> 3.0'
 
 end

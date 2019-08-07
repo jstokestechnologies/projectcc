@@ -10,7 +10,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Login-->
+        <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="FireDB" customModuleProvider="target" sceneMemberID="viewController">
@@ -26,20 +26,21 @@
                                 <rect key="frame" x="0.0" y="44" width="375" height="554"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Project CC" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SAL-vb-ap2">
-                                        <rect key="frame" x="122.66666666666669" y="312" width="130" height="31.333333333333314"/>
+                                        <rect key="frame" x="122.66666666666669" y="322" width="130" height="31.333333333333314"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="particle41-squarelogo.png" translatesAutoresizingMaskIntoConstraints="NO" id="Ouo-VF-6ev">
-                                        <rect key="frame" x="137.66666666666666" y="197" width="100" height="100"/>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="jmjcloud-logo.png" translatesAutoresizingMaskIntoConstraints="NO" id="Ouo-VF-6ev">
+                                        <rect key="frame" x="127.66666666666669" y="187" width="120" height="120"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="Ouo-VF-6ev" secondAttribute="height" multiplier="1:1" id="U8K-3I-YyQ"/>
-                                            <constraint firstAttribute="width" constant="100" id="dpz-dF-bdk"/>
+                                            <constraint firstAttribute="width" constant="120" id="dpz-dF-bdk"/>
                                         </constraints>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                <integer key="value" value="50"/>
+                                                <integer key="value" value="60"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                     </imageView>
@@ -168,7 +169,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Login" id="qge-PG-iv4"/>
+                    <navigationItem key="navigationItem" id="qge-PG-iv4"/>
                     <nil key="simulatedTopBarMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -271,6 +272,9 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="barTintColor" red="0.2262085378" green="0.33271574970000001" blue="0.62237799169999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <textAttributes key="largeTitleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </textAttributes>
                     </navigationBar>
                     <connections>
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="Vsx-VW-vuG"/>
@@ -284,6 +288,6 @@
     <resources>
         <image name="124010.png" width="365" height="365"/>
         <image name="email_logo.png" width="512" height="512"/>
-        <image name="particle41-squarelogo.png" width="200" height="200"/>
+        <image name="jmjcloud-logo.png" width="587" height="148"/>
     </resources>
 </document>
