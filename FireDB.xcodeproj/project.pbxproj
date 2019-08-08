@@ -12,6 +12,7 @@
 		8451D5E322F94A42005169D5 /* jmjcloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E122F94A42005169D5 /* jmjcloud-logo.png */; };
 		8451D5E722F9511A005169D5 /* email_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E622F9511A005169D5 /* email_logo.png */; };
 		8451D5E922F952C1005169D5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E822F952C1005169D5 /* GoogleService-Info.plist */; };
+		8486F8C822FB1227009BE82C /* minus.png in Resources */ = {isa = PBXBuildFile; fileRef = 8486F8C722FB1227009BE82C /* minus.png */; };
 		848A43DC22F04380002D9444 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848A43DB22F04380002D9444 /* AppDelegate.swift */; };
 		848A43DE22F04380002D9444 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848A43DD22F04380002D9444 /* ViewController.swift */; };
 		848A43E122F04380002D9444 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 848A43DF22F04380002D9444 /* Main.storyboard */; };
@@ -21,6 +22,8 @@
 		848A43FC22F04383002D9444 /* FireDBUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848A43FB22F04383002D9444 /* FireDBUITests.swift */; };
 		848A440A22F04839002D9444 /* ShowLoginDataVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848A440922F04839002D9444 /* ShowLoginDataVC.swift */; };
 		8493467822F88641006C72E7 /* 124010.png in Resources */ = {isa = PBXBuildFile; fileRef = 8493467722F88641006C72E7 /* 124010.png */; };
+		84F9F6C822FAB35A00E754A7 /* border_dot.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F9F6C722FAB35A00E754A7 /* border_dot.png */; };
+		84F9F6CA22FAB67C00E754A7 /* AddSellItemVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F9F6C922FAB67C00E754A7 /* AddSellItemVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +49,7 @@
 		8451D5E122F94A42005169D5 /* jmjcloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "jmjcloud-logo.png"; sourceTree = "<group>"; };
 		8451D5E622F9511A005169D5 /* email_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = email_logo.png; sourceTree = "<group>"; };
 		8451D5E822F952C1005169D5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8486F8C722FB1227009BE82C /* minus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = minus.png; sourceTree = "<group>"; };
 		848A43D822F04380002D9444 /* FireDB.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FireDB.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		848A43DB22F04380002D9444 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		848A43DD22F04380002D9444 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -61,6 +65,8 @@
 		848A43FD22F04383002D9444 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		848A440922F04839002D9444 /* ShowLoginDataVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowLoginDataVC.swift; sourceTree = "<group>"; };
 		8493467722F88641006C72E7 /* 124010.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 124010.png; sourceTree = "<group>"; };
+		84F9F6C722FAB35A00E754A7 /* border_dot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = border_dot.png; sourceTree = "<group>"; };
+		84F9F6C922FAB67C00E754A7 /* AddSellItemVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSellItemVC.swift; sourceTree = "<group>"; };
 		E3F95B0181BFB9BF4E053C4C /* Pods_FireDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FireDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDE642BD58B3A605F884268F /* Pods-FireDB.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FireDB.debug.xcconfig"; path = "Target Support Files/Pods-FireDB/Pods-FireDB.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -116,18 +122,16 @@
 		848A43DA22F04380002D9444 /* FireDB */ = {
 			isa = PBXGroup;
 			children = (
+				84F9F6C422FAAF9B00E754A7 /* Images */,
 				848A43DB22F04380002D9444 /* AppDelegate.swift */,
 				848A43DD22F04380002D9444 /* ViewController.swift */,
 				848A440922F04839002D9444 /* ShowLoginDataVC.swift */,
+				84F9F6C922FAB67C00E754A7 /* AddSellItemVC.swift */,
 				848A43DF22F04380002D9444 /* Main.storyboard */,
 				848A43E222F04383002D9444 /* Assets.xcassets */,
 				848A43E422F04383002D9444 /* LaunchScreen.storyboard */,
 				848A43E722F04383002D9444 /* Info.plist */,
 				8451D5E822F952C1005169D5 /* GoogleService-Info.plist */,
-				8493467722F88641006C72E7 /* 124010.png */,
-				8451D5E122F94A42005169D5 /* jmjcloud-logo.png */,
-				8451D5E022F94A42005169D5 /* particle41-squarelogo.png */,
-				8451D5E622F9511A005169D5 /* email_logo.png */,
 			);
 			path = FireDB;
 			sourceTree = "<group>";
@@ -148,6 +152,19 @@
 				848A43FD22F04383002D9444 /* Info.plist */,
 			);
 			path = FireDBUITests;
+			sourceTree = "<group>";
+		};
+		84F9F6C422FAAF9B00E754A7 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				8486F8C722FB1227009BE82C /* minus.png */,
+				84F9F6C722FAB35A00E754A7 /* border_dot.png */,
+				8493467722F88641006C72E7 /* 124010.png */,
+				8451D5E122F94A42005169D5 /* jmjcloud-logo.png */,
+				8451D5E022F94A42005169D5 /* particle41-squarelogo.png */,
+				8451D5E622F9511A005169D5 /* email_logo.png */,
+			);
+			path = Images;
 			sourceTree = "<group>";
 		};
 		B60315C5325C53989AADABAA /* Frameworks */ = {
@@ -281,6 +298,8 @@
 				848A43E322F04383002D9444 /* Assets.xcassets in Resources */,
 				8451D5E222F94A42005169D5 /* particle41-squarelogo.png in Resources */,
 				848A43E122F04380002D9444 /* Main.storyboard in Resources */,
+				8486F8C822FB1227009BE82C /* minus.png in Resources */,
+				84F9F6C822FAB35A00E754A7 /* border_dot.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -350,6 +369,7 @@
 				848A440A22F04839002D9444 /* ShowLoginDataVC.swift in Sources */,
 				848A43DE22F04380002D9444 /* ViewController.swift in Sources */,
 				848A43DC22F04380002D9444 /* AppDelegate.swift in Sources */,
+				84F9F6CA22FAB67C00E754A7 /* AddSellItemVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
