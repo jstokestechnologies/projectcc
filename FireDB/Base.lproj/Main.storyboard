@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Ebq-9S-3mn">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="KmN-hT-DZk">
     <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -171,12 +171,15 @@
                     </view>
                     <navigationItem key="navigationItem" id="qge-PG-iv4"/>
                     <nil key="simulatedTopBarMetrics"/>
+                    <connections>
+                        <segue destination="N7p-C5-58B" kind="show" id="GLe-E5-77f"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-58.399999999999999" y="116.00985221674877"/>
         </scene>
-        <!--Show Login DataVC-->
+        <!--Title-->
         <scene sceneID="WY7-bA-5dZ">
             <objects>
                 <viewController storyboardIdentifier="ShowLoginDataVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="N7p-C5-58B" customClass="ShowLoginDataVC" customModule="FireDB" customModuleProvider="target" sceneMemberID="viewController">
@@ -185,7 +188,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" bouncesZoom="NO" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hdW-TM-LYo">
-                                <rect key="frame" x="0.0" y="44" width="375" height="734"/>
+                                <rect key="frame" x="0.0" y="88" width="375" height="690"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <view key="tableFooterView" contentMode="scaleToFill" id="ath-3W-emo">
                                     <rect key="frame" x="0.0" y="82" width="375" height="272"/>
@@ -255,6 +258,19 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="yE3-z6-XAk"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Title" id="XjE-Fg-694">
+                        <barButtonItem key="rightBarButtonItem" style="plain" id="g8d-HQ-r8N">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="F0H-bH-VeI">
+                                <rect key="frame" x="276" y="7" width="83" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Add Item"/>
+                                <connections>
+                                    <segue destination="Ebq-9S-3mn" kind="presentation" id="vhx-Zk-2Uf"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="txtData" destination="MGG-zh-eHj" id="xiT-EN-z2i"/>
                     </connections>
@@ -278,17 +294,17 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fGR-Ts-uyI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1556" y="114"/>
+            <point key="canvasLocation" x="1682" y="114"/>
         </scene>
         <!--Sell an item-->
         <scene sceneID="G5j-6S-7ZP">
             <objects>
                 <tableViewController id="BCY-E2-7AX" customClass="AddSellItemVC" customModule="FireDB" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="rMO-Xj-cWJ">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="static" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="rMO-Xj-cWJ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="1462"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" id="sqN-32-VMS">
+                        <view key="tableHeaderView" contentMode="scaleToFill" misplaced="YES" id="sqN-32-VMS">
                             <rect key="frame" x="0.0" y="0.0" width="375" height="131"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
@@ -305,7 +321,7 @@
                                         <inset key="sectionInset" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
                                     </collectionViewFlowLayout>
                                     <cells>
-                                        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CellImage" id="FI0-hw-PfX">
+                                        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CellImage" id="FI0-hw-PfX" customClass="SelectImageCollectionCell" customModule="FireDB" customModuleProvider="target">
                                             <rect key="frame" x="10" y="10" width="80" height="80"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -315,7 +331,7 @@
                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="11" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="LpQ-oO-6N0">
                                                         <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
                                                     </imageView>
-                                                    <button opaque="NO" tag="101" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YNT-Wf-Tse">
+                                                    <button hidden="YES" opaque="NO" tag="101" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YNT-Wf-Tse">
                                                         <rect key="frame" x="45" y="0.0" width="35" height="35"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="35" id="EI3-Hb-JGz"/>
@@ -340,6 +356,10 @@
                                                     <integer key="value" value="2"/>
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
+                                            <connections>
+                                                <outlet property="btnRemoveImage" destination="YNT-Wf-Tse" id="ax7-c3-nUf"/>
+                                                <outlet property="imgItemPhoto" destination="LpQ-oO-6N0" id="zfC-kp-eey"/>
+                                            </connections>
                                         </collectionViewCell>
                                         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CellAdd" id="8YM-Cd-4yh">
                                             <rect key="frame" x="100" y="10" width="80" height="80"/>
@@ -506,7 +526,10 @@
                                                             </attributes>
                                                         </fragment>
                                                     </attributedString>
-                                                    <textInputTraits key="textInputTraits"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="words" keyboardType="alphabet" returnKeyType="done"/>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="BCY-E2-7AX" id="V86-XO-yGR"/>
+                                                    </connections>
                                                 </textField>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0/40" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lkN-dN-W0T">
                                                     <rect key="frame" x="336.33333333333331" y="27.000000000000004" width="28.666666666666686" height="15.666666666666668"/>
@@ -549,7 +572,10 @@
                                                             </attributes>
                                                         </fragment>
                                                     </attributedString>
-                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences" keyboardType="alphabet" returnKeyType="done"/>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="BCY-E2-7AX" id="iJH-F4-EUe"/>
+                                                    </connections>
                                                 </textView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0/1000" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zEZ-pK-0Ad">
                                                     <rect key="frame" x="322" y="92.666666666666671" width="43" height="16"/>
@@ -830,7 +856,10 @@
                                                     <rect key="frame" x="20" y="65" width="335" height="54.666666666666657"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <textInputTraits key="textInputTraits"/>
+                                                    <textInputTraits key="textInputTraits" keyboardType="decimalPad" returnKeyType="done" textContentType="postal-code"/>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="BCY-E2-7AX" id="Twj-RS-wBt"/>
+                                                    </connections>
                                                 </textField>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EI5-fU-SgK">
                                                     <rect key="frame" x="20" y="113.66666666666667" width="335" height="1"/>
@@ -890,13 +919,16 @@
                                                     <color key="tintColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </button>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Ua-XG-rXe">
-                                                    <rect key="frame" x="16" y="55" width="198" height="44"/>
+                                                    <rect key="frame" x="16" y="55" width="189" height="44"/>
                                                     <subviews>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mFv-h5-q5P">
-                                                            <rect key="frame" x="0.0" y="0.0" width="198" height="44"/>
+                                                        <button opaque="NO" tag="102" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mFv-h5-q5P">
+                                                            <rect key="frame" x="0.0" y="0.0" width="189" height="44"/>
                                                             <state key="normal" title="  Yes (recommended)" image="checked">
                                                                 <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </state>
+                                                            <connections>
+                                                                <action selector="btnFreeShippingAction:" destination="BCY-E2-7AX" eventType="touchUpInside" id="5wQ-DR-JFS"/>
+                                                            </connections>
                                                         </button>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -909,13 +941,16 @@
                                                     </constraints>
                                                 </view>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZfZ-dX-TV8">
-                                                    <rect key="frame" x="234" y="55" width="58" height="44"/>
+                                                    <rect key="frame" x="225" y="55" width="49" height="44"/>
                                                     <subviews>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ewU-WT-NNL">
-                                                            <rect key="frame" x="0.0" y="0.0" width="58" height="44"/>
+                                                        <button opaque="NO" tag="103" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ewU-WT-NNL">
+                                                            <rect key="frame" x="0.0" y="0.0" width="49" height="44"/>
                                                             <state key="normal" title="  No" image="uncheck">
                                                                 <color key="titleColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </state>
+                                                            <connections>
+                                                                <action selector="btnFreeShippingAction:" destination="BCY-E2-7AX" eventType="touchUpInside" id="kOR-qb-BpX"/>
+                                                            </connections>
                                                         </button>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -981,7 +1016,10 @@
                                                     </constraints>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <textInputTraits key="textInputTraits"/>
+                                                    <textInputTraits key="textInputTraits" keyboardType="decimalPad" returnKeyType="done"/>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="BCY-E2-7AX" id="8er-o0-TBg"/>
+                                                    </connections>
                                                 </textField>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KxK-mP-sY2">
                                                     <rect key="frame" x="328" y="78.333333333333329" width="32" height="27.666666666666671"/>
@@ -1053,6 +1091,9 @@
                                 <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                 <state key="normal" image="cross"/>
+                                <connections>
+                                    <action selector="btnCloseAction:" destination="BCY-E2-7AX" eventType="touchUpInside" id="EF2-rV-gh4"/>
+                                </connections>
                             </button>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Item" style="plain" id="h1c-Qt-hdK">
@@ -1070,14 +1111,24 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
                     <size key="freeformSize" width="375" height="1550"/>
                     <connections>
+                        <outlet property="btnFreeShipNo" destination="ewU-WT-NNL" id="i2K-E2-rMN"/>
+                        <outlet property="btnFreeShipYes" destination="mFv-h5-q5P" id="62f-gf-Vrf"/>
                         <outlet property="btnSaveDraft" destination="fVY-33-58z" id="EO2-b3-lV6"/>
                         <outlet property="collectionCondition" destination="V8o-eh-zba" id="20T-Tx-Xxl"/>
                         <outlet property="collectionImages" destination="sy3-HZ-PMr" id="TGk-vA-R6q"/>
+                        <outlet property="lblItemColor" destination="2sN-ik-BEZ" id="3lq-SC-icO"/>
+                        <outlet property="lblItemDescriptionRange" destination="zEZ-pK-0Ad" id="frf-gG-Hwa"/>
+                        <outlet property="lblItemNameRange" destination="lkN-dN-W0T" id="sF2-eT-vpT"/>
+                        <outlet property="lblPrice" destination="KxK-mP-sY2" id="MSK-Ux-0PY"/>
+                        <outlet property="txtItemDescription" destination="VKO-gX-IAh" id="kV1-kR-pOa"/>
+                        <outlet property="txtItemName" destination="fBM-gI-5Xs" id="kfc-tF-vXy"/>
+                        <outlet property="txtItemPrice" destination="jNg-Nr-JlY" id="wMJ-nl-sgc"/>
+                        <outlet property="txtZipCode" destination="ovj-yx-Fx0" id="7tS-8i-mFZ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CN9-iD-sQ3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2221.5999999999999" y="113.79310344827587"/>
+            <point key="canvasLocation" x="2479" y="114"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="tYg-bm-7Jw">

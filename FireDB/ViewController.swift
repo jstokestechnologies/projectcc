@@ -62,6 +62,18 @@ class ViewController: UIViewController {
                                 let fbDetails = result as! NSDictionary
                                 print(fbDetails)
                                 
+                                do {
+                                    let jsonData  = try? JSONSerialization.data(withJSONObject: fbDetails, options:.prettyPrinted)
+                                    let jsonDecoder = JSONDecoder()
+//                                    var userdata = UserData.sharedInstance
+                                    userdata = try jsonDecoder.decode(UserData.self, from: jsonData!)
+                                    print(userdata.id)
+                                }
+                                catch {
+                                    print(error.localizedDescription)
+                                }
+
+                                
                                 let vc = self.storyboard?.instantiateViewController(withIdentifier: "ShowLoginDataVC") as! ShowLoginDataVC
                                 vc.loginDict = fbDetails as! [String : Any]
                                 self.navigationController?.show(vc, sender: self)

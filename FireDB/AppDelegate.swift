@@ -11,12 +11,15 @@ import Firebase
 import FBSDKCoreKit
 import FirebaseFirestore
 
+
+var db = Firestore.firestore()
+var userdata = UserData()
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    lazy var db = Firestore.firestore()
+    
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
