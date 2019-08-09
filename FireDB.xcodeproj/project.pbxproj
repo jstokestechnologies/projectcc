@@ -11,7 +11,11 @@
 		8451D5E222F94A42005169D5 /* particle41-squarelogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E022F94A42005169D5 /* particle41-squarelogo.png */; };
 		8451D5E322F94A42005169D5 /* jmjcloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E122F94A42005169D5 /* jmjcloud-logo.png */; };
 		8451D5E722F9511A005169D5 /* email_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E622F9511A005169D5 /* email_logo.png */; };
-		8451D5E922F952C1005169D5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E822F952C1005169D5 /* GoogleService-Info.plist */; };
+		845801D622FD48FE00AE6FEE /* SelectCategoryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845801D522FD48FE00AE6FEE /* SelectCategoryVC.swift */; };
+		845801D822FD8C0D00AE6FEE /* SelectCategoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845801D722FD8C0D00AE6FEE /* SelectCategoryProtocol.swift */; };
+		845801DA22FD978A00AE6FEE /* SelectBrandVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845801D922FD978A00AE6FEE /* SelectBrandVC.swift */; };
+		845801DC22FD992800AE6FEE /* SelectBrandProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845801DB22FD992800AE6FEE /* SelectBrandProtocol.swift */; };
+		845801E522FDA56F00AE6FEE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 845801E422FDA56F00AE6FEE /* GoogleService-Info.plist */; };
 		8486F8C822FB1227009BE82C /* minus.png in Resources */ = {isa = PBXBuildFile; fileRef = 8486F8C722FB1227009BE82C /* minus.png */; };
 		848A43DC22F04380002D9444 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848A43DB22F04380002D9444 /* AppDelegate.swift */; };
 		848A43DE22F04380002D9444 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848A43DD22F04380002D9444 /* ViewController.swift */; };
@@ -49,7 +53,11 @@
 		8451D5E022F94A42005169D5 /* particle41-squarelogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "particle41-squarelogo.png"; sourceTree = "<group>"; };
 		8451D5E122F94A42005169D5 /* jmjcloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "jmjcloud-logo.png"; sourceTree = "<group>"; };
 		8451D5E622F9511A005169D5 /* email_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = email_logo.png; sourceTree = "<group>"; };
-		8451D5E822F952C1005169D5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		845801D522FD48FE00AE6FEE /* SelectCategoryVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectCategoryVC.swift; sourceTree = "<group>"; };
+		845801D722FD8C0D00AE6FEE /* SelectCategoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectCategoryProtocol.swift; sourceTree = "<group>"; };
+		845801D922FD978A00AE6FEE /* SelectBrandVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBrandVC.swift; sourceTree = "<group>"; };
+		845801DB22FD992800AE6FEE /* SelectBrandProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBrandProtocol.swift; sourceTree = "<group>"; };
+		845801E422FDA56F00AE6FEE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8486F8C722FB1227009BE82C /* minus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = minus.png; sourceTree = "<group>"; };
 		848A43D822F04380002D9444 /* FireDB.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FireDB.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		848A43DB22F04380002D9444 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -99,6 +107,107 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		845801DD22FDA42B00AE6FEE /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				845801EB22FDA74900AE6FEE /* Login */,
+				845801EA22FDA70100AE6FEE /* AddItemForSale */,
+				848A440922F04839002D9444 /* ShowLoginDataVC.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		845801DE22FDA43E00AE6FEE /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				849464DC22FC3CD000ED0213 /* UserModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		845801DF22FDA45B00AE6FEE /* AppDelegate */ = {
+			isa = PBXGroup;
+			children = (
+				848A43DB22F04380002D9444 /* AppDelegate.swift */,
+			);
+			path = AppDelegate;
+			sourceTree = "<group>";
+		};
+		845801E022FDA47E00AE6FEE /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				848A43DF22F04380002D9444 /* Main.storyboard */,
+				848A43E422F04383002D9444 /* LaunchScreen.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		845801E122FDA49800AE6FEE /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				845801D722FD8C0D00AE6FEE /* SelectCategoryProtocol.swift */,
+				845801DB22FD992800AE6FEE /* SelectBrandProtocol.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		845801E222FDA4AE00AE6FEE /* Info-plist */ = {
+			isa = PBXGroup;
+			children = (
+				848A43E722F04383002D9444 /* Info.plist */,
+				845801E422FDA56F00AE6FEE /* GoogleService-Info.plist */,
+			);
+			name = "Info-plist";
+			path = "Info-plist.temp_caseinsensitive_rename.";
+			sourceTree = "<group>";
+		};
+		845801E622FDA5C200AE6FEE /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		845801E722FDA60A00AE6FEE /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		845801E822FDA61F00AE6FEE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		845801E922FDA62C00AE6FEE /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				84F9F6C422FAAF9B00E754A7 /* Images */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		845801EA22FDA70100AE6FEE /* AddItemForSale */ = {
+			isa = PBXGroup;
+			children = (
+				84F9F6C922FAB67C00E754A7 /* AddSellItemVC.swift */,
+				845801D522FD48FE00AE6FEE /* SelectCategoryVC.swift */,
+				845801D922FD978A00AE6FEE /* SelectBrandVC.swift */,
+			);
+			path = AddItemForSale;
+			sourceTree = "<group>";
+		};
+		845801EB22FDA74900AE6FEE /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				848A43DD22F04380002D9444 /* ViewController.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
 		848A43CF22F04380002D9444 = {
 			isa = PBXGroup;
 			children = (
@@ -124,17 +233,17 @@
 		848A43DA22F04380002D9444 /* FireDB */ = {
 			isa = PBXGroup;
 			children = (
-				84F9F6C422FAAF9B00E754A7 /* Images */,
-				848A43DB22F04380002D9444 /* AppDelegate.swift */,
-				848A43DD22F04380002D9444 /* ViewController.swift */,
-				848A440922F04839002D9444 /* ShowLoginDataVC.swift */,
-				84F9F6C922FAB67C00E754A7 /* AddSellItemVC.swift */,
-				848A43DF22F04380002D9444 /* Main.storyboard */,
+				845801E122FDA49800AE6FEE /* Protocols */,
+				845801DF22FDA45B00AE6FEE /* AppDelegate */,
+				845801DE22FDA43E00AE6FEE /* Model */,
+				845801DD22FDA42B00AE6FEE /* Controllers */,
+				845801E022FDA47E00AE6FEE /* Storyboards */,
+				845801E722FDA60A00AE6FEE /* Networking */,
+				845801E622FDA5C200AE6FEE /* Helper */,
+				845801E822FDA61F00AE6FEE /* Views */,
+				845801E922FDA62C00AE6FEE /* Resources */,
 				848A43E222F04383002D9444 /* Assets.xcassets */,
-				848A43E422F04383002D9444 /* LaunchScreen.storyboard */,
-				848A43E722F04383002D9444 /* Info.plist */,
-				8451D5E822F952C1005169D5 /* GoogleService-Info.plist */,
-				849464DC22FC3CD000ED0213 /* UserModel.swift */,
+				845801E222FDA4AE00AE6FEE /* Info-plist */,
 			);
 			path = FireDB;
 			sourceTree = "<group>";
@@ -294,13 +403,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				8493467822F88641006C72E7 /* 124010.png in Resources */,
-				8451D5E922F952C1005169D5 /* GoogleService-Info.plist in Resources */,
 				8451D5E722F9511A005169D5 /* email_logo.png in Resources */,
 				8451D5E322F94A42005169D5 /* jmjcloud-logo.png in Resources */,
 				848A43E622F04383002D9444 /* LaunchScreen.storyboard in Resources */,
 				848A43E322F04383002D9444 /* Assets.xcassets in Resources */,
 				8451D5E222F94A42005169D5 /* particle41-squarelogo.png in Resources */,
 				848A43E122F04380002D9444 /* Main.storyboard in Resources */,
+				845801E522FDA56F00AE6FEE /* GoogleService-Info.plist in Resources */,
 				8486F8C822FB1227009BE82C /* minus.png in Resources */,
 				84F9F6C822FAB35A00E754A7 /* border_dot.png in Resources */,
 			);
@@ -369,10 +478,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				845801DC22FD992800AE6FEE /* SelectBrandProtocol.swift in Sources */,
 				848A440A22F04839002D9444 /* ShowLoginDataVC.swift in Sources */,
 				848A43DE22F04380002D9444 /* ViewController.swift in Sources */,
+				845801D622FD48FE00AE6FEE /* SelectCategoryVC.swift in Sources */,
 				848A43DC22F04380002D9444 /* AppDelegate.swift in Sources */,
+				845801D822FD8C0D00AE6FEE /* SelectCategoryProtocol.swift in Sources */,
 				849464DD22FC3CD000ED0213 /* UserModel.swift in Sources */,
+				845801DA22FD978A00AE6FEE /* SelectBrandVC.swift in Sources */,
 				84F9F6CA22FAB67C00E754A7 /* AddSellItemVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -550,7 +663,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = FireDB/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/FireDB/Info-plist.temp_caseinsensitive_rename./Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -568,7 +681,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = FireDB/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/FireDB/Info-plist.temp_caseinsensitive_rename./Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

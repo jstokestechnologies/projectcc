@@ -12,7 +12,9 @@ import FirebaseFirestore
 
 class ShowLoginDataVC: UIViewController {
     
-    @IBOutlet weak var txtData: UITextView!
+    @IBOutlet weak var btnShowListedItems: UIButton!
+    @IBOutlet weak var btnShowSavedItems: UIButton!
+    
     
     var loginDict = Dictionary<String,Any>()
     let arrTitle = ["First Name", "Last Name", "Email", "Gender", "Birthday", "Hometown", "Current Location", "Relationship Status"]
@@ -22,11 +24,12 @@ class ShowLoginDataVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.saveData()
+        self.title = "User Details"
+        
+        self.btnShowSavedItems.layer.borderColor = UIColor.lightGray.cgColor
+        self.btnShowListedItems.layer.borderColor = UIColor.lightGray.cgColor
         // Do any additional setup after loading the view.
-        self.txtData.text = "\(loginDict)"
-        DispatchQueue.main.async {
-            self.txtData.scrollRectToVisible(CGRect.init(origin: CGPoint.zero, size: CGSize(width: 50, height: 10)), animated: false)
-        }
+        
     }
     
     func saveData() {

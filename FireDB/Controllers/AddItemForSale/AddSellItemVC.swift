@@ -29,6 +29,8 @@ class AddSellItemVC: UITableViewController {
     @IBOutlet weak var lblItemNameRange: UILabel!
     @IBOutlet weak var lblPrice: UILabel!
     @IBOutlet weak var lblItemColor: UILabel!
+    @IBOutlet weak var lblCategory: UILabel!
+    @IBOutlet weak var lblBrand: UILabel!
     
     
     //MARK: - Properties
@@ -39,6 +41,8 @@ class AddSellItemVC: UITableViewController {
     let maxImages = 8
     var arrItemImages = Array<UIImage>()
     var itemCondition = 0
+    var categories = String()
+    var subCategories = [String]()
     
     lazy var storage = Storage.storage()
     
@@ -91,10 +95,10 @@ class AddSellItemVC: UITableViewController {
     
     @IBAction func btnFreeShippingAction(_ sender: UIButton) {
         self.view.endEditing(true)
-        self.btnFreeShipYes.setImage(UIImage.init(named: sender.tag == 102 ? "checked" : "uncheck"), for: .normal)
-        self.btnFreeShipNo.setImage(UIImage.init(named: sender.tag == 103 ? "checked" : "uncheck"), for: .normal)
-        self.btnFreeShipYes.isSelected = sender.tag == 102
-        self.btnFreeShipNo.isSelected = sender.tag == 103
+        self.btnFreeShipYes.setImage(UIImage.init(named: sender == btnFreeShipYes ? "checked" : "uncheck"), for: .normal)
+        self.btnFreeShipNo.setImage(UIImage.init(named: sender == btnFreeShipNo ? "checked" : "uncheck"), for: .normal)
+        self.btnFreeShipYes.isSelected = sender == btnFreeShipYes
+        self.btnFreeShipNo.isSelected = sender == btnFreeShipNo
     }
     
     @IBAction func btnCloseAction(_ sender: UIButton) {
@@ -184,15 +188,20 @@ class AddSellItemVC: UITableViewController {
         return imgPaths
     }
     
-    /*
-    // MARK - Navigation
+    
+     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "segueSelectCategory" {
+            let vc = segue.destination as! SelectCategoryVC
+            vc.delegate = self
+        }else if segue.identifier == "segueSelectBrand" {
+            let vc = segue.destination as! SelectBrandVC
+            vc.delegate = self
+        }
     }
-    */
+ 
 
 }
 
@@ -394,6 +403,20 @@ extension AddSellItemVC : UITextFieldDelegate, UITextViewDelegate {
             self.lblItemDescriptionRange.text = "\(textView.text.count)/1000"
         })
         return true
+    }
+}
+
+extension AddSellItemVC : SelectCategoryProtocol {
+    func selectCategory(_ category: String, andSubcategory subcategories: [String]) {
+        self.categories = category
+        self.subCategories = subcategories
+        self.lblCategory.text = category + " -> " + subcategories.joined(separator: ", ")
+    }
+}
+
+extension AddSellItemVC : SelectBrandProtocol {
+    func selectBrand(withName brand: String) {
+        self.lblBrand.text = brand
     }
 }
 
