@@ -27,6 +27,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         FirebaseApp.configure()
         
+        if UserDefaults.standard.bool(forKey: kIsLoggedIn) {
+            let vc = UIStoryboard.init(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "ShowLoginDataVC") as! ShowLoginDataVC
+            vc.loginDict = HelperClass.fetchDataFromDefaults(with: kUserData) as! [String : Any]
+            
+            let btn = UIButton.init()
+            btn.setTitle("Logout", for: .normal)
+            btn.frame = CGRect.init(x: 0, y: 0, width: 60, height: 30)
+            vc.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: btn)
+            
+            do {
+                let jsonData  = try? JSONSerialization.data(withJSONObject: vc.loginDict, options:.prettyPrinted)
+                let jsonDecoder = JSONDecoder()
+                //                                    var userdata = UserData.sharedInstance
+                userdata = try jsonDecoder.decode(UserData.self, from: jsonData!)
+                print(userdata.id)
+            }
+            catch {
+                print(error.localizedDescription)
+            }
+            
+            self.window?.rootViewController = UINavigationController.init(rootViewController: vc)
+        }
+        
         return true
     }
     

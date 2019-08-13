@@ -132,8 +132,8 @@ class AddSellItemVC: UITableViewController {
         let imgPath = self.saveItemImages(timestamp)
         let itemDetails : [String : Any] = ["name" : (self.txtItemName.text)!,
                                             "description" : (self.txtItemDescription.text)!,
-                                            "category" : "",
-                                            "brand" : "",
+                                            "category" : self.subCategories,
+                                            "brand" : (self.lblBrand.text)!,
                                             "condition" : "\(self.arrConditions[self.itemCondition]["title"] ?? "")",
                                             "color" : (self.lblItemColor.text)!,
                                             "zipcode"   : (self.txtZipCode.text)!,
@@ -143,7 +143,6 @@ class AddSellItemVC: UITableViewController {
                                             "item_images" : imgPath,
                                             "images_added" : self.arrItemImages.count,
                                             "timestamp" : timestamp]
-        
         return itemDetails
     }
     
@@ -410,6 +409,7 @@ extension AddSellItemVC : SelectCategoryProtocol {
     func selectCategory(_ category: String, andSubcategory subcategories: [String]) {
         self.categories = category
         self.subCategories = subcategories
+        self.subCategories.insert(self.categories, at: 0)
         self.lblCategory.text = category + " -> " + subcategories.joined(separator: ", ")
     }
 }

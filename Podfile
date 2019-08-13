@@ -15,6 +15,7 @@ pod 'Firebase/Analytics'
 pod 'Firebase/Firestore'
 pod 'Firebase/Auth'
 pod 'Firebase/Storage'
+pod 'FirebaseUI/Storage'
 
 pod 'SkyFloatingLabelTextField', '~> 3.0'
 

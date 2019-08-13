@@ -12,6 +12,11 @@ class SelectCategoryVC: UIViewController {
     @IBOutlet weak var tlbCategory: UITableView!
     @IBOutlet weak var tblSubCategory: UITableView!
     
+    @IBOutlet weak var const_ViewSubCat_Center_Y: NSLayoutConstraint!
+    @IBOutlet weak var const_tblSubCat_bottom: NSLayoutConstraint!
+    @IBOutlet weak var const_tblCat_bottom: NSLayoutConstraint!
+    
+    
     var delegate : SelectCategoryProtocol?
     
     
@@ -32,7 +37,7 @@ class SelectCategoryVC: UIViewController {
     @IBAction func btnSaveAction(_ sender: Any) {
         if self.arrSelectedCategory.count > 0 {
             self.delegate?.selectCategory(Array(self.arrCategory.keys)[self.selectedCatIndex], andSubcategory: self.arrSelectedCategory)
-            self.dismiss(animated: true, completion: nil)
+            self.navigationController?.popViewController(animated: true)
         }else {
             
         }
@@ -92,6 +97,13 @@ extension SelectCategoryVC : UITableViewDelegate, UITableViewDataSource {
                 self.selectedCatIndex = indexPath.row
                 self.arrSelectedCategory.removeAll()
                 self.arrSubCategory = self.arrCategory[(Array(self.arrCategory.keys))[indexPath.row]] ?? [String]()
+                
+                UIView.animate(withDuration: 0.4) {
+                    self.const_tblSubCat_bottom.priority = .defaultHigh
+                    self.const_ViewSubCat_Center_Y.priority = .defaultHigh
+                    self.const_tblCat_bottom.priority = .defaultLow
+                    self.view.layoutIfNeeded()
+                }
                 
                 self.tlbCategory.reloadData()
                 self.tblSubCategory.reloadData()

@@ -19,7 +19,7 @@ class ShowLoginDataVC: UIViewController {
     var loginDict = Dictionary<String,Any>()
     let arrTitle = ["First Name", "Last Name", "Email", "Gender", "Birthday", "Hometown", "Current Location", "Relationship Status"]
     let arrKeys = ["first_name", "last_name", "email", "gender", "birthday", "hometown.name", "location.name"]
-    let db = Firestore.firestore()
+//    let db = Firestore.firestore()
     
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -61,6 +61,7 @@ class ViewController: UIViewController {
                             if (error == nil){
                                 let fbDetails = result as! NSDictionary
                                 print(fbDetails)
+                                HelperClass.saveDataToDefaults(dataObject: fbDetails, key: kUserData)
                                 
                                 do {
                                     let jsonData  = try? JSONSerialization.data(withJSONObject: fbDetails, options:.prettyPrinted)
@@ -76,8 +77,10 @@ class ViewController: UIViewController {
                                 
                                 let vc = self.storyboard?.instantiateViewController(withIdentifier: "ShowLoginDataVC") as! ShowLoginDataVC
                                 vc.loginDict = fbDetails as! [String : Any]
-                                self.navigationController?.show(vc, sender: self)
-                                
+                                let btn = UIButton.init()
+                                btn.setTitle("Logout", for: .normal)
+                                vc.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: btn)
+                                UIApplication.shared.keyWindow?.rootViewController = UINavigationController.init(rootViewController: vc)
                             }else {
                                 print(error?.localizedDescription ?? "Unknown Error.")
                             }
