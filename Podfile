@@ -17,6 +17,9 @@ pod 'Firebase/Auth'
 pod 'Firebase/Storage'
 pod 'FirebaseUI/Storage'
 
+pod 'Fabric'
+pod 'Crashlytics'
+
 pod 'SkyFloatingLabelTextField', '~> 3.0'
 
 end
