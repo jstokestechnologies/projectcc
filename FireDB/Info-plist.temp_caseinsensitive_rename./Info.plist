@@ -75,5 +75,9 @@
 			</dict>
 		</array>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Need your permission to access camera to capture images of items and user profile.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Need your permission to access Photo Library to select images of items and user profile.</string>
 </dict>
 </plist>
