@@ -10,24 +10,27 @@ import UIKit
 
 class SelectBrandVC: UIViewController {
     
+    
+    //MARK: - Variables
     var arrBrand = ["Leatherman Wave", "Council Tool Michigan", "Estwing Sportsman’s", "Klein Tools", "Armstrong Blacksmith"]
     var selectedIndex = -1
     
     var delegate : SelectBrandProtocol?
     
+    //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
-    
+    //MARK: - IBAction
     @IBAction func btnSaveAction(_ sender: Any) {
         self.delegate?.selectBrand(withName: self.arrBrand[selectedIndex])
         self.navigationController?.popViewController(animated: true)
     }
     
     /*
-    // MARK: - Navigation
+    // MARK - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -37,7 +40,7 @@ class SelectBrandVC: UIViewController {
     */
 
 }
-
+//MARK: -
 extension SelectBrandVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return  self.arrBrand.count

@@ -12,19 +12,40 @@ import FacebookLogin
 import FBSDKCoreKit
 import FBSDKLoginKit
 import FirebaseAuth
+import FirebaseFirestore
 
 
 
 class ViewController: UIViewController {
-    
+    //MARK: - Variables
     let connection = GraphRequestConnection()
     
-    
+    //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
-
+    //MARK: - Firebase -> Save Data
+    func saveData(loginDict : [String : Any]) {
+        //        var ref: DocumentReference? = nil
+        //        ref = db.collection("users").addDocument(data: self.loginDict) { err in
+        //            if let err = err {
+        //                print("Error adding document: \(err)")
+        //            } else {
+        //                print("Document added with ID:\n\n\n\n\n \(ref!.documentID)")
+        //            }
+        //        }
+        
+        db.collection("Users").document("\(loginDict["id"] ?? "N/A")").setData(loginDict, completion: { err in
+            if let err = err {
+                print("Error adding document: \(err)")
+            } else {
+                print("Document added with ID:\n\n\n\n\n ")
+            }
+        })
+    }
+    
+    //MARK: - IBAction
     @IBAction func btnFacebookTapped(_ sender: Any) {
         let loginManager = LoginManager()
         loginManager.logOut()
@@ -45,50 +66,58 @@ class ViewController: UIViewController {
             case .cancelled:
                 print("User cancelled login.")
             case .success(let grantedPermissions, let declinedPermissions, let accessToken):
-                
+                print("Logged in! \(grantedPermissions.description), Token : \(accessToken.tokenString), DeclinePermition Details : \(declinedPermissions.description)")
                 //get facebook access token
                 let credential = FacebookAuthProvider.credential(withAccessToken: AccessToken.current!.tokenString)
                 // Signin with facebook into Firebase
-                Auth.auth().signIn(with: credential, completion: { (authResult, error) in
-                    if let error = error {
-                        print(error.localizedDescription)
-                        return
-                    }else {
-                        //User authenticated to Firebase
-                        print("Logged in! \(grantedPermissions.description), Token : \(accessToken.tokenString), DeclinePermition Details : \(declinedPermissions.description)")
-                        //Getting user details from Facebook from Facebook's Graph API
-                        GraphRequest(graphPath: "me", parameters: ["fields": "id, name, first_name, last_name, email, gender, birthday, hometown, location, likes, tagged, address, age_range, can_review_measurement_request, favorite_athletes, favorite_teams, inspirational_people, install_type, is_shared_login, languages, name_format, quotes, short_name, significant_other, security_settings, about, education"]).start(completionHandler: { (connection, result, error) -> Void in
-                            if (error == nil){
-                                let fbDetails = result as! NSDictionary
-                                print(fbDetails)
-                                HelperClass.saveDataToDefaults(dataObject: fbDetails, key: kUserData)
-                                
-                                do {
-                                    let jsonData  = try? JSONSerialization.data(withJSONObject: fbDetails, options:.prettyPrinted)
-                                    let jsonDecoder = JSONDecoder()
-//                                    var userdata = UserData.sharedInstance
-                                    userdata = try jsonDecoder.decode(UserData.self, from: jsonData!)
-                                    print(userdata.id)
-                                }
-                                catch {
-                                    print(error.localizedDescription)
-                                }
-
-                                
-                                let vc = self.storyboard?.instantiateViewController(withIdentifier: "ShowLoginDataVC") as! ShowLoginDataVC
-                                vc.loginDict = fbDetails as! [String : Any]
-                                let btn = UIButton.init()
-                                btn.setTitle("Logout", for: .normal)
-                                vc.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: btn)
-                                UIApplication.shared.keyWindow?.rootViewController = UINavigationController.init(rootViewController: vc)
-                            }else {
-                                print(error?.localizedDescription ?? "Unknown Error.")
-                            }
-                        })
-                    }
-                })
+                self.authenticateFireBase(cred: credential)
                 
             }
+        }
+    }
+    
+    //MARK: - Login Helper
+    func authenticateFireBase(cred : AuthCredential) {
+        Auth.auth().signIn(with: cred, completion: { (authResult, error) in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }else {
+                //User authenticated to Firebase
+                self.fetchDataFromFacebook()
+            }
+        })
+    }
+    
+    func fetchDataFromFacebook() {
+        GraphRequest(graphPath: "me", parameters: ["fields": "id, name, first_name, last_name, email, gender, birthday, hometown, location, likes, tagged, address, age_range, can_review_measurement_request, favorite_athletes, favorite_teams, inspirational_people, install_type, is_shared_login, languages, name_format, quotes, short_name, significant_other, security_settings, about, education"]).start(completionHandler: { (connection, result, error) -> Void in
+            if (error == nil){
+                let fbDetails = result as! NSDictionary
+                print(fbDetails)
+                self.saveUserData(userDict: fbDetails)
+                self.initUserModel(userDict: fbDetails)
+                UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "MainNavVC")
+            }else {
+                print(error?.localizedDescription ?? "Unknown Error.")
+            }
+        })
+    }
+    
+    func saveUserData(userDict : NSDictionary) {
+        HelperClass.saveDataToDefaults(dataObject: userDict, key: kUserData)
+        self.saveData(loginDict: userDict as! [String : Any])
+    }
+    
+    func initUserModel(userDict : NSDictionary) {
+        do {
+            let jsonData  = try? JSONSerialization.data(withJSONObject: userDict, options:.prettyPrinted)
+            let jsonDecoder = JSONDecoder()
+            //                                    var userdata = UserData.sharedInstance
+            userdata = try jsonDecoder.decode(UserData.self, from: jsonData!)
+            print(userdata.id)
+        }
+        catch {
+            print(error.localizedDescription)
         }
     }
 }

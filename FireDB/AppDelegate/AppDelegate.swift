@@ -28,16 +28,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         
         if UserDefaults.standard.bool(forKey: kIsLoggedIn) {
-            let vc = UIStoryboard.init(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "ShowLoginDataVC") as! ShowLoginDataVC
-            vc.loginDict = HelperClass.fetchDataFromDefaults(with: kUserData) as! [String : Any]
-            
-            let btn = UIButton.init()
-            btn.setTitle("Logout", for: .normal)
-            btn.frame = CGRect.init(x: 0, y: 0, width: 60, height: 30)
-            vc.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: btn)
-            
+            let userDict = HelperClass.fetchDataFromDefaults(with: kUserData) as! [String : Any]
             do {
-                let jsonData  = try? JSONSerialization.data(withJSONObject: vc.loginDict, options:.prettyPrinted)
+                let jsonData  = try? JSONSerialization.data(withJSONObject: userDict, options:.prettyPrinted)
                 let jsonDecoder = JSONDecoder()
                 //                                    var userdata = UserData.sharedInstance
                 userdata = try jsonDecoder.decode(UserData.self, from: jsonData!)
@@ -47,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print(error.localizedDescription)
             }
             
-            self.window?.rootViewController = UINavigationController.init(rootViewController: vc)
+            self.window?.rootViewController = UIStoryboard.init(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "MainNavVC")
         }
         
         return true
@@ -84,7 +77,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return false
 
     }
-
-    
 }
 

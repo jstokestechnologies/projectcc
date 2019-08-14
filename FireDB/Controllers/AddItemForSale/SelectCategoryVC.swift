@@ -9,6 +9,7 @@
 import UIKit
 
 class SelectCategoryVC: UIViewController {
+    //MARK: - IBOutlets
     @IBOutlet weak var tlbCategory: UITableView!
     @IBOutlet weak var tblSubCategory: UITableView!
     
@@ -16,7 +17,7 @@ class SelectCategoryVC: UIViewController {
     @IBOutlet weak var const_tblSubCat_bottom: NSLayoutConstraint!
     @IBOutlet weak var const_tblCat_bottom: NSLayoutConstraint!
     
-    
+    //MARK: - Variables
     var delegate : SelectCategoryProtocol?
     
     
@@ -28,12 +29,14 @@ class SelectCategoryVC: UIViewController {
     var selectedCatIndex = -1
     var arrSelectedCategory = Array<String>()
     
+    //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
     
+    //MARK: - IBAction
     @IBAction func btnSaveAction(_ sender: Any) {
         if self.arrSelectedCategory.count > 0 {
             self.delegate?.selectCategory(Array(self.arrCategory.keys)[self.selectedCatIndex], andSubcategory: self.arrSelectedCategory)
@@ -44,7 +47,7 @@ class SelectCategoryVC: UIViewController {
     }
     
     /*
-    // MARK: - Navigation
+    // MARK - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -54,7 +57,7 @@ class SelectCategoryVC: UIViewController {
     */
 
 }
-
+//MARK: -
 extension SelectCategoryVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tableView == self.tlbCategory {

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0AE17B3FB0D0D2AF74BD67C7 /* Pods_FireDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3F95B0181BFB9BF4E053C4C /* Pods_FireDB.framework */; };
+		840C9C502302CF8B004A63AD /* MyListedItemsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */; };
 		8451D5E222F94A42005169D5 /* particle41-squarelogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E022F94A42005169D5 /* particle41-squarelogo.png */; };
 		8451D5E322F94A42005169D5 /* jmjcloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E122F94A42005169D5 /* jmjcloud-logo.png */; };
 		8451D5E722F9511A005169D5 /* email_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E622F9511A005169D5 /* email_logo.png */; };
@@ -54,6 +55,7 @@
 
 /* Begin PBXFileReference section */
 		123B6045BA866FD499EBBCF7 /* Pods-FireDB.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FireDB.release.xcconfig"; path = "Target Support Files/Pods-FireDB/Pods-FireDB.release.xcconfig"; sourceTree = "<group>"; };
+		840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyListedItemsVC.swift; sourceTree = "<group>"; };
 		8451D5E022F94A42005169D5 /* particle41-squarelogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "particle41-squarelogo.png"; sourceTree = "<group>"; };
 		8451D5E122F94A42005169D5 /* jmjcloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "jmjcloud-logo.png"; sourceTree = "<group>"; };
 		8451D5E622F9511A005169D5 /* email_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = email_logo.png; sourceTree = "<group>"; };
@@ -223,6 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				847D49BA23014B6D00FE900C /* ItemListForSaleVC.swift */,
+				840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */,
 			);
 			path = "Item List";
 			sourceTree = "<group>";
@@ -504,6 +507,7 @@
 				848A440A22F04839002D9444 /* ShowLoginDataVC.swift in Sources */,
 				848A43DE22F04380002D9444 /* ViewController.swift in Sources */,
 				845801D622FD48FE00AE6FEE /* SelectCategoryVC.swift in Sources */,
+				840C9C502302CF8B004A63AD /* MyListedItemsVC.swift in Sources */,
 				847D49BB23014B6D00FE900C /* ItemListForSaleVC.swift in Sources */,
 				848A43DC22F04380002D9444 /* AppDelegate.swift in Sources */,
 				845801D822FD8C0D00AE6FEE /* SelectCategoryProtocol.swift in Sources */,
@@ -686,16 +690,20 @@
 			baseConfigurationReference = FDE642BD58B3A605F884268F /* Pods-FireDB.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = R5G82TKCRA;
 				INFOPLIST_FILE = "$(SRCROOT)/FireDB/Info-plist.temp_caseinsensitive_rename./Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.particle41.projectCC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -704,16 +712,20 @@
 			baseConfigurationReference = 123B6045BA866FD499EBBCF7 /* Pods-FireDB.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = R5G82TKCRA;
 				INFOPLIST_FILE = "$(SRCROOT)/FireDB/Info-plist.temp_caseinsensitive_rename./Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.particle41.projectCC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

@@ -1,8 +1,8 @@
 //
-//  ItemListForSaleVC.swift
+//  MyListedItemsVC.swift
 //  FireDB
 //
-//  Created by admin on 12/08/19.
+//  Created by admin on 13/08/19.
 //  Copyright © 2019 admin. All rights reserved.
 //
 
@@ -12,8 +12,7 @@ import FirebaseFirestore
 import FirebaseStorage
 import FirebaseUI
 
-
-class ItemListForSaleVC: UIViewController {
+class MyListedItemsVC: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet weak var tblItemList: UITableView!
     
@@ -22,15 +21,23 @@ class ItemListForSaleVC: UIViewController {
     
     
     //MARK: - Variables
+    enum ItemsListType {
+        case savedItems
+        case listedItems
+    }
     var arrItems : [ItemsDetail]?
     lazy var storage = Storage.storage()
-    
+    var listType = ItemsListType.listedItems
     
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.initialSetup()
-        // Do any additional setup after loading the view.
+        switch self.listType {
+        case .listedItems:
+            self.title = "My Listed Items"
+        default:
+            self.title = "My Saved Items"
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -38,14 +45,17 @@ class ItemListForSaleVC: UIViewController {
         self.fetchItemList()
     }
     
-    func initialSetup() {
-        self.btnListedItems.layer.borderColor = UIColor.lightGray.cgColor
-        self.btnSavedItems.layer.borderColor = UIColor.lightGray.cgColor
-    }
-    
     //MARK: - Fetch List Of Items
     func fetchItemList() {
-        let itemRef = db.collection(kListedItems).order(by: "created", descending: true)
+        var child = ""
+        switch self.listType {
+        case .listedItems:
+            child = kListedItems
+        default:
+            child = kSavedItems
+        }
+        
+        let itemRef = db.collection(child).whereField("user_id", isEqualTo: userdata.id)
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
                 var arr = Array<[String : Any]>()
@@ -62,7 +72,6 @@ class ItemListForSaleVC: UIViewController {
                 }else {
                     self.tblItemList.tableFooterView = UIView.init(frame: CGRect.zero)
                 }
-
                 do {
                     let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
                     let jsonDecoder = JSONDecoder()
@@ -77,56 +86,20 @@ class ItemListForSaleVC: UIViewController {
         }
     }
     
-    //MARK: - Button IBAction
-    @IBAction func btnLogoutAction(_ sender: Any) {
-        self.view.endEditing(true)
-        let alert = UIAlertController.init(title: "", message: "Are you sure you want to logout?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
-            UserDefaults.standard.removeObject(forKey: kUserData)
-            UserDefaults.standard.set(false, forKey: kIsLoggedIn)
-            UserDefaults.standard.synchronize()
-            userdata = UserData()
-            UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "LoginNavVC")
-        }))
-        alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
-            
-        }))
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    @IBAction func btnAddItemForSaleAction(_ sender: Any) {
-        let vc = (self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC"))!
-        let navVC = UINavigationController.init(rootViewController: vc)
-        navVC.navigationBar.tintColor = .darkGray
-        self.present(navVC, animated: true, completion: nil)
-    }
-    
-    @IBAction func btnShowMyListedItemsAction(_ sender: Any) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
-        vc.listType = .listedItems
-        self.navigationController?.show(vc, sender: self)
-    }
-    
-    @IBAction func btnShowMySavedItemsAction(_ sender: Any) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
-        vc.listType = .savedItems
-        self.navigationController?.show(vc, sender: self)
-    }
-    
     /*
-    // MARK - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+     // MARK - Navigation
      
-    }
-    */
-
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destination.
+     // Pass the selected object to the new view controller.
+     
+     }
+     */
+    
 }
-//MARK: -
-extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
+
+extension MyListedItemsVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.arrItems?.count ?? 0
     }
@@ -163,12 +136,5 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
         return UITableView.automaticDimension
     }
 }
-//MARK: - 
-class ItemListCell : UITableViewCell {
-    @IBOutlet weak var imgItem: UIImageView!
-    @IBOutlet weak var lblItemBrand: UILabel!
-    @IBOutlet weak var lblItemName: UILabel!
-    @IBOutlet weak var lblItemCategory: UILabel!
-    @IBOutlet weak var lblItemCondition: UILabel!
-    @IBOutlet weak var lblItemPrice: UILabel!
-}
+
+

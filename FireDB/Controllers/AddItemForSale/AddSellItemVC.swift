@@ -55,36 +55,53 @@ class AddSellItemVC: UITableViewController {
     
     func prepareViews() {
         self.btnSaveDraft.layer.borderColor = UIColor(red:0.25, green:0.35, blue:0.82, alpha:1.0).cgColor
+        self.lblBrand.text = " "
+        self.lblCategory.text = " "
     }
     
     //MARK: - IBActions
     
     @IBAction func btnListAction(_ sender: Any) {
         self.view.endEditing(true)
-        if validateTextFields() {
+        if self.validateTextFields() {
             let dictItem = self.getItemDetails()
-            self.saveItemDetails(type: "listed_items", itemData: dictItem) { (err, success) in
-                if success {
-                    self.showAlert(msg: "Item successfully listed for sale", isBack: true)
-                }else {
-                    
+            let alert = UIAlertController.init(title: "", message: "Are you sure you want to list this item for sale?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
+                self.saveItemDetails(type: "listed_items", itemData: dictItem) { (err, success) in
+                    if success {
+                        self.showAlert(msg: "Item successfully listed for sale", isBack: true)
+                    }else {
+                        
+                    }
                 }
-            }
+            }))
+            alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
+                
+            }))
+            self.present(alert, animated: true, completion: nil)
         }
     }
     
     @IBAction func btnSaveDraftAction(_ sender: Any) {
         self.view.endEditing(true)
-        if validateTextFields() {
+        if self.validateTextFields() {
             let dictItem = self.getItemDetails()
-            self.saveItemDetails(type: "saved_items", itemData: dictItem) { (err, success) in
-                if success {
-                    self.showAlert(msg: "Item details saved in draft.", isBack: true)
-                }else {
-                    
+            let alert = UIAlertController.init(title: "", message: "Are you sure you want to save this item in draft?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
+                self.saveItemDetails(type: "saved_items", itemData: dictItem) { (err, success) in
+                    if success {
+                        self.showAlert(msg: "Item details saved in draft.", isBack: true)
+                    }else {
+                        
+                    }
                 }
-            }
+            }))
+            alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
+                
+            }))
+            self.present(alert, animated: true, completion: nil)
         }
+        
     }
     
     @IBAction func btnRemoveImageAction(_ sender: UIButton) {
@@ -103,7 +120,14 @@ class AddSellItemVC: UITableViewController {
     
     @IBAction func btnCloseAction(_ sender: UIButton) {
         self.view.endEditing(true)
-        self.navigationController?.dismiss(animated: true, completion: nil)
+        let alert = UIAlertController.init(title: "", message: "Are you sure you want to close this window?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
+            self.navigationController?.dismiss(animated: true, completion: nil)
+        }))
+        alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
+            
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
     
     //MARK: - Other
@@ -116,6 +140,12 @@ class AddSellItemVC: UITableViewController {
             return false
         }else if self.txtItemDescription.text == "" || self.txtItemDescription.text.trimmingCharacters(in: .whitespacesAndNewlines).count <= 0 {
             self.showAlert(msg: "Please enter item description.", isBack: false)
+            return false
+        }else if self.lblCategory.text!.count < 2 {
+            self.showAlert(msg: "Please select item category.", isBack: false)
+            return false
+        }else if self.lblBrand.text!.count < 2 {
+            self.showAlert(msg: "Please select brand.", isBack: false)
             return false
         }else if self.txtZipCode.text!.count < 5 {
             self.showAlert(msg: "Please enter delivery zipcode", isBack: false)
@@ -130,19 +160,24 @@ class AddSellItemVC: UITableViewController {
     func getItemDetails() -> Dictionary<String,Any> {
         let timestamp =  Int64(Date().timeIntervalSince1970 * 1000)
         let imgPath = self.saveItemImages(timestamp)
-        let itemDetails : [String : Any] = ["name" : (self.txtItemName.text)!,
-                                            "description" : (self.txtItemDescription.text)!,
-                                            "category" : self.subCategories,
-                                            "brand" : (self.lblBrand.text)!,
-                                            "condition" : "\(self.arrConditions[self.itemCondition]["title"] ?? "")",
-                                            "color" : (self.lblItemColor.text)!,
-                                            "zipcode"   : (self.txtZipCode.text)!,
-                                            "free_ship" : self.btnFreeShipYes.isSelected,
-                                            "price"     : (self.txtItemPrice.text)!,
-                                            "user_id"   : userdata.id,
-                                            "item_images" : imgPath,
-                                            "images_added" : self.arrItemImages.count,
-                                            "timestamp" : timestamp]
+        let itemDetails : [String : Any] = ["item_name"     : (self.txtItemName.text)!,
+                                            "description"   : (self.txtItemDescription.text)!,
+                                            "category"      : self.categories,
+                                            "sub_category"  : self.subCategories,
+                                            "brand"         : (self.lblBrand.text)!,
+                                            "condition"     : "\(self.arrConditions[self.itemCondition]["title"] ?? "")",
+                                            "color"         : (self.lblItemColor.text)!,
+                                            "zipcode"       : (self.txtZipCode.text)!,
+                                            "free_ship"     : self.btnFreeShipYes.isSelected,
+                                            "price"         : (self.txtItemPrice.text)!,
+                                            "user_id"       : userdata.id,
+                                            "item_images"   : imgPath,
+                                            "images_added"  : self.arrItemImages.count,
+                                            "created"       : timestamp,
+                                            "updated"       : timestamp,
+                                            "seller_name"   : userdata.name,
+                                            "watchers"      : "",
+                                            "used_category" : ""]
         return itemDetails
     }
     
@@ -152,7 +187,7 @@ class AddSellItemVC: UITableViewController {
             if let err = err {
                 print("Error adding document: \(err)")
                 completionHandler(err, false)
-            } else {
+            }else {
                 print("Document added with ID:\n\n\n\n\n \(ref!.documentID)")
                 completionHandler(err, true)
             }
@@ -166,7 +201,9 @@ class AddSellItemVC: UITableViewController {
                 self.navigationController?.dismiss(animated: true, completion: nil)
             }
         }))
-        present(alert, animated: true, completion: nil)
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     func saveItemImages(_ timestamp : Int64) -> [String] {
@@ -344,13 +381,13 @@ extension AddSellItemVC : UITextFieldDelegate, UITextViewDelegate {
         }else if textField == self.txtZipCode {
             if textField.text!.count >= 6 && string != "" {
                 return false
-            }else if string.rangeOfCharacter(from: .alphanumerics) == nil {
+            }else if string.rangeOfCharacter(from: .alphanumerics) == nil && string != "" {
                 return false
             }
         }else if textField == self.txtItemPrice {
             if textField.text!.count >= 10 && string != "" {
                 return false
-            }else if string.rangeOfCharacter(from: .alphanumerics) == nil && string != "." {
+            }else if string.rangeOfCharacter(from: .alphanumerics) == nil && string != "." && string != "" {
                 return false
             }
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2, execute: {
@@ -404,22 +441,22 @@ extension AddSellItemVC : UITextFieldDelegate, UITextViewDelegate {
         return true
     }
 }
-
+//MARK: -
 extension AddSellItemVC : SelectCategoryProtocol {
     func selectCategory(_ category: String, andSubcategory subcategories: [String]) {
         self.categories = category
         self.subCategories = subcategories
-        self.subCategories.insert(self.categories, at: 0)
+//        self.subCategories.insert(self.categories, at: 0)
         self.lblCategory.text = category + " -> " + subcategories.joined(separator: ", ")
     }
 }
-
+//MARK: -
 extension AddSellItemVC : SelectBrandProtocol {
     func selectBrand(withName brand: String) {
         self.lblBrand.text = brand
     }
 }
-
+//MARK: - 
 class SelectImageCollectionCell : UICollectionViewCell {
     
     @IBOutlet weak var imgItemPhoto: UIImageView!
