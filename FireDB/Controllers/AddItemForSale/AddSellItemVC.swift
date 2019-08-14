@@ -333,8 +333,7 @@ extension AddSellItemVC : UINavigationControllerDelegate, UIImagePickerControlle
     
     func openCamera()
     {
-        if(UIImagePickerController .isSourceTypeAvailable(UIImagePickerController.SourceType.camera))
-        {
+        if(UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera)) {
             picker.sourceType = UIImagePickerController.SourceType.camera
             self.present(picker, animated: true, completion: nil)
         }

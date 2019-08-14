@@ -7,8 +7,10 @@
 //
 
 import UIKit
-import Firebase
+import Crashlytics
+import Fabric
 import FBSDKCoreKit
+import Firebase
 import FirebaseFirestore
 
 
@@ -24,8 +26,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+        //Initialize Facebook SDK
         ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
+        
+        //Initialize FireBase SDK
         FirebaseApp.configure()
+        
+        //Initialize Fabric SDK
+        Fabric.with([Crashlytics.self])
         
         if UserDefaults.standard.bool(forKey: kIsLoggedIn) {
             let userDict = HelperClass.fetchDataFromDefaults(with: kUserData) as! [String : Any]
