@@ -22,7 +22,7 @@ class AddSellItemVC: UITableViewController {
     
     @IBOutlet weak var txtItemName: UITextField!
     @IBOutlet weak var txtItemDescription: UITextView!
-    @IBOutlet weak var txtZipCode: UITextField!
+//    @IBOutlet weak var txtZipCode: UITextField!
     @IBOutlet weak var txtItemPrice: UITextField!
     
     @IBOutlet weak var lblItemDescriptionRange: UILabel!
@@ -147,10 +147,10 @@ class AddSellItemVC: UITableViewController {
         }else if self.lblBrand.text!.count < 2 {
             self.showAlert(msg: "Please select brand.", isBack: false)
             return false
-        }else if self.txtZipCode.text!.count < 5 {
+        }/*else if self.txtZipCode.text!.count < 5 {
             self.showAlert(msg: "Please enter delivery zipcode", isBack: false)
             return false
-        }else if self.txtItemPrice.text!.count <= 0 {
+        }*/else if self.txtItemPrice.text!.count <= 0 {
             self.showAlert(msg: "Please enter item price.", isBack: false)
             return false
         }
@@ -167,8 +167,8 @@ class AddSellItemVC: UITableViewController {
                                             "brand"         : (self.lblBrand.text)!,
                                             "condition"     : "\(self.arrConditions[self.itemCondition]["title"] ?? "")",
                                             "color"         : (self.lblItemColor.text)!,
-                                            "zipcode"       : (self.txtZipCode.text)!,
-                                            "free_ship"     : self.btnFreeShipYes.isSelected,
+//                                            "zipcode"       : (self.txtZipCode.text)!,
+//                                            "free_ship"     : self.btnFreeShipYes.isSelected,
                                             "price"         : (self.txtItemPrice.text)!,
                                             "user_id"       : userdata.id,
                                             "item_images"   : imgPath,
@@ -328,6 +328,7 @@ extension AddSellItemVC : UINavigationControllerDelegate, UIImagePickerControlle
             UIAlertAction in
         })
         picker.delegate = self
+        picker.allowsEditing = true
         self.present(alert, animated: true, completion: nil)
     }
     
@@ -377,13 +378,13 @@ extension AddSellItemVC : UITextFieldDelegate, UITextViewDelegate {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2, execute: {
                 self.lblItemNameRange.text = "\(textField.text!.count)/40"
             })
-        }else if textField == self.txtZipCode {
+        }/*else if textField == self.txtZipCode {
             if textField.text!.count >= 6 && string != "" {
                 return false
             }else if string.rangeOfCharacter(from: .alphanumerics) == nil && string != "" {
                 return false
             }
-        }else if textField == self.txtItemPrice {
+        }*/else if textField == self.txtItemPrice {
             if textField.text!.count >= 10 && string != "" {
                 return false
             }else if string.rangeOfCharacter(from: .alphanumerics) == nil && string != "." && string != "" {
