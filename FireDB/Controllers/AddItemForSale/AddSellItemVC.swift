@@ -304,7 +304,9 @@ extension AddSellItemVC : UICollectionViewDelegate, UICollectionViewDataSource {
 extension AddSellItemVC : UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let img = info[.originalImage] as? UIImage {
+        if let img = info[.editedImage] as? UIImage {
+            self.arrItemImages.append(img)
+        }else if let img = info[.originalImage] as? UIImage {
             self.arrItemImages.append(img)
         }
         self.collectionImages.reloadData()

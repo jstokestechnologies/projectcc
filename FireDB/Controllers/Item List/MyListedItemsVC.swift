@@ -99,6 +99,7 @@ class MyListedItemsVC: UIViewController {
     
 }
 
+//MARK: -
 extension MyListedItemsVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.arrItems?.count ?? 0
@@ -110,16 +111,11 @@ extension MyListedItemsVC : UITableViewDelegate, UITableViewDataSource {
         
         cell.lblItemName.text = item.item_name
         cell.lblItemBrand.text = item.brand
-        if (item.sub_category?.count ?? 0) > 0 {
-            cell.lblItemCategory.text = "\(item.category ?? "N/A") -> \(item.sub_category?.joined(separator: ", ") ?? "N/A")"
-        }else {
-            cell.lblItemCategory.text = item.category ?? "N/A"
-        }
-        cell.lblItemCondition.text = "Condition : \(item.condition ?? "")"
-        cell.lblItemPrice.text = "Price : $\(item.price ?? "0.00")"
-        
-        let storageRef = storage.reference(withPath: item.item_images![0])
-        cell.imgItem.sd_setImage(with: storageRef, placeholderImage: UIImage.init(named: "no-image"))
+        cell.lblDesciption.text = item.description
+        cell.lblItemPrice.text = "$\(item.price ?? "0.00")"
+        cell.pageImgPages.numberOfPages = item.item_images?.count ?? 0
+        cell.collectionImages.tag = indexPath.row
+        cell.collectionImages.reloadData()
         
         return cell
     }
@@ -135,6 +131,45 @@ extension MyListedItemsVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        DispatchQueue.main.async {
+            if let cellView = scrollView.superview?.superview {
+                if cellView.isKind(of: ItemListCell.classForCoder()) && scrollView.isKind(of: UICollectionView.classForCoder()) {
+                    let cell = cellView as! ItemListCell
+                    let index = cell.collectionImages.indexPathsForVisibleItems
+                    cell.pageImgPages.currentPage = index[0].row
+                }
+            }
+        }
+    }
+}
+
+
+
+//MARK: -
+extension MyListedItemsVC : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        let item = self.arrItems![collectionView.tag]
+        return item.item_images?.count ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellImg", for: indexPath)
+        
+        let item = self.arrItems![collectionView.tag]
+        let storageRef = storage.reference(withPath: item.item_images![indexPath.row])
+        (cell.viewWithTag(11) as! UIImageView).image = UIImage.init(named: "no-image")
+        (cell.viewWithTag(11) as! UIImageView).sd_setImage(with: storageRef, placeholderImage: UIImage.init(named: "no-image"))
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: self.view.frame.size.width, height: collectionView.frame.size.height)
+    }
+    
+    
 }
 
 
