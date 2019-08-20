@@ -1890,6 +1890,7 @@
                                                 <constraint firstItem="nST-59-Cbv" firstAttribute="leading" secondItem="M6Q-4n-w6h" secondAttribute="leading" constant="15" id="xcg-lq-P7x"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         <connections>
                                             <outlet property="collectionImages" destination="Rll-ck-12k" id="0wt-rs-3QP"/>
                                             <outlet property="lblDesciption" destination="bxl-yF-SIM" id="bRq-xM-qHD"/>

@@ -17,6 +17,7 @@ import FirebaseFirestore
 
 
 class ViewController: UIViewController {
+    @IBOutlet weak var btnShowListedItems: UIButton!
     //MARK: - Variables
     let connection = GraphRequestConnection()
     
@@ -46,7 +47,7 @@ class ViewController: UIViewController {
     }
     
     //MARK: - IBAction
-    @IBAction func btnFacebookTapped(_ sender: Any) {
+    @IBAction func btnFacebookTapped(_ sender: UIButton) {
         let loginManager = LoginManager()
         loginManager.logOut()
         loginManager.logIn(permissions: [.publicProfile,
