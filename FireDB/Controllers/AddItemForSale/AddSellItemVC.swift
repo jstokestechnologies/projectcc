@@ -237,14 +237,14 @@ class AddSellItemVC: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueSelectCategory" {
             let vc = segue.destination as! SelectCategoryVC
+            vc.previousCategory = self.categories
+            vc.arrPreviousSubCat = self.subCategories
             vc.delegate = self
         }else if segue.identifier == "segueSelectBrand" {
             let vc = segue.destination as! SelectBrandVC
             vc.delegate = self
         }
     }
- 
-
 }
 
 //MARK: - TableView Delegate Methods

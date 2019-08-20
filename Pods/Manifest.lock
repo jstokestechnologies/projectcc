@@ -143,8 +143,8 @@ PODS:
   - SkyFloatingLabelTextField (3.7.0)
 
 DEPENDENCIES:
-  - Crashlytics
-  - Fabric
+  - Crashlytics (~> 3.13.4)
+  - Fabric (~> 1.10.2)
   - FacebookCore
   - FacebookLogin
   - FacebookShare
@@ -216,6 +216,6 @@ SPEC CHECKSUMS:
   SDWebImage: fb387001955223213dde14bc08c8b73f371f8d8f
   SkyFloatingLabelTextField: 4b46db0ab1ccde0919cded29c656e6b4805eda04
 
-PODFILE CHECKSUM: 65937e1fe49955fdc94b0cfb83a6deb618de1e6e
+PODFILE CHECKSUM: b0e7da003c78a726f2e74a813613c2ec98dda005
 
 COCOAPODS: 1.7.5
