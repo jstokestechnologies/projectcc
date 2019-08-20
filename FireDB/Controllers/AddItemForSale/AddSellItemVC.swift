@@ -177,7 +177,13 @@ class AddSellItemVC: UITableViewController {
                                             "updated"       : timestamp,
                                             "seller_name"   : userdata.name,
                                             "watchers"      : "",
-                                            "used_category" : ""]
+                                            "used_category" : "",
+                                            "home_address"  : "",
+                                            "mpcName"       : "",
+                                            "subdivision"   : "",
+                                            "buyerRating"   : "0",
+                                            "sellerRating"  : "0",
+                                            "bankAccountUpdated" : "0"]
         return itemDetails
     }
     

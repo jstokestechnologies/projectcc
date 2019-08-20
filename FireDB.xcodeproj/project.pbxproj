@@ -331,7 +331,7 @@
 				848A43D522F04380002D9444 /* Frameworks */,
 				848A43D622F04380002D9444 /* Resources */,
 				632C34232A695460724C062C /* [CP] Embed Pods Frameworks */,
-				84F92D472303B9B40052037F /* ShellScript */,
+				84D06F6A230C249F00409BB2 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -474,7 +474,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FireDB/Pods-FireDB-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		84F92D472303B9B40052037F /* ShellScript */ = {
+		84D06F6A230C249F00409BB2 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -489,7 +489,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Fabric/run\" 65184184f74287bb7ba2d6485388fc9476907c08 d5769bd122f45326cd83032e4b8e5edbff1058014272af1f753b27b47ba1013d\n";
+			shellScript = "\"${PODS_ROOT}/Fabric/run\"\n";
 		};
 		F1C65D3FCAD8A946B93EC8D7 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
