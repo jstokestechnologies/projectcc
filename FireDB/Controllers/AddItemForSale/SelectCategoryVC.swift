@@ -100,6 +100,7 @@ class SelectCategoryVC: UIViewController {
         self.arrSelectedCategory.removeAll()
         if self.arrPreviousSubCat.count > 0 {
             self.arrSelectedCategory.append(contentsOf: self.arrPreviousSubCat)
+            self.arrPreviousSubCat.removeAll()
         }
         self.tlbCategory.reloadData()
     }
