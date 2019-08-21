@@ -47,6 +47,7 @@ class MyListedItemsVC: UIViewController {
     
     //MARK: - Fetch List Of Items
     func fetchItemList() {
+        progressView.showActivity()
         var child = ""
         switch self.listType {
         case .listedItems:
@@ -83,6 +84,7 @@ class MyListedItemsVC: UIViewController {
                     print(error.localizedDescription)
                 }
             }
+            progressView.hideActivity()
         }
     }
     

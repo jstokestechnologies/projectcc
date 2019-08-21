@@ -72,7 +72,8 @@ class ViewController: UIViewController {
                 let credential = FacebookAuthProvider.credential(withAccessToken: AccessToken.current!.tokenString)
                 // Signin with facebook into Firebase
                 self.authenticateFireBase(cred: credential)
-                
+//                HelperClass.showProgressView()
+                progressView.showActivity()
             }
         }
     }
@@ -82,6 +83,8 @@ class ViewController: UIViewController {
         Auth.auth().signIn(with: cred, completion: { (authResult, error) in
             if let error = error {
                 print(error.localizedDescription)
+//                HelperClass.hideProgressView()
+                progressView.hideActivity()
                 return
             }else {
                 //User authenticated to Firebase
@@ -98,8 +101,10 @@ class ViewController: UIViewController {
                 self.saveUserData(userDict: fbDetails)
                 self.initUserModel(userDict: fbDetails)
                 UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "MainNavVC")
+                progressView.hideActivity()
             }else {
                 print(error?.localizedDescription ?? "Unknown Error.")
+                progressView.hideActivity()
             }
         })
     }

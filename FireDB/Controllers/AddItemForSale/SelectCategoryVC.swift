@@ -42,6 +42,7 @@ class SelectCategoryVC: UIViewController {
     
     //MARK: - Firebase Methods
     func fetchCategories() {
+        progressView.showActivity()
         var previousIndex = -1
         let itemRef = db.collection("categories")
         itemRef.getDocuments { (docs, err) in
@@ -62,15 +63,16 @@ class SelectCategoryVC: UIViewController {
                 }
                 self.arrCategories = arr
                 self.tlbCategory.reloadData()
-                
-                if previousIndex >= 0 {
-                    self.fetchSubCategories(index: previousIndex)
-                }
+            }
+            progressView.hideActivity()
+            if previousIndex >= 0 {
+                self.fetchSubCategories(index: previousIndex)
             }
         }
     }
     
     func fetchSubCategories(index : Int) {
+        progressView.showActivity()
         let key = Array(self.arrCategories[index].keys)[0]
         let itemRef = db.collection("categories/\(key)/subcategories")
         itemRef.getDocuments { (docs, err) in
@@ -88,6 +90,7 @@ class SelectCategoryVC: UIViewController {
                 self.categorySetSelected(index)
                 self.animateSubCategoryList()
             }
+            progressView.hideActivity()
         }
     }
     

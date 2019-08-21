@@ -30,6 +30,7 @@ class ItemListForSaleVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initialSetup()
+        progressView.showActivity()
         // Do any additional setup after loading the view.
     }
     
@@ -74,6 +75,7 @@ class ItemListForSaleVC: UIViewController {
                     print(error.localizedDescription)
                 }
             }
+            progressView.hideActivity()
         }
     }
     

@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import UIKit
 
-
+var progressView = ProgressHud()
 
 class HelperClass : NSObject {
     class func saveDataToDefaults(dataObject: NSDictionary, key : String) {

@@ -61,45 +61,17 @@ class AddSellItemVC: UITableViewController {
     
     //MARK: - IBActions
     
-    @IBAction func btnListAction(_ sender: Any) {
+    @IBAction func btnListAction(_ sender: UIButton) {
         self.view.endEditing(true)
         if self.validateTextFields() {
-            let dictItem = self.getItemDetails()
-            let alert = UIAlertController.init(title: "", message: "Are you sure you want to list this item for sale?", preferredStyle: .alert)
-            alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
-                self.saveItemDetails(type: "listed_items", itemData: dictItem) { (err, success) in
-                    if success {
-                        self.showAlert(msg: "Item successfully listed for sale", isBack: true)
-                    }else {
-                        
-                    }
-                }
-            }))
-            alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
-                
-            }))
-            self.present(alert, animated: true, completion: nil)
+            self.showSaveAlert(sender: sender, msg: "Are you sure you want to list this item for sale?")
         }
     }
     
-    @IBAction func btnSaveDraftAction(_ sender: Any) {
+    @IBAction func btnSaveDraftAction(_ sender: UIButton) {
         self.view.endEditing(true)
         if self.validateTextFields() {
-            let dictItem = self.getItemDetails()
-            let alert = UIAlertController.init(title: "", message: "Are you sure you want to save this item in draft?", preferredStyle: .alert)
-            alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
-                self.saveItemDetails(type: "saved_items", itemData: dictItem) { (err, success) in
-                    if success {
-                        self.showAlert(msg: "Item details saved in draft.", isBack: true)
-                    }else {
-                        
-                    }
-                }
-            }))
-            alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
-                
-            }))
-            self.present(alert, animated: true, completion: nil)
+           self.showSaveAlert(sender: sender, msg: "Are you sure you want to save this item in draft?")
         }
         
     }
@@ -131,6 +103,33 @@ class AddSellItemVC: UITableViewController {
     }
     
     //MARK: - Other
+    func showSaveAlert(sender : UIButton, msg : String) {
+        let alert = UIAlertController.init(title: "", message: msg, preferredStyle: .alert)
+        alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
+            if sender == self.btnSaveDraft {
+                self.saveData(type: "saved_items")
+            }else {
+                self.saveData(type: "listed_items")
+            }
+        }))
+        alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
+            
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func saveData(type : String) {
+        progressView.showActivity()
+        self.saveItemDetails(type: type, itemData: self.getItemDetails()) { (err, success) in
+            if success {
+                self.showAlert(msg: "Item details saved successfully", isBack: true)
+            }else {
+                
+            }
+            progressView.hideActivity()
+        }
+    }
+    
     func validateTextFields() -> Bool {
         if self.arrItemImages.count <= 0 {
             self.showAlert(msg: "Please add atleast 1 item image.", isBack: false)
