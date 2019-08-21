@@ -67,6 +67,7 @@ class SelectBrandVC: UIViewController {
     }
     
     func saveNewBrand(text : String) {
+        progressView.showActivity()
         let brandDict = self.crateNewBrandObject(brand: text)
         db.collection("brands").document("\(brandDict["id"] ?? (self.latestId + 1))").setData(brandDict, completion: { err in
             if let err = err {
@@ -75,6 +76,7 @@ class SelectBrandVC: UIViewController {
             } else {
                 print("Document added with ID:\n\n\n\n\n ")
             }
+            progressView.hideActivity()
         })
     }
     
