@@ -35,5 +35,28 @@ class HelperClass : NSObject {
         }
         return  NSDictionary()
     }
-
+    
+    
+    class func showAlert(msg : String, isBack : Bool, vc : UIViewController?){
+        let alert = UIAlertController.init(title: "", message: msg, preferredStyle: .alert)
+        alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: { (alrt) in
+            if isBack {
+                if vc?.navigationController != nil {
+                    if (vc?.navigationController!.isBeingPresented)! && vc?.navigationController?.viewControllers.count == 1 {
+                        vc?.navigationController?.dismiss(animated: true, completion: nil)
+                    }else {
+                        vc?.navigationController?.popViewController(animated: true)
+                    }
+                }else {
+                    vc?.dismiss(animated: true, completion: nil)
+                }
+            }
+        }))
+        DispatchQueue.main.async {
+            if vc != nil {
+                vc?.present(alert, animated: true, completion: nil)
+            }
+//            UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
+        }
+    }
 }

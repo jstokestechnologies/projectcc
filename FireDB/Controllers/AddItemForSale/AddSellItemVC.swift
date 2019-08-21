@@ -459,8 +459,8 @@ extension AddSellItemVC : SelectCategoryProtocol {
 }
 //MARK: -
 extension AddSellItemVC : SelectBrandProtocol {
-    func selectBrand(withName brand: String) {
-        self.lblBrand.text = brand
+    func selectBrand(withName brand: [String : Any]) {
+        self.lblBrand.text = "\(brand["name"] ?? " ")"
     }
 }
 //MARK: - 

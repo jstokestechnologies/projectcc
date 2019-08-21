@@ -1579,8 +1579,40 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="724"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Wj-aK-Kpr">
+                                <rect key="frame" x="0.0" y="674" width="375" height="50"/>
+                                <color key="backgroundColor" red="0.9463866353" green="0.51777386670000003" blue="0.23071467879999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                <state key="normal" title="Save">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnSaveAction:" destination="AAB-LW-ZZ2" eventType="touchUpInside" id="z8t-JQ-mhn"/>
+                                </connections>
+                            </button>
+                            <searchBar contentMode="redraw" placeholder="Search / Add New Brand" translatesAutoresizingMaskIntoConstraints="NO" id="0V9-dp-5Rh">
+                                <rect key="frame" x="0.0" y="-3" width="295" height="56"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="words" keyboardType="alphabet" returnKeyType="search" enablesReturnKeyAutomatically="YES"/>
+                                <connections>
+                                    <outlet property="delegate" destination="AAB-LW-ZZ2" id="GM4-1F-pHM"/>
+                                </connections>
+                            </searchBar>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Od-mJ-aoH">
+                                <rect key="frame" x="295" y="0.0" width="80" height="50"/>
+                                <color key="backgroundColor" red="0.9463866353" green="0.51777386670000003" blue="0.23071467879999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="2V0-c1-1aS"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
+                                <state key="normal" title="Add">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnAddNewBrandAction:" destination="AAB-LW-ZZ2" eventType="touchUpInside" id="LPW-yy-Ltl"/>
+                                </connections>
+                            </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsMultipleSelection="YES" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="VwB-Vv-M3b">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="674"/>
+                                <rect key="frame" x="0.0" y="50" width="375" height="624"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CellSubcategory" textLabel="oAA-Ml-t9a" style="IBUITableViewCellStyleDefault" id="Hua-n8-22U">
@@ -1608,35 +1640,35 @@
                                     <outlet property="delegate" destination="AAB-LW-ZZ2" id="o9f-tT-jBt"/>
                                 </connections>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Wj-aK-Kpr">
-                                <rect key="frame" x="0.0" y="674" width="375" height="50"/>
-                                <color key="backgroundColor" red="0.9463866353" green="0.51777386670000003" blue="0.23071467879999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
-                                <state key="normal" title="Save">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                                <connections>
-                                    <action selector="btnSaveAction:" destination="AAB-LW-ZZ2" eventType="touchUpInside" id="z8t-JQ-mhn"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="VwB-Vv-M3b" firstAttribute="top" secondItem="4fp-wh-8F4" secondAttribute="top" id="69y-Zx-hci"/>
+                            <constraint firstItem="VwB-Vv-M3b" firstAttribute="top" secondItem="4fp-wh-8F4" secondAttribute="top" constant="50" id="69y-Zx-hci"/>
+                            <constraint firstItem="7Od-mJ-aoH" firstAttribute="leading" secondItem="0V9-dp-5Rh" secondAttribute="trailing" id="6SF-kA-slD"/>
+                            <constraint firstItem="0V9-dp-5Rh" firstAttribute="leading" secondItem="4fp-wh-8F4" secondAttribute="leading" id="EZG-hj-i7k"/>
                             <constraint firstItem="9Wj-aK-Kpr" firstAttribute="top" secondItem="VwB-Vv-M3b" secondAttribute="bottom" id="QUv-uY-EZ4"/>
                             <constraint firstItem="VwB-Vv-M3b" firstAttribute="leading" secondItem="AR3-2Q-oeN" secondAttribute="leading" id="RQl-Gx-kk0"/>
                             <constraint firstItem="9Wj-aK-Kpr" firstAttribute="leading" secondItem="4fp-wh-8F4" secondAttribute="leading" id="RiN-27-HWv"/>
+                            <constraint firstItem="VwB-Vv-M3b" firstAttribute="top" secondItem="7Od-mJ-aoH" secondAttribute="bottom" id="VKT-K5-RRa"/>
+                            <constraint firstItem="4fp-wh-8F4" firstAttribute="trailing" secondItem="7Od-mJ-aoH" secondAttribute="trailing" id="WJj-Tv-Ntc"/>
                             <constraint firstAttribute="bottom" secondItem="9Wj-aK-Kpr" secondAttribute="bottom" id="bhR-ga-eQw"/>
                             <constraint firstAttribute="bottom" secondItem="VwB-Vv-M3b" secondAttribute="bottom" constant="50" id="jSW-hv-SuF"/>
                             <constraint firstItem="4fp-wh-8F4" firstAttribute="trailing" secondItem="VwB-Vv-M3b" secondAttribute="trailing" id="u4G-r6-xjb"/>
+                            <constraint firstItem="0V9-dp-5Rh" firstAttribute="centerY" secondItem="7Od-mJ-aoH" secondAttribute="centerY" id="vxZ-8c-o6G"/>
                             <constraint firstItem="9Wj-aK-Kpr" firstAttribute="trailing" secondItem="4fp-wh-8F4" secondAttribute="trailing" id="z7U-hW-eWa"/>
+                            <constraint firstItem="7Od-mJ-aoH" firstAttribute="top" secondItem="4fp-wh-8F4" secondAttribute="top" id="z9x-hV-dWS"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="4fp-wh-8F4"/>
                     </view>
+                    <connections>
+                        <outlet property="btnAddNewBrand" destination="7Od-mJ-aoH" id="vu1-bc-F8B"/>
+                        <outlet property="searchBar" destination="0V9-dp-5Rh" id="uiB-pF-pGH"/>
+                        <outlet property="tblBrands" destination="VwB-Vv-M3b" id="Ys1-2h-gVf"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zjN-JT-Ge8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3574" y="-242"/>
+            <point key="canvasLocation" x="3573.5999999999999" y="-242.36453201970446"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="tYg-bm-7Jw">
