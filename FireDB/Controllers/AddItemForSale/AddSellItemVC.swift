@@ -45,7 +45,7 @@ class AddSellItemVC: UITableViewController {
     var subCategories = [String]()
     
     lazy var storage = Storage.storage()
-    
+    var brand = [String : [String : Any]]()
     //MARK: - ViewController Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -163,7 +163,7 @@ class AddSellItemVC: UITableViewController {
                                             "description"   : (self.txtItemDescription.text)!,
                                             "category"      : self.categories,
                                             "sub_category"  : self.subCategories,
-                                            "brand"         : (self.lblBrand.text)!,
+                                            "brand"         : self.brand.keys.first ?? (self.lblBrand.text)!,
                                             "condition"     : "\(self.arrConditions[self.itemCondition]["title"] ?? "")",
                                             "color"         : (self.lblItemColor.text)!,
 //                                            "zipcode"       : (self.txtZipCode.text)!,
@@ -459,8 +459,9 @@ extension AddSellItemVC : SelectCategoryProtocol {
 }
 //MARK: -
 extension AddSellItemVC : SelectBrandProtocol {
-    func selectBrand(withName brand: [String : Any]) {
-        self.lblBrand.text = "\(brand["name"] ?? " ")"
+    func selectBrand(withName brand: [String : [String : Any]]) {
+        let brandKey = brand.keys.first ?? ""
+        self.lblBrand.text = "\((brand[brandKey])!["name"] ?? " ")"
     }
 }
 //MARK: - 
