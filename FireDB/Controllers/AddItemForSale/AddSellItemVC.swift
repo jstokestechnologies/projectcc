@@ -229,6 +229,25 @@ class AddSellItemVC: UITableViewController {
         return imgPaths
     }
     
+    func showColorTextView() {
+        let alert = UIAlertController.init(title: "", message: "Enter Color", preferredStyle: .alert)
+        
+        alert.addTextField { (textfield) in
+            textfield.placeholder = "Enter color name"
+            textfield.font = UIFont.systemFont(ofSize: 15)
+            textfield.textColor = .black
+            textfield.keyboardType = .asciiCapable
+            textfield.text = self.lblItemColor.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        
+        alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: { (alrt) in
+            self.lblItemColor.text = alert.textFields?.first?.text
+        }))
+        alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (alert) in
+            
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
     
      // MARK: - Navigation
 
@@ -257,6 +276,12 @@ extension AddSellItemVC {
         lbl.font = UIFont.systemFont(ofSize: 15)
         
         return lbl
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 3 {
+            self.showColorTextView()
+        }
     }
 }
 

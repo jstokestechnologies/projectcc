@@ -74,7 +74,7 @@ class SelectCategoryVC: UIViewController {
     func fetchSubCategories(index : Int) {
         progressView.showActivity()
         let key = Array(self.arrCategories[index].keys)[0]
-        let itemRef = db.collection("categories/\(key)/subcategories")
+        let itemRef = db.collection("subcategories").whereField("cat_id", isEqualTo: key)
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
                 var arr = Array<[String : Any]>()
