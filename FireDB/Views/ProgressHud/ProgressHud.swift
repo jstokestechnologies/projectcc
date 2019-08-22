@@ -33,6 +33,7 @@ class ProgressHud: UIView {
     private func nibSetup() {
         activityView = Bundle.main.loadNibNamed("ProgressHud", owner: nil, options: nil)![0] as? ProgressHud
         activityView?.frame = CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        activityView?.viewActivity.transform = CGAffineTransform(scaleX: 2, y: 2)
         addSubview(activityView!)
     }
     
