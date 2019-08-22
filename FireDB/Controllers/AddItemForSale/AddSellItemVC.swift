@@ -206,7 +206,9 @@ class AddSellItemVC: UITableViewController {
         let alert = UIAlertController.init(title: "", message: msg, preferredStyle: .alert)
         alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: { (alrt) in
             if isBack {
-                self.navigationController?.dismiss(animated: true, completion: nil)
+                let tabBarVC = self.tabBarController
+                self.navigationController?.setViewControllers([(self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC"))!], animated: false)
+                tabBarVC?.selectedIndex = 0
             }
         }))
         DispatchQueue.main.async {

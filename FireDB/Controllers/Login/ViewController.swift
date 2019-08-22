@@ -100,7 +100,7 @@ class ViewController: UIViewController {
                 print(fbDetails)
                 self.saveUserData(userDict: fbDetails)
                 self.initUserModel(userDict: fbDetails)
-                UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "MainNavVC")
+                UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "TabVc")
                 progressView.hideActivity()
             }else {
                 print(error?.localizedDescription ?? "Unknown Error.")
