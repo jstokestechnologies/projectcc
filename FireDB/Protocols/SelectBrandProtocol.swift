@@ -9,5 +9,5 @@
 import Foundation
 
 protocol SelectBrandProtocol {
-    func selectBrand(withName brand : [String : Any])
+    func selectBrand(withName brand : [String : [String : Any]])
 }
