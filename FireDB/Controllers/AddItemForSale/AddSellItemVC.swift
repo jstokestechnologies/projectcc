@@ -48,7 +48,7 @@ class AddSellItemVC: UITableViewController {
     var brand = [String : [String : Any]]()
     
     lazy var storage = Storage.storage()
-    var brand = [String : [String : Any]]()
+    
     //MARK: - ViewController Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -149,10 +149,10 @@ class AddSellItemVC: UITableViewController {
         }else if self.lblBrand.text!.count < 2 {
             self.showAlert(msg: "Please select brand.", isBack: false)
             return false
-        }/*else if self.txtZipCode.text!.count < 5 {
-            self.showAlert(msg: "Please enter delivery zipcode", isBack: false)
+        }else if self.lblItemColor.text!.count < 2 {
+            self.showAlert(msg: "Please enter color.", isBack: false)
             return false
-        }*/else if self.txtItemPrice.text!.count <= 0 {
+        }else if self.txtItemPrice.text!.count <= 0 {
             self.showAlert(msg: "Please enter item price.", isBack: false)
             return false
         }
@@ -165,7 +165,7 @@ class AddSellItemVC: UITableViewController {
         let itemDetails : [String : Any] = ["item_name"     : (self.txtItemName.text)!,
                                             "description"   : (self.txtItemDescription.text)!,
                                             "category"      : self.category.keys.first!,
-                                            "sub_category"  : self.subCategory.keys,
+                                            "sub_category"  : Array(self.subCategory.keys),
                                             "brand"         : self.brand.keys.first ?? (self.lblBrand.text)!,
                                             "condition"     : "\(self.arrConditions[self.itemCondition]["title"] ?? "")",
                                             "color"         : (self.lblItemColor.text)!,
