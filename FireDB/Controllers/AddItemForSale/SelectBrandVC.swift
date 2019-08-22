@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class SelectBrandVC: UIViewController {
     
@@ -16,8 +17,10 @@ class SelectBrandVC: UIViewController {
     
     
     //MARK: - Variables
-    var arrBrand = [[String : Any]]()
-    var arrFilteredBrands = [[String : Any]]()
+//    var arrBrand = [[String : Any]]()
+//    var arrFilteredBrands = [[String : Any]]()
+    var dictBrand = [String : [String : Any]]()
+    var dictFilteredBrand = [String : [String : Any]]()
     var selectedIndex = -1
     
     var delegate : SelectBrandProtocol?
@@ -27,7 +30,7 @@ class SelectBrandVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.fetchBrand()
-        self.fetchLatestBrand()
+//        self.fetchLatestBrand()
         // Do any additional setup after loading the view.
     }
     
@@ -37,57 +40,42 @@ class SelectBrandVC: UIViewController {
         let itemRef = db.collection("brands")
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
-                var arr = Array<[String : Any]>()
-                for doc in documents {
-                    arr.append(doc.data())
-                }
+
+                let arr = documents.map({ (doc) -> [String : [String : Any]] in
+                    return [doc.documentID : doc.data()]
+                })
+                let dict = Dictionary.init(uniqueKeysWithValues: arr.map{ ($0.keys.first!, $0.values.first!) })
+                
                 if arr.count <= 0 {
-                    self.showNoDataLabel(msg: "No sub-categories found", table: self.tblBrands )
+                    self.showNoDataLabel(msg: "No brands found", table: self.tblBrands )
                 }else {
                     self.tblBrands.tableFooterView = UIView.init(frame: CGRect.zero)
                 }
-                self.arrBrand = arr
-                self.arrFilteredBrands = arr
+                self.dictBrand = dict
+                self.dictFilteredBrand = dict
                 self.tblBrands.reloadData()
             }
             progressView.hideActivity()
-//            self.getLatestBrandId()
-        }
-    }
-    
-    func fetchLatestBrand() {
-        let itemRef = db.collection("brands").order(by: "id", descending: true).limit(to: 1)
-        itemRef.getDocuments { (docs, err) in
-            if let documents = docs?.documents {
-                if let latestBrand = documents.first?.data() {
-                    self.latestId = Int("\(latestBrand["id"] ?? "0")") ?? 0
-                }
-            }
         }
     }
     
     func saveNewBrand(text : String) {
         progressView.showActivity()
         let brandDict = self.crateNewBrandObject(brand: text)
-        db.collection("brands").document("\(brandDict["id"] ?? (self.latestId + 1))").setData(brandDict, completion: { err in
+        
+        var ref: DocumentReference? = nil
+        ref = db.collection("brands").addDocument(data: brandDict) { err in
             if let err = err {
                 print("Error adding document: \(err)")
-                self.setSelectedBrand(brand: brandDict)
             } else {
                 print("Document added with ID:\n\n\n\n\n ")
+                self.setSelectedBrand(brand: brandDict, key: ref?.documentID ?? text)
             }
             progressView.hideActivity()
-        })
-    }
-    
-    //MARK: - Other Helper
-    func getLatestBrandId() {
-        let arr = self.arrBrand.sorted(by: {Int("\($0["id"] ?? "0")") ?? 0 > (Int("\($1["id"] ?? "0")") ?? 0)})
-        if arr.count > 0 {
-            self.latestId = Int("\(arr.first!["id"] ?? "0")") ?? 0
         }
     }
     
+    //MARK: - Other Helper
     func showNoDataLabel(msg : String, table : UITableView) {
         let lbl = UILabel()
         lbl.text = msg
@@ -98,7 +86,7 @@ class SelectBrandVC: UIViewController {
     }
     
     func crateNewBrandObject(brand : String) -> [String : Any] {
-        return ["name" : brand, "id" : self.latestId + 1, "user" : userdata.id]
+        return ["name" : brand, "user" : userdata.id]
     }
     
     func showSaveAlert(text : String) {
@@ -111,27 +99,20 @@ class SelectBrandVC: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    func setSelectedBrand(brand : [String : Any]) {
-        self.delegate?.selectBrand(withName: brand)
+    func setSelectedBrand(brand : [String : Any], key : String) {
+        self.delegate?.selectBrand(withName: [key : brand])
         self.navigationController?.popViewController(animated: true)
     }
     
     //MARK: - IBAction
-    @IBAction func btnSaveAction(_ sender: Any) {
-        if self.selectedIndex >= 0 {
-            self.setSelectedBrand(brand: self.arrFilteredBrands[self.selectedIndex])
-        }else {
-            HelperClass.showAlert(msg: "Please select a brand", isBack: false, vc: self)
-        }
-    }
     
     @IBAction func btnAddNewBrandAction(_ sender: UIButton) {
         self.view.endEditing(true)
         let strText = self.searchBar.text!.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         if strText.count > 0 {
-            let arr = self.arrBrand.filter({"\($0["name"] ?? "-")".lowercased().contains(strText)})
+            let arr = self.dictBrand.filter({"\($0.value["name"] ?? "-")".lowercased().contains(strText)})
             if arr.count > 0 {
-                self.setSelectedBrand(brand: arr.first!)
+                self.setSelectedBrand(brand: arr.values.first!, key: arr.keys.first!)
             }else {
                 self.showSaveAlert(text: self.searchBar.text!)
             }
@@ -153,18 +134,23 @@ class SelectBrandVC: UIViewController {
 //MARK: -
 extension SelectBrandVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return  self.arrFilteredBrands.count
+        return  self.dictFilteredBrand.keys.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CellSubcategory", for: indexPath)
-        cell.textLabel?.text = "\((self.arrFilteredBrands[indexPath.row])["name"] ?? "-")"
+        let brand = Array(self.dictFilteredBrand.values)[indexPath.row]
+        cell.textLabel?.text = "\(brand["name"] ?? "-")"
         cell.accessoryType = self.selectedIndex == indexPath.row ? .checkmark : .none
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.setSelectedBrand(brand: self.arrFilteredBrands[indexPath.row])
+        self.selectedIndex = indexPath.row
+        let selectedKey = Array(self.dictFilteredBrand.keys)[indexPath.row]
+        DispatchQueue.main.async {
+            self.setSelectedBrand(brand: self.dictFilteredBrand[selectedKey]!, key: selectedKey)
+        }
     }
     
 }
@@ -174,12 +160,12 @@ extension SelectBrandVC : UISearchBarDelegate {
         self.selectedIndex = -1
         let strText = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         if strText.count > 0 {
-            let arr = self.arrBrand.filter({"\($0["name"] ?? "-")".lowercased().contains(strText)})
-            self.arrFilteredBrands.removeAll()
-            self.arrFilteredBrands.append(contentsOf: arr)
+            let filteredDict = self.dictBrand.filter({"\($0.value["name"] ?? "-")".lowercased().contains(strText)})
+            self.dictFilteredBrand.removeAll()
+            self.dictFilteredBrand = filteredDict
         }else {
-            self.arrFilteredBrands.removeAll()
-            self.arrFilteredBrands.append(contentsOf: self.arrBrand)
+            self.dictFilteredBrand.removeAll()
+            self.dictFilteredBrand =  self.dictBrand
         }
         self.tblBrands.reloadData()
     }
