@@ -42,7 +42,10 @@ class AddSellItemVC: UITableViewController {
     var arrItemImages = Array<UIImage>()
     var itemCondition = 0
     var categories = String()
-    var subCategories = [String]()
+//    var subCategories = [String]()
+    var category = [String : [String : Any]]()
+    var subCategory = [String : [String : Any]]()
+    var brand = [String : [String : Any]]()
     
     lazy var storage = Storage.storage()
     var brand = [String : [String : Any]]()
@@ -161,8 +164,8 @@ class AddSellItemVC: UITableViewController {
         let imgPath = self.saveItemImages(timestamp)
         let itemDetails : [String : Any] = ["item_name"     : (self.txtItemName.text)!,
                                             "description"   : (self.txtItemDescription.text)!,
-                                            "category"      : self.categories,
-                                            "sub_category"  : self.subCategories,
+                                            "category"      : self.category.keys.first!,
+                                            "sub_category"  : self.subCategory.keys,
                                             "brand"         : self.brand.keys.first ?? (self.lblBrand.text)!,
                                             "condition"     : "\(self.arrConditions[self.itemCondition]["title"] ?? "")",
                                             "color"         : (self.lblItemColor.text)!,
@@ -255,8 +258,10 @@ class AddSellItemVC: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueSelectCategory" {
             let vc = segue.destination as! SelectCategoryVC
-            vc.previousCategory = self.categories
-            vc.arrPreviousSubCat = self.subCategories
+            if self.subCategory.keys.count > 0 {
+                vc.previousCategory = self.category
+                vc.arrPreviousSubCat = Array(self.subCategory.keys)
+            }
             vc.delegate = self
         }else if segue.identifier == "segueSelectBrand" {
             let vc = segue.destination as! SelectBrandVC
@@ -475,11 +480,12 @@ extension AddSellItemVC : UITextFieldDelegate, UITextViewDelegate {
 }
 //MARK: -
 extension AddSellItemVC : SelectCategoryProtocol {
-    func selectCategory(_ category: String, andSubcategory subcategories: [String]) {
-        self.categories = category
-        self.subCategories = subcategories
-//        self.subCategories.insert(self.categories, at: 0)
-        self.lblCategory.text = category + " -> " + subcategories.joined(separator: ", ")
+    func selectCategory(_ category: [String : [String : Any]], andSubcategory subcategories: [String : [String : Any]]) {
+        self.category = category
+        self.subCategory = subcategories
+        let strCatName = "\((self.category.values.first!)["name"] ?? "N/A")"
+        let arrSubCatName = self.subCategory.values.compactMap({"\($0["name"] ?? "-")"})
+        self.lblCategory.text = strCatName + " -> " + arrSubCatName.joined(separator: ", ")
     }
 }
 //MARK: -
