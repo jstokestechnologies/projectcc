@@ -51,18 +51,18 @@ class AddSellItemVC: UITableViewController {
     
     var removedImages = Array<String>()
     var isEditingItem = false
-    var itemId = "1IvAv2F5PVlrIl4W7nip"//String()
+    var itemId = String()
     var itemData : ItemsDetail?
     
     //MARK: - ViewController Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.prepareViews()
-//        if self.isEditingItem && self.itemData != nil {
-//            self.setPreviousData()
-//        }else if self.isEditingItem {
+        if self.isEditingItem && self.itemData != nil {
+            self.setPreviousData()
+        }else if self.isEditingItem {
             self.fetchItemData()
-//        }
+        }
         // Do any additional setup after loading the view.
     }
     
@@ -73,23 +73,42 @@ class AddSellItemVC: UITableViewController {
     }
     
     func setPreviousData() {
+        // Set name of the item
         self.txtItemName.text = self.itemData?.item_name
+        self.txtItemName.textColor = .darkGray
+        self.lblItemNameRange.text = "\(self.txtItemName.text!.count)/40"
+        
+        // Set description of the item
         self.txtItemDescription.text = self.itemData?.description
+        self.txtItemDescription.textColor = .darkGray
+        self.lblItemDescriptionRange.text = "\(self.txtItemDescription.text!.count)/1000"
+        
+        // Set Color and Price of the item
         self.lblItemColor.text = self.itemData?.color
         self.lblPrice.text = self.itemData?.price
-        self.fetchDataFromFirebase(collectionRef: "brand", docRef: "\(self.itemData?.brand ?? "")", completion: { (brand) in
+        self.txtItemPrice.text = self.itemData?.price
+        
+        // Fetch and set brand of the item
+        self.fetchDataFromFirebase(collectionRef: "brands", docRef: "\(self.itemData?.brand ?? "")", completion: { (brand) in
             self.lblBrand.text = brand
         })
-        self.fetchDataFromFirebase(collectionRef: "categories", docRef: "\(self.itemData?.category ?? "")", completion: { (cat) in
-            self.category = [self.itemData?.category ?? "" : ["name" : cat]]
-        })
+        
+        // Fetch Category and subcategories of the item
         self.getPreviousCategorySubcategory()
+        
+        // Set item condition
+        let conditionIndex = self.arrConditions.firstIndex(where: {"\($0["title"] ?? "")" == self.itemData?.condition ?? ""})
+        self.itemCondition = conditionIndex ?? 0
+        
+        // Reload Collections
+        self.collectionImages.reloadData()
+        self.collectionCondition.reloadData()
     }
     
     func getPreviousCategorySubcategory() {
         let group = DispatchGroup()
         let concurrentQueue = DispatchQueue(label: "com.queue.Concurrent", attributes: .concurrent)
-        
+        // Fetch categories
         concurrentQueue.async {
             group.enter()
             self.fetchDataFromFirebase(collectionRef: "categories", docRef: "\(self.itemData?.category ?? "")", completion: { (cat) in
@@ -97,7 +116,7 @@ class AddSellItemVC: UITableViewController {
                 group.leave()
             })
         }
-        
+        // Fetch all the subcategories
         if let subCats = self.itemData?.sub_category {
             for subCat in subCats {
                 concurrentQueue.async {
@@ -109,18 +128,22 @@ class AddSellItemVC: UITableViewController {
                 }
             }
         }
-        
+        // Notify when done fetching category and subcategories both
         group.notify(queue: DispatchQueue.main) {
-            var strCatName = ""
-            var arrSubCatName = [""]
-            if self.category.values.count > 0 {
-                strCatName = "\((self.category.values.first!)["name"] ?? "N/A")"
-            }
-            if self.subCategory.values.count > 0 {
-                arrSubCatName = self.subCategory.values.compactMap({"\($0["name"] ?? "-")"})
-            }
-            self.lblCategory.text = strCatName + " -> " + arrSubCatName.joined(separator: ", ")
+            self.showCategoryAndSubCategory()
         }
+    }
+    
+    func showCategoryAndSubCategory() {
+        var strCatName = ""
+        var arrSubCatName = [""]
+        if self.category.values.count > 0 {
+            strCatName = "\((self.category.values.first!)["name"] ?? "N/A")"
+        }
+        if self.subCategory.values.count > 0 {
+            arrSubCatName = self.subCategory.values.compactMap({"\($0["name"] ?? "-")"})
+        }
+        self.lblCategory.text = strCatName + " -> " + arrSubCatName.joined(separator: ", ")
     }
     
     //MARK: - Firebase Methods
@@ -388,39 +411,59 @@ extension AddSellItemVC : UICollectionViewDelegate, UICollectionViewDataSource {
         if collectionView == self.collectionCondition {
             return self.arrConditions.count
         }
-        var count = self.arrItemImages.count + 1
+        var count = (self.itemData?.item_images?.count ?? 0) + self.arrItemImages.count + 1
         count = count > maxImages ? maxImages : count
         return count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let identifier = collectionView == self.collectionCondition ? "CellCondition" : (indexPath.row == self.arrItemImages.count ? "CellAdd" : "CellImage")
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
+        let totalImages = (self.itemData?.item_images?.count ?? 0) + self.arrItemImages.count
+        var identifier = ""
+        if collectionView == self.collectionCondition {
+            identifier = "CellCondition"
+        }else {
+            if indexPath.row == totalImages {
+                identifier = "CellAdd"
+            }else {
+                identifier = "CellImage"
+            }
+        }
         
-        let borderColor = (collectionView == self.collectionCondition) ? (self.itemCondition == indexPath.row ? UIColor.blue.cgColor : UIColor.lightGray.cgColor) : (UIColor.init(patternImage: UIImage.init(named: "border_dot.png")!)).cgColor
-        cell.layer.borderColor = borderColor
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
         
         if collectionView == self.collectionCondition {
             (cell.viewWithTag(1) as! UILabel).text = "\(self.arrConditions[indexPath.row]["title"] ?? "New")"
             (cell.viewWithTag(2) as! UILabel).text = "\(self.arrConditions[indexPath.row]["description"] ?? "New")"
+            let borderColor = self.itemCondition == indexPath.row ? UIColor.blue.cgColor : UIColor.lightGray.cgColor
+            cell.layer.borderColor = borderColor
             return cell
         }
         
-        if indexPath.row < self.arrItemImages.count {
-            (cell.viewWithTag(11) as! UIImageView).image = self.arrItemImages[indexPath.row]
-//            (cell.contentView.viewWithTag(101) as! UIButton).tag = indexPath.row
-            (cell.contentView.viewWithTag(101) as! UIButton).addTarget(self, action: #selector(self.btnRemoveImageAction(_:)), for: .touchUpInside)
+        let borderColor = (UIColor.init(patternImage: UIImage.init(named: "border_dot.png")!)).cgColor
+        cell.layer.borderColor = borderColor
+        
+        if indexPath.row < totalImages {
+            if indexPath.row < (self.itemData?.item_images?.count ?? 0) {
+                let storageRef = storage.reference(withPath: (self.itemData?.item_images![indexPath.row])!)
+                (cell.viewWithTag(11) as! UIImageView).image = UIImage.init(named: "no-image")
+                (cell.viewWithTag(11) as! UIImageView).sd_setImage(with: storageRef, placeholderImage: UIImage.init(named: "no-image"))
+            }else {
+                (cell.viewWithTag(11) as! UIImageView).image = self.arrItemImages[indexPath.row]
+//                (cell.contentView.viewWithTag(101) as! UIButton).tag = indexPath.row
+                (cell.contentView.viewWithTag(101) as! UIButton).addTarget(self, action: #selector(self.btnRemoveImageAction(_:)), for: .touchUpInside)
+            }
         }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let totalImages = (self.itemData?.item_images?.count ?? 0) + self.arrItemImages.count
         if collectionView == self.collectionCondition {
             self.itemCondition = indexPath.row
             self.collectionCondition.reloadData()
         }else {
-            if self.arrItemImages.count == indexPath.row && self.arrItemImages.count < 8 {
+            if self.arrItemImages.count == indexPath.row && totalImages < self.maxImages {
                 self.pickImage()
             }
         }
@@ -575,9 +618,7 @@ extension AddSellItemVC : SelectCategoryProtocol {
     func selectCategory(_ category: [String : [String : Any]], andSubcategory subcategories: [String : [String : Any]]) {
         self.category = category
         self.subCategory = subcategories
-        let strCatName = "\((self.category.values.first!)["name"] ?? "N/A")"
-        let arrSubCatName = self.subCategory.values.compactMap({"\($0["name"] ?? "-")"})
-        self.lblCategory.text = strCatName + " -> " + arrSubCatName.joined(separator: ", ")
+        self.showCategoryAndSubCategory()
     }
 }
 //MARK: -
