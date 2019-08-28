@@ -49,10 +49,20 @@ class AddSellItemVC: UITableViewController {
     
     lazy var storage = Storage.storage()
     
+    var removedImages = Array<String>()
+    var isEditingItem = false
+    var itemId = "1IvAv2F5PVlrIl4W7nip"//String()
+    var itemData : ItemsDetail?
+    
     //MARK: - ViewController Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.prepareViews()
+//        if self.isEditingItem && self.itemData != nil {
+//            self.setPreviousData()
+//        }else if self.isEditingItem {
+            self.fetchItemData()
+//        }
         // Do any additional setup after loading the view.
     }
     
@@ -62,8 +72,88 @@ class AddSellItemVC: UITableViewController {
         self.lblCategory.text = " "
     }
     
-    //MARK: - IBActions
+    func setPreviousData() {
+        self.txtItemName.text = self.itemData?.item_name
+        self.txtItemDescription.text = self.itemData?.description
+        self.lblItemColor.text = self.itemData?.color
+        self.lblPrice.text = self.itemData?.price
+        self.fetchDataFromFirebase(collectionRef: "brand", docRef: "\(self.itemData?.brand ?? "")", completion: { (brand) in
+            self.lblBrand.text = brand
+        })
+        self.fetchDataFromFirebase(collectionRef: "categories", docRef: "\(self.itemData?.category ?? "")", completion: { (cat) in
+            self.category = [self.itemData?.category ?? "" : ["name" : cat]]
+        })
+        self.getPreviousCategorySubcategory()
+    }
     
+    func getPreviousCategorySubcategory() {
+        let group = DispatchGroup()
+        let concurrentQueue = DispatchQueue(label: "com.queue.Concurrent", attributes: .concurrent)
+        
+        concurrentQueue.async {
+            group.enter()
+            self.fetchDataFromFirebase(collectionRef: "categories", docRef: "\(self.itemData?.category ?? "")", completion: { (cat) in
+                self.category = [self.itemData?.category ?? "" : ["name" : cat]]
+                group.leave()
+            })
+        }
+        
+        if let subCats = self.itemData?.sub_category {
+            for subCat in subCats {
+                concurrentQueue.async {
+                    group.enter()
+                    self.fetchDataFromFirebase(collectionRef: "subcategories", docRef: "\(subCat)", completion: { (cat) in
+                        self.subCategory[subCat] = ["name" : cat]
+                        group.leave()
+                    })
+                }
+            }
+        }
+        
+        group.notify(queue: DispatchQueue.main) {
+            var strCatName = ""
+            var arrSubCatName = [""]
+            if self.category.values.count > 0 {
+                strCatName = "\((self.category.values.first!)["name"] ?? "N/A")"
+            }
+            if self.subCategory.values.count > 0 {
+                arrSubCatName = self.subCategory.values.compactMap({"\($0["name"] ?? "-")"})
+            }
+            self.lblCategory.text = strCatName + " -> " + arrSubCatName.joined(separator: ", ")
+        }
+    }
+    
+    //MARK: - Firebase Methods
+    func fetchItemData() {
+        progressView.showActivity()
+        let itemRef = db.collection(kListedItems).document("/\(itemId)")
+        itemRef.getDocument { (doc, err) in
+            if let data = doc?.data() {
+                do {
+                    let jsonData  = try? JSONSerialization.data(withJSONObject: data, options:.prettyPrinted)
+                    let jsonDecoder = JSONDecoder()
+                    //                                    var userdata = UserData.sharedInstance
+                    self.itemData = try jsonDecoder.decode(ItemsDetail.self, from: jsonData!)
+                    self.setPreviousData()
+                }
+                catch {
+                    print(error.localizedDescription)
+                }
+            }
+            progressView.hideActivity()
+        }
+    }
+    
+    func fetchDataFromFirebase(collectionRef : String, docRef : String, completion : @escaping (String) -> () ) {
+        let itemRef = db.collection(collectionRef).document("/\(docRef)")
+        itemRef.getDocument { (doc, err) in
+            if let data = doc?.data() {
+                completion(data["name"] as? String ?? "")
+            }
+        }
+    }
+    
+    //MARK: - IBActions
     @IBAction func btnListAction(_ sender: UIButton) {
         self.view.endEditing(true)
         if self.validateTextFields() {
@@ -495,6 +585,7 @@ extension AddSellItemVC : SelectBrandProtocol {
     func selectBrand(withName brand: [String : [String : Any]]) {
         let brandKey = brand.keys.first ?? ""
         self.lblBrand.text = "\((brand[brandKey])!["name"] ?? " ")"
+        self.brand = brand
     }
 }
 //MARK: - 
