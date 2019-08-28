@@ -402,7 +402,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="641"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <view key="tableFooterView" contentMode="scaleToFill" id="7Ku-hJ-pQf">
+                        <view key="tableFooterView" contentMode="scaleToFill" misplaced="YES" id="7Ku-hJ-pQf">
                             <rect key="frame" x="0.0" y="0.0" width="375" height="213"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
@@ -1445,7 +1445,7 @@
                                             <outlet property="lblItemPrice" destination="YhR-NG-RXp" id="cbe-Tx-IN5"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" rowHeight="458" id="mKd-3e-qrT" customClass="ItemListCell" customModule="FireDB" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="Cell" rowHeight="458" id="mKd-3e-qrT" customClass="ItemListCell" customModule="FireDB" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="176" width="375" height="458"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="mKd-3e-qrT" id="xW8-cq-5ZY">
@@ -1473,7 +1473,7 @@
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <subviews>
                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="11" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rzh-Hb-QE7">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="375" height="337.66666666666669"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="375" height="300"/>
                                                                     </imageView>
                                                                 </subviews>
                                                             </view>
@@ -2098,7 +2098,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="641"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <view key="tableFooterView" contentMode="scaleToFill" id="RSm-tQ-P0r">
+                        <view key="tableFooterView" contentMode="scaleToFill" misplaced="YES" id="RSm-tQ-P0r">
                             <rect key="frame" x="0.0" y="0.0" width="375" height="213"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>

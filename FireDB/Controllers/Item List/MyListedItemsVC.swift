@@ -124,6 +124,10 @@ extension MyListedItemsVC : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC") as! AddSellItemVC
+        vc.itemData = self.arrItems![indexPath.row]
+        vc.isEditingItem = true
+        self.navigationController?.show(vc, sender: nil)
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -171,7 +175,12 @@ extension MyListedItemsVC : UICollectionViewDelegate, UICollectionViewDataSource
         return CGSize(width: self.view.frame.size.width, height: collectionView.frame.size.height)
     }
     
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC") as! AddSellItemVC
+        vc.itemData = self.arrItems![collectionView.tag]
+        vc.isEditingItem = true
+        self.navigationController?.show(vc, sender: nil)
+    }
 }
 
 

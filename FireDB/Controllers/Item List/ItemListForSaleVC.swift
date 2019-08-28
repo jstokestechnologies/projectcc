@@ -31,16 +31,16 @@ class ItemListForSaleVC: UIViewController {
         super.viewDidLoad()
         self.initialSetup()
         progressView.showActivity()
+        self.fetchItemList()
         // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.tblItemList.scrollRectToVisible(CGRect.init(x: 0, y: 0, width: 50, height: 50), animated: true)
-        self.fetchItemList()
     }
     
     func initialSetup() {
+        self.tabBarController?.delegate = self
         self.btnListedItems.layer.borderColor = UIColor.lightGray.cgColor
         self.btnSavedItems.layer.borderColor = UIColor.lightGray.cgColor
     }
@@ -70,7 +70,9 @@ class ItemListForSaleVC: UIViewController {
                     let jsonDecoder = JSONDecoder()
                     //                                    var userdata = UserData.sharedInstance
                     self.arrItems = try jsonDecoder.decode([ItemsDetail].self, from: jsonData!)
-                    self.tblItemList.reloadData()
+                    DispatchQueue.main.async {
+                        self.tblItemList.reloadData()
+                    }
                 }
                 catch {
                     print(error.localizedDescription)
@@ -151,6 +153,10 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC") as! AddSellItemVC
+        vc.itemData = self.arrItems![indexPath.row]
+        vc.isEditingItem = true
+        self.navigationController?.show(vc, sender: nil)
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -196,7 +202,22 @@ extension ItemListForSaleVC : UICollectionViewDelegate, UICollectionViewDataSour
         return CGSize(width: self.view.frame.size.width, height: collectionView.frame.size.height)
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC") as! AddSellItemVC
+        vc.itemData = self.arrItems![collectionView.tag]
+        vc.isEditingItem = true
+        self.navigationController?.show(vc, sender: nil)
+    }
     
+}
+
+extension ItemListForSaleVC : UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if viewController == self.navigationController {
+            self.tblItemList.scrollRectToVisible(CGRect.init(x: 0, y: 0, width: 50, height: 50), animated: true)
+            self.fetchItemList()
+        }
+    }
 }
 
 
