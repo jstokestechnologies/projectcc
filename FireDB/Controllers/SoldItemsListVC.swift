@@ -1,8 +1,8 @@
 //
-//  ItemListForSaleVC.swift
+//  SoldItemsListVC.swift
 //  FireDB
 //
-//  Created by admin on 12/08/19.
+//  Created by admin on 30/08/19.
 //  Copyright © 2019 admin. All rights reserved.
 //
 
@@ -12,8 +12,7 @@ import FirebaseFirestore
 import FirebaseStorage
 import FirebaseUI
 
-
-class ItemListForSaleVC: UIViewController {
+class SoldItemsListVC: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet weak var tblItemList: UITableView!
     
@@ -29,7 +28,7 @@ class ItemListForSaleVC: UIViewController {
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.initialSetup()
+        self.title = "Deleted items"
         progressView.showActivity()
         self.fetchItemList()
         // Do any additional setup after loading the view.
@@ -39,15 +38,9 @@ class ItemListForSaleVC: UIViewController {
         super.viewWillAppear(animated)
     }
     
-    func initialSetup() {
-        self.tabBarController?.delegate = self
-        self.btnListedItems.layer.borderColor = UIColor.lightGray.cgColor
-        self.btnSavedItems.layer.borderColor = UIColor.lightGray.cgColor
-    }
-    
     //MARK: - Fetch List Of Items
     func fetchItemList() {
-        let itemRef = db.collection(kListedItems).whereField("isPosted", isEqualTo: true).whereField("isDeleted", isEqualTo: false).order(by: "created", descending: true)
+        let itemRef = db.collection(kListedItems).whereField("isDeleted", isEqualTo: true).whereField("user_id", isEqualTo: userdata.id).order(by: "updated", descending: true)
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
                 var arr = Array<[String : Any]>()
@@ -80,57 +73,11 @@ class ItemListForSaleVC: UIViewController {
             progressView.hideActivity()
         }
     }
-    
-    //MARK: - Button IBAction
-    @IBAction func btnLogoutAction(_ sender: Any) {
-        self.view.endEditing(true)
-        let alert = UIAlertController.init(title: "", message: "Are you sure you want to logout?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
-            UserDefaults.standard.removeObject(forKey: kUserData)
-            UserDefaults.standard.set(false, forKey: kIsLoggedIn)
-            UserDefaults.standard.synchronize()
-            userdata = UserData()
-            UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "LoginNavVC")
-        }))
-        alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
-            
-        }))
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    @IBAction func btnAddItemForSaleAction(_ sender: Any) {
-        let vc = (self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC"))!
-        let navVC = UINavigationController.init(rootViewController: vc)
-        navVC.navigationBar.tintColor = .darkGray
-        self.present(navVC, animated: true, completion: nil)
-    }
-    
-    @IBAction func btnShowMyListedItemsAction(_ sender: Any) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
-        vc.listType = .listedItems
-        self.navigationController?.show(vc, sender: self)
-    }
-    
-    @IBAction func btnShowMySavedItemsAction(_ sender: Any) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
-        vc.listType = .savedItems
-        self.navigationController?.show(vc, sender: self)
-    }
-    
-    /*
-    // MARK - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-     
-    }
-    */
-
 }
+
+
 //MARK: -
-extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
+extension SoldItemsListVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.arrItems?.count ?? 0
     }
@@ -178,7 +125,7 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
 }
 
 //MARK: -
-extension ItemListForSaleVC : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension SoldItemsListVC : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let item = self.arrItems![collectionView.tag]
         return item.item_images?.count ?? 0
@@ -199,28 +146,4 @@ extension ItemListForSaleVC : UICollectionViewDelegate, UICollectionViewDataSour
         return CGSize(width: self.view.frame.size.width, height: collectionView.frame.size.height)
     }
     
-}
-
-extension ItemListForSaleVC : UITabBarControllerDelegate {
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        if viewController == self.navigationController {
-            self.tblItemList.scrollRectToVisible(CGRect.init(x: 0, y: 0, width: 50, height: 50), animated: true)
-            self.fetchItemList()
-        }
-    }
-}
-
-
-//MARK: - 
-class ItemListCell : UITableViewCell {
-    @IBOutlet weak var imgItem: UIImageView!
-    @IBOutlet weak var lblItemBrand: UILabel!
-    @IBOutlet weak var lblItemName: UILabel!
-    @IBOutlet weak var lblItemCategory: UILabel!
-    @IBOutlet weak var lblItemCondition: UILabel!
-    @IBOutlet weak var lblItemPrice: UILabel!
-    @IBOutlet weak var lblDesciption: UILabel!
-    @IBOutlet weak var collectionImages: UICollectionView!
-    @IBOutlet weak var pageImgPages: UIPageControl!
-    @IBOutlet weak var btnMore: UIButton!
 }

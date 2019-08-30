@@ -19,7 +19,7 @@ class ShowLoginDataVC: UIViewController {
     @IBOutlet weak var imgProfile: UIImageView!
     
     var loginDict = Dictionary<String,Any>()
-    let arrTitle = ["Edit Profile", "My Saved Items", "My Listed Items", "Logout"]
+    let arrTitle = ["Edit Profile", "Saved Items", "Listed Items", "Deleted Items", "Logout"]
 //    let arrKeys = ["first_name", "last_name", "email", "gender", "birthday", "hometown.name", "location.name"]
 //    let db = Firestore.firestore()
     
@@ -56,6 +56,11 @@ class ShowLoginDataVC: UIViewController {
         self.navigationController?.show(vc, sender: self)
     }
     
+    func showDeletedItemsList() {
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "SoldItemsListVC") as! SoldItemsListVC
+        self.navigationController?.show(vc, sender: self)
+    }
+    
     /*
     // MARK: - Navigation
 
@@ -76,7 +81,7 @@ extension ShowLoginDataVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         cell.textLabel?.text = arrTitle[indexPath.row]
-        if indexPath.row == 3 {
+        if indexPath.row == 4 {
             cell.accessoryType = .none
         }else {
             cell.accessoryType = .disclosureIndicator
@@ -93,6 +98,8 @@ extension ShowLoginDataVC : UITableViewDelegate, UITableViewDataSource {
         case 2:
             self.showMyItemsList(isSavedItem: false)
         case 3:
+            self.showDeletedItemsList()
+        case 4:
             self.logoutUser()
         default :
             tableView.deselectRow(at: indexPath, animated: true)

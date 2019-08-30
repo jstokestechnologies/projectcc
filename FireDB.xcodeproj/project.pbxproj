@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0AE17B3FB0D0D2AF74BD67C7 /* Pods_FireDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3F95B0181BFB9BF4E053C4C /* Pods_FireDB.framework */; };
 		840C9C502302CF8B004A63AD /* MyListedItemsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */; };
+		842C007023192A570061CE46 /* SoldItemsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842C006F23192A570061CE46 /* SoldItemsListVC.swift */; };
 		842FFED6230D1BB0000DADF2 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FFED5230D1BB0000DADF2 /* Helper.swift */; };
 		842FFED8230D1BBF000DADF2 /* StringContants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FFED7230D1BBF000DADF2 /* StringContants.swift */; };
 		8451D5E222F94A42005169D5 /* particle41-squarelogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E022F94A42005169D5 /* particle41-squarelogo.png */; };
@@ -59,6 +60,7 @@
 /* Begin PBXFileReference section */
 		123B6045BA866FD499EBBCF7 /* Pods-FireDB.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FireDB.release.xcconfig"; path = "Target Support Files/Pods-FireDB/Pods-FireDB.release.xcconfig"; sourceTree = "<group>"; };
 		840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyListedItemsVC.swift; sourceTree = "<group>"; };
+		842C006F23192A570061CE46 /* SoldItemsListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoldItemsListVC.swift; sourceTree = "<group>"; };
 		842FFED5230D1BB0000DADF2 /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		842FFED7230D1BBF000DADF2 /* StringContants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringContants.swift; sourceTree = "<group>"; };
 		8451D5E022F94A42005169D5 /* particle41-squarelogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "particle41-squarelogo.png"; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				845801EA22FDA70100AE6FEE /* AddItemForSale */,
 				848A440922F04839002D9444 /* ShowLoginDataVC.swift */,
 				849E18CC230ECDDF00C94431 /* TabBarVC.swift */,
+				842C006F23192A570061CE46 /* SoldItemsListVC.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -539,6 +542,7 @@
 				842FFED8230D1BBF000DADF2 /* StringContants.swift in Sources */,
 				849E18CD230ECDDF00C94431 /* TabBarVC.swift in Sources */,
 				84B1ACC2230D09E2002E6B30 /* ProgressHud.swift in Sources */,
+				842C007023192A570061CE46 /* SoldItemsListVC.swift in Sources */,
 				847D49BB23014B6D00FE900C /* ItemListForSaleVC.swift in Sources */,
 				848A43DC22F04380002D9444 /* AppDelegate.swift in Sources */,
 				845801D822FD8C0D00AE6FEE /* SelectCategoryProtocol.swift in Sources */,

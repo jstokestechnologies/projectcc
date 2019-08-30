@@ -48,31 +48,17 @@ class MyListedItemsVC: UIViewController {
     //MARK: - Fetch List Of Items
     func fetchItemList() {
         progressView.showActivity()
-        var child = ""
-        switch self.listType {
-        case .listedItems:
-            child = kListedItems
-        default:
-            child = kSavedItems
-        }
         
-        let itemRef = db.collection(child).whereField("user_id", isEqualTo: userdata.id)
+        let itemRef = db.collection(kListedItems).whereField("isPosted", isEqualTo: self.listType == .listedItems).whereField("isDeleted", isEqualTo: false).whereField("user_id", isEqualTo: userdata.id).order(by: "updated", descending: true)
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
-                var arr = Array<[String : Any]>()
-                for doc in documents {
-                    arr.append(doc.data())
-                }
-                if arr.count <= 0 {
-                    let lbl = UILabel()
-                    lbl.text = "No items found"
-                    lbl.textAlignment = .center
-                    lbl.sizeToFit()
-                    lbl.frame.size.height = 60
-                    self.tblItemList.tableFooterView = lbl
-                }else {
-                    self.tblItemList.tableFooterView = UIView.init(frame: CGRect.zero)
-                }
+                
+                let arr = documents.map({ (doc) -> [String : Any] in
+                    var dict =  doc.data()
+                    dict["id"] = doc.documentID
+                    return dict
+                })
+                
                 do {
                     let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
                     let jsonDecoder = JSONDecoder()
@@ -83,11 +69,97 @@ class MyListedItemsVC: UIViewController {
                 catch {
                     print(error.localizedDescription)
                 }
+                self.setNoDataLabel()
             }
             progressView.hideActivity()
         }
     }
     
+    func postDeleteSelectedItem(index : Int, isPost : Bool) {
+        if let itemid = self.arrItems?[index].id {
+            let key = isPost ? "isPosted" : "isDeleted"
+            db.collection(kListedItems).document(itemid).updateData([key : true]) { (err) in
+                if (err != nil) {
+                    HelperClass.showAlert(msg: err?.localizedDescription ?? "Failed to update changes", isBack: false, vc: self)
+                }else {
+                    self.fetchItemList()
+                }
+            }
+        }
+    }
+    
+    
+    @IBAction func btnMoreAction(_ sender: UIButton) {
+        let actionSheet = UIAlertController.init(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction.init(title: "Edit", style: .default, handler: { (alert) in
+            self.showEditController(forItem: sender.tag)
+        }))
+        
+        actionSheet.addAction(UIAlertAction.init(title: "Delete", style: .default, handler: { (alert) in
+            self.showDeleteMessageAlert(forItem: sender.tag, isPost: false)
+        }))
+        
+        if self.listType == .savedItems {
+            actionSheet.addAction(UIAlertAction.init(title: "Post", style: .default, handler: { (alert) in
+                self.showDeleteMessageAlert(forItem: sender.tag, isPost: true)
+            }))
+        }
+        
+        actionSheet.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (alert) in
+            
+        }))
+        
+        self.present(actionSheet, animated: true, completion: nil)
+    }
+    
+    func showEditController(forItem index : Int) {
+        if let item = self.arrItems?[index], item.id != nil {
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC") as! AddSellItemVC
+            vc.itemData = item
+            vc.isEditingItem = true
+            vc.itemId = item.id!
+            switch self.listType {
+            case .listedItems:
+                vc.itemType = .listedItems
+            default:
+                vc.itemType = .savedItems
+            }
+            self.navigationController?.show(vc, sender: nil)
+        }
+    }
+    
+    func showDeleteMessageAlert(forItem index : Int, isPost : Bool) {
+        var strMsg = ""
+        if isPost {
+            strMsg = "Are you sure you want to post this item for sale?"
+        }else {
+            strMsg = "Are you sure you want to delete this item?"
+        }
+        let alert = UIAlertController.init(title: nil, message: strMsg, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
+            self.postDeleteSelectedItem(index: index, isPost: isPost)
+        }))
+        
+        alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
+            
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func setNoDataLabel() {
+        if self.arrItems?.count ?? 0 <= 0 {
+            let lbl = UILabel()
+            lbl.text = "No items found"
+            lbl.textAlignment = .center
+            lbl.sizeToFit()
+            lbl.frame.size.height = 60
+            self.tblItemList.tableFooterView = lbl
+        }else {
+            self.tblItemList.tableFooterView = UIView.init(frame: CGRect.zero)
+        }
+    }
     /*
      // MARK - Navigation
      
@@ -112,12 +184,16 @@ extension MyListedItemsVC : UITableViewDelegate, UITableViewDataSource {
         let item = self.arrItems![indexPath.row]
         
         cell.lblItemName.text = item.item_name
-        cell.lblItemBrand.text = item.brand
+        cell.lblItemBrand.text = item.brand?["name"]
         cell.lblDesciption.text = item.description
         cell.lblItemPrice.text = "$\(item.price ?? "0.00")"
         cell.pageImgPages.numberOfPages = item.item_images?.count ?? 0
+        cell.pageImgPages.isHidden = (item.item_images?.count ?? 0) <= 1
         cell.collectionImages.tag = indexPath.row
         cell.collectionImages.reloadData()
+        
+        cell.btnMore.tag = indexPath.row
+        cell.btnMore.addTarget(self, action: #selector(self.btnMoreAction(_:)), for: .touchUpInside)
         
         return cell
     }
@@ -170,7 +246,6 @@ extension MyListedItemsVC : UICollectionViewDelegate, UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.size.width, height: collectionView.frame.size.height)
     }
-    
     
 }
 
