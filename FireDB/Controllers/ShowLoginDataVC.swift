@@ -19,7 +19,7 @@ class ShowLoginDataVC: UIViewController {
     @IBOutlet weak var imgProfile: UIImageView!
     
     var loginDict = Dictionary<String,Any>()
-    let arrTitle = ["Edit Profile", "Saved Items", "Listed Items", "Deleted Items", "Logout"]
+    let arrTitle = ["Edit Profile", "Drafted Items", "Listed Items", "Archived Items", "Logout"]
 //    let arrKeys = ["first_name", "last_name", "email", "gender", "birthday", "hometown.name", "location.name"]
 //    let db = Firestore.firestore()
     

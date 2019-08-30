@@ -47,7 +47,7 @@ class ItemListForSaleVC: UIViewController {
     
     //MARK: - Fetch List Of Items
     func fetchItemList() {
-        let itemRef = db.collection(kListedItems).whereField("isPosted", isEqualTo: true).whereField("isDeleted", isEqualTo: false).order(by: "created", descending: true)
+        let itemRef = db.collection(kListedItems).whereField("isPosted", isEqualTo: true).whereField("isArchived", isEqualTo: false).order(by: "created", descending: true)
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
                 var arr = Array<[String : Any]>()
@@ -141,7 +141,7 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
         
         cell.lblItemName.text = item.item_name
         cell.lblItemBrand.text = item.brand?["name"]
-        cell.lblDesciption.text = item.description
+//        cell.lblDesciption.text = item.description
         cell.lblItemPrice.text = "$\(item.price ?? "0.00")"
         cell.pageImgPages.numberOfPages = item.item_images?.count ?? 0
         cell.pageImgPages.isHidden = (item.item_images?.count ?? 0) <= 1
@@ -223,4 +223,6 @@ class ItemListCell : UITableViewCell {
     @IBOutlet weak var collectionImages: UICollectionView!
     @IBOutlet weak var pageImgPages: UIPageControl!
     @IBOutlet weak var btnMore: UIButton!
+    @IBOutlet weak var btnBuy: UIButton!
+    @IBOutlet weak var btnDetails: UIButton!
 }

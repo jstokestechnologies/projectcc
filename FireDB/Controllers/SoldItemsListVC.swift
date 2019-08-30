@@ -28,7 +28,7 @@ class SoldItemsListVC: UIViewController {
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Deleted items"
+        self.title = "Archived items"
         progressView.showActivity()
         self.fetchItemList()
         // Do any additional setup after loading the view.
@@ -40,7 +40,7 @@ class SoldItemsListVC: UIViewController {
     
     //MARK: - Fetch List Of Items
     func fetchItemList() {
-        let itemRef = db.collection(kListedItems).whereField("isDeleted", isEqualTo: true).whereField("user_id", isEqualTo: userdata.id).order(by: "updated", descending: true)
+        let itemRef = db.collection(kListedItems).whereField("isArchived", isEqualTo: true).whereField("user_id", isEqualTo: userdata.id).order(by: "updated", descending: true)
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
                 var arr = Array<[String : Any]>()

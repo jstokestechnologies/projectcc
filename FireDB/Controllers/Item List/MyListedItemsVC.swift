@@ -34,9 +34,9 @@ class MyListedItemsVC: UIViewController {
         super.viewDidLoad()
         switch self.listType {
         case .listedItems:
-            self.title = "My Listed Items"
+            self.title = "Listed Items"
         default:
-            self.title = "My Saved Items"
+            self.title = "Drafted Items"
         }
     }
     
@@ -49,7 +49,7 @@ class MyListedItemsVC: UIViewController {
     func fetchItemList() {
         progressView.showActivity()
         
-        let itemRef = db.collection(kListedItems).whereField("isPosted", isEqualTo: self.listType == .listedItems).whereField("isDeleted", isEqualTo: false).whereField("user_id", isEqualTo: userdata.id).order(by: "updated", descending: true)
+        let itemRef = db.collection(kListedItems).whereField("isPosted", isEqualTo: self.listType == .listedItems).whereField("isArchived", isEqualTo: false).whereField("user_id", isEqualTo: userdata.id).order(by: "updated", descending: true)
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
                 
@@ -77,12 +77,27 @@ class MyListedItemsVC: UIViewController {
     
     func postDeleteSelectedItem(index : Int, isPost : Bool) {
         if let itemid = self.arrItems?[index].id {
-            let key = isPost ? "isPosted" : "isDeleted"
+            let key = isPost ? "isPosted" : "isArchived"
             db.collection(kListedItems).document(itemid).updateData([key : true]) { (err) in
                 if (err != nil) {
                     HelperClass.showAlert(msg: err?.localizedDescription ?? "Failed to update changes", isBack: false, vc: self)
                 }else {
                     self.fetchItemList()
+                }
+            }
+        }
+    }
+    
+    func deleteSelectedItems(index : Int) {
+        if let itemid = self.arrItems?[index].id {
+            
+            db.collection(kListedItems).document(itemid).delete { (err) in
+                if (err != nil) {
+                    HelperClass.showAlert(msg: err?.localizedDescription ?? "Failed to update changes", isBack: false, vc: self)
+                }else {
+                    self.fetchItemList()
+                    self.arrItems?.remove(at: index)
+                    self.tblItemList.reloadData()
                 }
             }
         }
@@ -96,13 +111,17 @@ class MyListedItemsVC: UIViewController {
             self.showEditController(forItem: sender.tag)
         }))
         
-        actionSheet.addAction(UIAlertAction.init(title: "Delete", style: .default, handler: { (alert) in
-            self.showDeleteMessageAlert(forItem: sender.tag, isPost: false)
-        }))
-        
         if self.listType == .savedItems {
+            actionSheet.addAction(UIAlertAction.init(title: "Delete", style: .default, handler: { (alert) in
+                self.showDeleteMessageAlert(forItem: sender.tag, isPost: false)
+            }))
+            
             actionSheet.addAction(UIAlertAction.init(title: "Post", style: .default, handler: { (alert) in
                 self.showDeleteMessageAlert(forItem: sender.tag, isPost: true)
+            }))
+        }else {
+            actionSheet.addAction(UIAlertAction.init(title: "Archive", style: .default, handler: { (alert) in
+                self.showDeleteMessageAlert(forItem: sender.tag, isPost: false)
             }))
         }
         
@@ -133,13 +152,19 @@ class MyListedItemsVC: UIViewController {
         var strMsg = ""
         if isPost {
             strMsg = "Are you sure you want to post this item for sale?"
+        }else if self.listType == .listedItems {
+            strMsg = "Are you sure you want to archive this item?"
         }else {
-            strMsg = "Are you sure you want to delete this item?"
+            strMsg = "Are you sure you want to delete this item. You won't be able to recover it again."
         }
         let alert = UIAlertController.init(title: nil, message: strMsg, preferredStyle: .alert)
         
         alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
-            self.postDeleteSelectedItem(index: index, isPost: isPost)
+            if isPost || self.listType == .listedItems {
+                self.postDeleteSelectedItem(index: index, isPost: isPost)
+            }else {
+                self.deleteSelectedItems(index: index)
+            }
         }))
         
         alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
