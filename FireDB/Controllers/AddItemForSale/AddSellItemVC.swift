@@ -321,7 +321,7 @@ class AddSellItemVC: UITableViewController {
                                             "sellerRating"  : "0",
                                             "bankAccountUpdated" : "0",
                                             "isPosted"      : self.itemType == .listedItems,
-                                            "isDeleted"     : false]
+                                            "isArchived"     : false]
         return itemDetails
     }
     
