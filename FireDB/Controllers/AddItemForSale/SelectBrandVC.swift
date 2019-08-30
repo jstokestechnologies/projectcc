@@ -100,7 +100,9 @@ class SelectBrandVC: UIViewController {
     }
     
     func setSelectedBrand(brand : [String : Any], key : String) {
-        self.delegate?.selectBrand(withName: [key : brand])
+        var brand = brand
+        brand["id"] = key
+        self.delegate?.selectBrand(withName: brand)
         self.navigationController?.popViewController(animated: true)
     }
     

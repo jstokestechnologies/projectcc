@@ -38,12 +38,13 @@ class ItemsDetail : Codable {
     var condition   : String?
     var free_ship   : Bool?
     var item_name   : String?
-    var brand       : String?
+    var brand       : [String : String]?
     var item_images : [String]?
-    var category    : String?
+    var category    : [String : String]?
     var price       : String?
     var used_category : String?
     var sub_category: [String]?
     var watchers    : String?
     var seller_name : String?
+    var id          : String?
 }
