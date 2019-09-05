@@ -15,7 +15,12 @@ class HelperClass : NSObject {
     class func saveDataToDefaults(dataObject: NSDictionary, key : String) {
         do {
             let currentDefaults = UserDefaults.standard
-            let data = try NSKeyedArchiver.archivedData(withRootObject: dataObject, requiringSecureCoding: false)
+            var data : Data?
+            if #available(iOS 11.0, *) {
+                data = try NSKeyedArchiver.archivedData(withRootObject: dataObject, requiringSecureCoding: false)
+            } else {
+                data = NSKeyedArchiver.archivedData(withRootObject: dataObject)
+            }
             currentDefaults.set(data, forKey: key)
             currentDefaults.set(true, forKey: kIsLoggedIn)
             currentDefaults.synchronize()

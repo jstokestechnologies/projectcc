@@ -22,6 +22,8 @@
 		845801E522FDA56F00AE6FEE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 845801E422FDA56F00AE6FEE /* GoogleService-Info.plist */; };
 		847D49BB23014B6D00FE900C /* ItemListForSaleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847D49BA23014B6D00FE900C /* ItemListForSaleVC.swift */; };
 		847D49C12301A05000FE900C /* no-image.png in Resources */ = {isa = PBXBuildFile; fileRef = 847D49C02301A05000FE900C /* no-image.png */; };
+		848293032320DE9C001DF6F5 /* ItemCardTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 848293022320DE9C001DF6F5 /* ItemCardTableCell.xib */; };
+		848293052320DEBF001DF6F5 /* ItemCardTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848293042320DEBF001DF6F5 /* ItemCardTableCell.swift */; };
 		8486F8C822FB1227009BE82C /* minus.png in Resources */ = {isa = PBXBuildFile; fileRef = 8486F8C722FB1227009BE82C /* minus.png */; };
 		848A43DC22F04380002D9444 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848A43DB22F04380002D9444 /* AppDelegate.swift */; };
 		848A43DE22F04380002D9444 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848A43DD22F04380002D9444 /* ViewController.swift */; };
@@ -73,6 +75,8 @@
 		845801E422FDA56F00AE6FEE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		847D49BA23014B6D00FE900C /* ItemListForSaleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListForSaleVC.swift; sourceTree = "<group>"; };
 		847D49C02301A05000FE900C /* no-image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "no-image.png"; sourceTree = "<group>"; };
+		848293022320DE9C001DF6F5 /* ItemCardTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ItemCardTableCell.xib; sourceTree = "<group>"; };
+		848293042320DEBF001DF6F5 /* ItemCardTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCardTableCell.swift; sourceTree = "<group>"; };
 		8486F8C722FB1227009BE82C /* minus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = minus.png; sourceTree = "<group>"; };
 		848A43D822F04380002D9444 /* FireDB.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FireDB.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		848A43DB22F04380002D9444 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -194,6 +198,7 @@
 		845801E822FDA61F00AE6FEE /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				848293012320DDE9001DF6F5 /* ItemCardTableCell */,
 				84B1ACBE230D07E9002E6B30 /* ProgressHud */,
 			);
 			path = Views;
@@ -232,6 +237,15 @@
 				840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */,
 			);
 			path = "Item List";
+			sourceTree = "<group>";
+		};
+		848293012320DDE9001DF6F5 /* ItemCardTableCell */ = {
+			isa = PBXGroup;
+			children = (
+				848293022320DE9C001DF6F5 /* ItemCardTableCell.xib */,
+				848293042320DEBF001DF6F5 /* ItemCardTableCell.swift */,
+			);
+			path = ItemCardTableCell;
 			sourceTree = "<group>";
 		};
 		848A43CF22F04380002D9444 = {
@@ -448,6 +462,7 @@
 				848A43E122F04380002D9444 /* Main.storyboard in Resources */,
 				845801E522FDA56F00AE6FEE /* GoogleService-Info.plist in Resources */,
 				8486F8C822FB1227009BE82C /* minus.png in Resources */,
+				848293032320DE9C001DF6F5 /* ItemCardTableCell.xib in Resources */,
 				847D49C12301A05000FE900C /* no-image.png in Resources */,
 				84F9F6C822FAB35A00E754A7 /* border_dot.png in Resources */,
 			);
@@ -537,6 +552,7 @@
 				842FFED6230D1BB0000DADF2 /* Helper.swift in Sources */,
 				848A440A22F04839002D9444 /* ShowLoginDataVC.swift in Sources */,
 				848A43DE22F04380002D9444 /* ViewController.swift in Sources */,
+				848293052320DEBF001DF6F5 /* ItemCardTableCell.swift in Sources */,
 				845801D622FD48FE00AE6FEE /* SelectCategoryVC.swift in Sources */,
 				840C9C502302CF8B004A63AD /* MyListedItemsVC.swift in Sources */,
 				842FFED8230D1BBF000DADF2 /* StringContants.swift in Sources */,
@@ -729,7 +745,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = R5G82TKCRA;
 				INFOPLIST_FILE = "$(SRCROOT)/FireDB/Info-plist.temp_caseinsensitive_rename./Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -751,7 +767,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = R5G82TKCRA;
 				INFOPLIST_FILE = "$(SRCROOT)/FireDB/Info-plist.temp_caseinsensitive_rename./Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
