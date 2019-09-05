@@ -34,9 +34,9 @@ class MyListedItemsVC: UIViewController {
         super.viewDidLoad()
         switch self.listType {
         case .listedItems:
-            self.title = "My Listed Items"
+            self.title = "Listed Items"
         default:
-            self.title = "My Saved Items"
+            self.title = "Drafted Items"
         }
     }
     
@@ -47,31 +47,18 @@ class MyListedItemsVC: UIViewController {
     
     //MARK: - Fetch List Of Items
     func fetchItemList() {
-        var child = ""
-        switch self.listType {
-        case .listedItems:
-            child = kListedItems
-        default:
-            child = kSavedItems
-        }
+        progressView.showActivity()
         
-        let itemRef = db.collection(child).whereField("user_id", isEqualTo: userdata.id)
+        let itemRef = db.collection(kListedItems).whereField("isPosted", isEqualTo: self.listType == .listedItems).whereField("isArchived", isEqualTo: false).whereField("user_id", isEqualTo: userdata.id).order(by: "updated", descending: true)
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
-                var arr = Array<[String : Any]>()
-                for doc in documents {
-                    arr.append(doc.data())
-                }
-                if arr.count <= 0 {
-                    let lbl = UILabel()
-                    lbl.text = "No items found"
-                    lbl.textAlignment = .center
-                    lbl.sizeToFit()
-                    lbl.frame.size.height = 60
-                    self.tblItemList.tableFooterView = lbl
-                }else {
-                    self.tblItemList.tableFooterView = UIView.init(frame: CGRect.zero)
-                }
+                
+                let arr = documents.map({ (doc) -> [String : Any] in
+                    var dict =  doc.data()
+                    dict["id"] = doc.documentID
+                    return dict
+                })
+                
                 do {
                     let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
                     let jsonDecoder = JSONDecoder()
@@ -82,10 +69,122 @@ class MyListedItemsVC: UIViewController {
                 catch {
                     print(error.localizedDescription)
                 }
+                self.setNoDataLabel()
+            }
+            progressView.hideActivity()
+        }
+    }
+    
+    func postDeleteSelectedItem(index : Int, isPost : Bool) {
+        if let itemid = self.arrItems?[index].id {
+            let key = isPost ? "isPosted" : "isArchived"
+            db.collection(kListedItems).document(itemid).updateData([key : true]) { (err) in
+                if (err != nil) {
+                    HelperClass.showAlert(msg: err?.localizedDescription ?? "Failed to update changes", isBack: false, vc: self)
+                }else {
+                    self.fetchItemList()
+                }
             }
         }
     }
     
+    func deleteSelectedItems(index : Int) {
+        if let itemid = self.arrItems?[index].id {
+            
+            db.collection(kListedItems).document(itemid).delete { (err) in
+                if (err != nil) {
+                    HelperClass.showAlert(msg: err?.localizedDescription ?? "Failed to update changes", isBack: false, vc: self)
+                }else {
+                    self.fetchItemList()
+                    self.arrItems?.remove(at: index)
+                    self.tblItemList.reloadData()
+                }
+            }
+        }
+    }
+    
+    
+    @IBAction func btnMoreAction(_ sender: UIButton) {
+        let actionSheet = UIAlertController.init(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction.init(title: "Edit", style: .default, handler: { (alert) in
+            self.showEditController(forItem: sender.tag)
+        }))
+        
+        if self.listType == .savedItems {
+            actionSheet.addAction(UIAlertAction.init(title: "Delete", style: .default, handler: { (alert) in
+                self.showDeleteMessageAlert(forItem: sender.tag, isPost: false)
+            }))
+            
+            actionSheet.addAction(UIAlertAction.init(title: "Post", style: .default, handler: { (alert) in
+                self.showDeleteMessageAlert(forItem: sender.tag, isPost: true)
+            }))
+        }else {
+            actionSheet.addAction(UIAlertAction.init(title: "Archive", style: .default, handler: { (alert) in
+                self.showDeleteMessageAlert(forItem: sender.tag, isPost: false)
+            }))
+        }
+        
+        actionSheet.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (alert) in
+            
+        }))
+        
+        self.present(actionSheet, animated: true, completion: nil)
+    }
+    
+    func showEditController(forItem index : Int) {
+        if let item = self.arrItems?[index], item.id != nil {
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC") as! AddSellItemVC
+            vc.itemData = item
+            vc.isEditingItem = true
+            vc.itemId = item.id!
+            switch self.listType {
+            case .listedItems:
+                vc.itemType = .listedItems
+            default:
+                vc.itemType = .savedItems
+            }
+            self.navigationController?.show(vc, sender: nil)
+        }
+    }
+    
+    func showDeleteMessageAlert(forItem index : Int, isPost : Bool) {
+        var strMsg = ""
+        if isPost {
+            strMsg = "Are you sure you want to post this item for sale?"
+        }else if self.listType == .listedItems {
+            strMsg = "Are you sure you want to archive this item?"
+        }else {
+            strMsg = "Are you sure you want to delete this item. You won't be able to recover it again."
+        }
+        let alert = UIAlertController.init(title: nil, message: strMsg, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
+            if isPost || self.listType == .listedItems {
+                self.postDeleteSelectedItem(index: index, isPost: isPost)
+            }else {
+                self.deleteSelectedItems(index: index)
+            }
+        }))
+        
+        alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
+            
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func setNoDataLabel() {
+        if self.arrItems?.count ?? 0 <= 0 {
+            let lbl = UILabel()
+            lbl.text = "No items found"
+            lbl.textAlignment = .center
+            lbl.sizeToFit()
+            lbl.frame.size.height = 60
+            self.tblItemList.tableFooterView = lbl
+        }else {
+            self.tblItemList.tableFooterView = UIView.init(frame: CGRect.zero)
+        }
+    }
     /*
      // MARK - Navigation
      
@@ -110,12 +209,16 @@ extension MyListedItemsVC : UITableViewDelegate, UITableViewDataSource {
         let item = self.arrItems![indexPath.row]
         
         cell.lblItemName.text = item.item_name
-        cell.lblItemBrand.text = item.brand
+        cell.lblItemBrand.text = item.brand?["name"]
         cell.lblDesciption.text = item.description
         cell.lblItemPrice.text = "$\(item.price ?? "0.00")"
         cell.pageImgPages.numberOfPages = item.item_images?.count ?? 0
+        cell.pageImgPages.isHidden = (item.item_images?.count ?? 0) <= 1
         cell.collectionImages.tag = indexPath.row
         cell.collectionImages.reloadData()
+        
+        cell.btnMore.tag = indexPath.row
+        cell.btnMore.addTarget(self, action: #selector(self.btnMoreAction(_:)), for: .touchUpInside)
         
         return cell
     }
@@ -168,7 +271,6 @@ extension MyListedItemsVC : UICollectionViewDelegate, UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.size.width, height: collectionView.frame.size.height)
     }
-    
     
 }
 

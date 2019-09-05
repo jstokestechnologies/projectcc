@@ -17,6 +17,7 @@ import FirebaseFirestore
 
 
 class ViewController: UIViewController {
+    @IBOutlet weak var btnShowListedItems: UIButton!
     //MARK: - Variables
     let connection = GraphRequestConnection()
     
@@ -46,7 +47,7 @@ class ViewController: UIViewController {
     }
     
     //MARK: - IBAction
-    @IBAction func btnFacebookTapped(_ sender: Any) {
+    @IBAction func btnFacebookTapped(_ sender: UIButton) {
         let loginManager = LoginManager()
         loginManager.logOut()
         loginManager.logIn(permissions: [.publicProfile,
@@ -71,7 +72,8 @@ class ViewController: UIViewController {
                 let credential = FacebookAuthProvider.credential(withAccessToken: AccessToken.current!.tokenString)
                 // Signin with facebook into Firebase
                 self.authenticateFireBase(cred: credential)
-                
+//                HelperClass.showProgressView()
+                progressView.showActivity()
             }
         }
     }
@@ -81,6 +83,8 @@ class ViewController: UIViewController {
         Auth.auth().signIn(with: cred, completion: { (authResult, error) in
             if let error = error {
                 print(error.localizedDescription)
+//                HelperClass.hideProgressView()
+                progressView.hideActivity()
                 return
             }else {
                 //User authenticated to Firebase
@@ -96,9 +100,11 @@ class ViewController: UIViewController {
                 print(fbDetails)
                 self.saveUserData(userDict: fbDetails)
                 self.initUserModel(userDict: fbDetails)
-                UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "MainNavVC")
+                UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "TabVc")
+                progressView.hideActivity()
             }else {
                 print(error?.localizedDescription ?? "Unknown Error.")
+                progressView.hideActivity()
             }
         })
     }

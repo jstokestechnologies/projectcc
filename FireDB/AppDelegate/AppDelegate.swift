@@ -48,7 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print(error.localizedDescription)
             }
             
-            self.window?.rootViewController = UIStoryboard.init(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "MainNavVC")
+            self.window?.rootViewController = UIStoryboard.init(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "TabVc")
         }
         
         return true

@@ -32,6 +32,8 @@ class AddSellItemVC: UITableViewController {
     @IBOutlet weak var lblCategory: UILabel!
     @IBOutlet weak var lblBrand: UILabel!
     
+    @IBOutlet weak var viewUpdate: UIView!
+    
     
     //MARK: - Properties
     let picker = UIImagePickerController()
@@ -42,9 +44,24 @@ class AddSellItemVC: UITableViewController {
     var arrItemImages = Array<UIImage>()
     var itemCondition = 0
     var categories = String()
-    var subCategories = [String]()
+    var category = [String : Any]()
+    var subCategory = [String : [String : Any]]()
+    var brand = [String : Any]()
     
     lazy var storage = Storage.storage()
+    
+    //On Edit Item
+    var removedImages = Array<String>()
+    var isEditingItem = false
+    var itemId = String()
+    var itemData : ItemsDetail?
+    
+    enum ItemsListType {
+        case savedItems
+        case listedItems
+    }
+    var itemType = ItemsListType.listedItems
+    
     
     //MARK: - ViewController Life Cycle
     override func viewDidLoad() {
@@ -57,51 +74,131 @@ class AddSellItemVC: UITableViewController {
         self.btnSaveDraft.layer.borderColor = UIColor(red:0.25, green:0.35, blue:0.82, alpha:1.0).cgColor
         self.lblBrand.text = " "
         self.lblCategory.text = " "
+        
+        if isEditingItem {
+            if self.itemData != nil {
+                self.setPreviousData()
+            }else {
+                self.fetchItemData()
+            }
+            self.viewUpdate.isHidden = false
+            let fView = self.tableView.tableFooterView
+            fView?.frame.size.height = 80
+            self.tableView.tableFooterView = fView
+            self.tableView.reloadData()
+        }
+    }
+    
+    func setPreviousData() {
+        // Set name of the item
+        self.txtItemName.text = self.itemData?.item_name
+        self.txtItemName.textColor = .darkGray
+        self.lblItemNameRange.text = "\(self.txtItemName.text!.count)/40"
+        
+        // Set description of the item
+        self.txtItemDescription.text = self.itemData?.description
+        self.txtItemDescription.textColor = .darkGray
+        self.lblItemDescriptionRange.text = "\(self.txtItemDescription.text!.count)/1000"
+        
+        // Set Color and Price of the item
+        self.lblItemColor.text = self.itemData?.color
+        self.lblPrice.text = self.itemData?.price
+        self.txtItemPrice.text = self.itemData?.price
+        
+        // Set brand and category of the item
+        self.brand = (self.itemData?.brand)!
+        self.lblBrand.text = self.itemData?.brand?["name"]
+        self.category = (self.itemData?.category)!
+        
+        // Fetch Category and subcategories of the item
+        self.getPreviousSubcategory()
+        
+        // Set item condition
+        let conditionIndex = self.arrConditions.firstIndex(where: {"\($0["title"] ?? "")" == self.itemData?.condition ?? ""})
+        self.itemCondition = conditionIndex ?? 0
+        
+        // Reload Collections
+        self.collectionImages.reloadData()
+        self.collectionCondition.reloadData()
+    }
+    
+    func getPreviousSubcategory() {
+        let concurrentQueue = DispatchQueue(label: "com.queue.Concurrent", attributes: .concurrent)
+        let group = DispatchGroup()
+        
+        // Fetch all the subcategories
+        if let subCats = self.itemData?.sub_category {
+            for subCat in subCats {
+                group.enter()
+                concurrentQueue.async {
+                    self.fetchDataFromFirebase(collectionRef: "subcategories", docRef: "\(subCat)", completion: { (cat) in
+                        self.subCategory[subCat] = ["name" : cat]
+                        group.leave()
+                    })
+                }
+            }
+        }
+        
+        // Notify when done fetching category and subcategories both
+        group.notify(queue: DispatchQueue.main) {
+            self.showCategoryAndSubCategory()
+        }
+    }
+    
+    func showCategoryAndSubCategory() {
+        let strCatName = "\(self.category["name"] ?? "N/A")"
+        var arrSubCatName = [""]
+        if self.subCategory.values.count > 0 {
+            arrSubCatName = self.subCategory.values.compactMap({"\($0["name"] ?? "-")"})
+        }
+        self.lblCategory.text = strCatName + " -> " + arrSubCatName.joined(separator: ", ")
+    }
+    
+    //MARK: - Firebase Methods
+    func fetchItemData() {
+        progressView.showActivity()
+        let itemRef = db.collection(kListedItems).document("/\(itemId)")
+        itemRef.getDocument { (doc, err) in
+            if let data = doc?.data() {
+                do {
+                    let jsonData  = try? JSONSerialization.data(withJSONObject: data, options:.prettyPrinted)
+                    let jsonDecoder = JSONDecoder()
+                    //                                    var userdata = UserData.sharedInstance
+                    self.itemData = try jsonDecoder.decode(ItemsDetail.self, from: jsonData!)
+                    self.setPreviousData()
+                }
+                catch {
+                    print(error.localizedDescription)
+                }
+            }
+            progressView.hideActivity()
+        }
+    }
+    
+    func fetchDataFromFirebase(collectionRef : String, docRef : String, completion : @escaping (String) -> () ) {
+        let itemRef = db.collection(collectionRef).document("/\(docRef)")
+        itemRef.getDocument { (doc, err) in
+            if let data = doc?.data() {
+                completion(data["name"] as? String ?? "")
+            }
+        }
     }
     
     //MARK: - IBActions
-    
-    @IBAction func btnListAction(_ sender: Any) {
+    @IBAction func btnListAction(_ sender: UIButton) {
         self.view.endEditing(true)
         if self.validateTextFields() {
-            let dictItem = self.getItemDetails()
-            let alert = UIAlertController.init(title: "", message: "Are you sure you want to list this item for sale?", preferredStyle: .alert)
-            alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
-                self.saveItemDetails(type: "listed_items", itemData: dictItem) { (err, success) in
-                    if success {
-                        self.showAlert(msg: "Item successfully listed for sale", isBack: true)
-                    }else {
-                        
-                    }
-                }
-            }))
-            alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
-                
-            }))
-            self.present(alert, animated: true, completion: nil)
+            self.itemType = .listedItems
+            self.showSaveAlert(msg: "Are you sure you want to list this item for sale?")
         }
     }
     
-    @IBAction func btnSaveDraftAction(_ sender: Any) {
+    @IBAction func btnSaveDraftAction(_ sender: UIButton) {
         self.view.endEditing(true)
         if self.validateTextFields() {
-            let dictItem = self.getItemDetails()
-            let alert = UIAlertController.init(title: "", message: "Are you sure you want to save this item in draft?", preferredStyle: .alert)
-            alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
-                self.saveItemDetails(type: "saved_items", itemData: dictItem) { (err, success) in
-                    if success {
-                        self.showAlert(msg: "Item details saved in draft.", isBack: true)
-                    }else {
-                        
-                    }
-                }
-            }))
-            alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
-                
-            }))
-            self.present(alert, animated: true, completion: nil)
+            self.itemType = .savedItems
+            self.showSaveAlert(msg: "Are you sure you want to save this item in draft?")
         }
-        
     }
     
     @IBAction func btnRemoveImageAction(_ sender: UIButton) {
@@ -130,9 +227,46 @@ class AddSellItemVC: UITableViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
+    @IBAction func btnUpdateAction(_ sender: UIButton) {
+        self.view.endEditing(true)
+        if self.validateTextFields() {
+            self.showSaveAlert(msg: "Are you sure you want update?")
+        }
+    }
+    
     //MARK: - Other
+    func showSaveAlert(msg : String) {
+        let alert = UIAlertController.init(title: "", message: msg, preferredStyle: .alert)
+        alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
+            self.saveData()
+        }))
+        alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
+            
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func saveData() {
+        progressView.showActivity()
+        if isEditingItem {
+            self.saveEditedItemDetails(itemData: self.getItemDetails()) { (err, success) in
+                if success {
+                    self.showAlert(msg: "Item details saved successfully", isBack: true)
+                }
+                progressView.hideActivity()
+            }
+        }else {
+            self.saveItemDetails(itemData: self.getItemDetails()) { (err, success) in
+                if success {
+                    self.showAlert(msg: "Item details saved successfully", isBack: true)
+                }
+                progressView.hideActivity()
+            }
+        }
+    }
+    
     func validateTextFields() -> Bool {
-        if self.arrItemImages.count <= 0 {
+        if self.arrItemImages.count <= 0 && !self.isEditingItem {
             self.showAlert(msg: "Please add atleast 1 item image.", isBack: false)
             return false
         }else if self.txtItemName.text == "" || (self.txtItemName.text?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0) <= 0 {
@@ -147,10 +281,10 @@ class AddSellItemVC: UITableViewController {
         }else if self.lblBrand.text!.count < 2 {
             self.showAlert(msg: "Please select brand.", isBack: false)
             return false
-        }/*else if self.txtZipCode.text!.count < 5 {
-            self.showAlert(msg: "Please enter delivery zipcode", isBack: false)
+        }else if self.lblItemColor.text!.count < 2 {
+            self.showAlert(msg: "Please enter color.", isBack: false)
             return false
-        }*/else if self.txtItemPrice.text!.count <= 0 {
+        }else if self.txtItemPrice.text!.count <= 0 {
             self.showAlert(msg: "Please enter item price.", isBack: false)
             return false
         }
@@ -159,31 +293,41 @@ class AddSellItemVC: UITableViewController {
     
     func getItemDetails() -> Dictionary<String,Any> {
         let timestamp =  Int64(Date().timeIntervalSince1970 * 1000)
-        let imgPath = self.saveItemImages(timestamp)
+        var imgPath = self.saveItemImages(timestamp)
+        if let savedImgs = self.itemData?.item_images, isEditingItem {
+            imgPath.append(contentsOf: savedImgs)
+        }
+        
         let itemDetails : [String : Any] = ["item_name"     : (self.txtItemName.text)!,
                                             "description"   : (self.txtItemDescription.text)!,
-                                            "category"      : self.categories,
-                                            "sub_category"  : self.subCategories,
-                                            "brand"         : (self.lblBrand.text)!,
+                                            "category"      : self.category,
+                                            "sub_category"  : Array(self.subCategory.keys),
+                                            "brand"         : self.brand,
                                             "condition"     : "\(self.arrConditions[self.itemCondition]["title"] ?? "")",
                                             "color"         : (self.lblItemColor.text)!,
-//                                            "zipcode"       : (self.txtZipCode.text)!,
-//                                            "free_ship"     : self.btnFreeShipYes.isSelected,
                                             "price"         : (self.txtItemPrice.text)!,
                                             "user_id"       : userdata.id,
                                             "item_images"   : imgPath,
-                                            "images_added"  : self.arrItemImages.count,
-                                            "created"       : timestamp,
+                                            "images_added"  : self.arrItemImages.count + (self.itemData?.images_added ?? 0),
+                                            "created"       : self.itemData?.created ?? timestamp,
                                             "updated"       : timestamp,
                                             "seller_name"   : userdata.name,
                                             "watchers"      : "",
-                                            "used_category" : ""]
+                                            "used_category" : "",
+                                            "home_address"  : "",
+                                            "mpcName"       : "",
+                                            "subdivision"   : "",
+                                            "buyerRating"   : "0",
+                                            "sellerRating"  : "0",
+                                            "bankAccountUpdated" : "0",
+                                            "isPosted"      : self.itemType == .listedItems,
+                                            "isArchived"     : false]
         return itemDetails
     }
     
-    func saveItemDetails(type : String, itemData : Dictionary<String,Any>, completionHandler:@escaping (Error?, Bool) -> ()) {
+    func saveItemDetails(itemData : Dictionary<String,Any>, completionHandler:@escaping (Error?, Bool) -> ()) {
         var ref: DocumentReference? = nil
-        ref = db.collection(type).addDocument(data: itemData) { err in
+        ref = db.collection(kListedItems).addDocument(data: itemData) { err in
             if let err = err {
                 print("Error adding document: \(err)")
                 completionHandler(err, false)
@@ -198,7 +342,13 @@ class AddSellItemVC: UITableViewController {
         let alert = UIAlertController.init(title: "", message: msg, preferredStyle: .alert)
         alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: { (alrt) in
             if isBack {
-                self.navigationController?.dismiss(animated: true, completion: nil)
+                if self.isEditingItem {
+                    self.navigationController?.popViewController(animated: true)
+                }else {
+                    let tabBarVC = self.tabBarController
+                    self.navigationController?.setViewControllers([(self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC"))!], animated: false)
+                    tabBarVC?.selectedIndex = 0
+                }
             }
         }))
         DispatchQueue.main.async {
@@ -210,8 +360,9 @@ class AddSellItemVC: UITableViewController {
         var imgPaths = [String]()
         
         for i in 0..<self.arrItemImages.count {
+            let imgCount = i + 1 + (self.itemData?.images_added ?? 0)
             let img = self.arrItemImages[i]
-            let spaceRef = storage.reference().child("images/\(userdata.id)-\((Int(Date().timeIntervalSince1970 * 1000)))-\(i+1).jpeg")
+            let spaceRef = storage.reference().child("images/\(userdata.id)-\((Int(Date().timeIntervalSince1970 * 1000)))-\(imgCount).jpeg")
             let metadata = StorageMetadata()
             metadata.contentType = "image/jpeg"
             
@@ -224,6 +375,37 @@ class AddSellItemVC: UITableViewController {
         return imgPaths
     }
     
+    func saveEditedItemDetails(itemData : Dictionary<String,Any>, completionHandler:@escaping (Error?, Bool) -> ()) {
+        db.collection(kListedItems).document(self.itemId).setData(itemData) { err in
+            if let err = err {
+                print("Error adding document: \(err)")
+                completionHandler(err, false)
+            }else {
+                print("Document added\n\n\n\n\n")
+                completionHandler(err, true)
+            }
+        }
+    }
+    
+    func showColorTextView() {
+        let alert = UIAlertController.init(title: "", message: "Enter Color", preferredStyle: .alert)
+        
+        alert.addTextField { (textfield) in
+            textfield.placeholder = "Enter color name"
+            textfield.font = UIFont.systemFont(ofSize: 15)
+            textfield.textColor = .black
+            textfield.keyboardType = .asciiCapable
+            textfield.text = self.lblItemColor.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        
+        alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: { (alrt) in
+            self.lblItemColor.text = alert.textFields?.first?.text
+        }))
+        alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (alert) in
+            
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
     
      // MARK: - Navigation
 
@@ -231,14 +413,16 @@ class AddSellItemVC: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueSelectCategory" {
             let vc = segue.destination as! SelectCategoryVC
+            if self.subCategory.keys.count > 0 {
+                vc.previousCategory = ["\(self.category["id"] ?? "")" :  self.category]
+                vc.arrPreviousSubCat = Array(self.subCategory.keys)
+            }
             vc.delegate = self
         }else if segue.identifier == "segueSelectBrand" {
             let vc = segue.destination as! SelectBrandVC
             vc.delegate = self
         }
     }
- 
-
 }
 
 //MARK: - TableView Delegate Methods
@@ -253,6 +437,12 @@ extension AddSellItemVC {
         
         return lbl
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 3 {
+            self.showColorTextView()
+        }
+    }
 }
 
 //MARK: - CollectionView Delegate
@@ -261,39 +451,59 @@ extension AddSellItemVC : UICollectionViewDelegate, UICollectionViewDataSource {
         if collectionView == self.collectionCondition {
             return self.arrConditions.count
         }
-        var count = self.arrItemImages.count + 1
+        var count = (self.itemData?.item_images?.count ?? 0) + self.arrItemImages.count + 1
         count = count > maxImages ? maxImages : count
         return count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let identifier = collectionView == self.collectionCondition ? "CellCondition" : (indexPath.row == self.arrItemImages.count ? "CellAdd" : "CellImage")
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
+        let totalImages = (self.itemData?.item_images?.count ?? 0) + self.arrItemImages.count
+        var identifier = ""
+        if collectionView == self.collectionCondition {
+            identifier = "CellCondition"
+        }else {
+            if indexPath.row == totalImages {
+                identifier = "CellAdd"
+            }else {
+                identifier = "CellImage"
+            }
+        }
         
-        let borderColor = (collectionView == self.collectionCondition) ? (self.itemCondition == indexPath.row ? UIColor.blue.cgColor : UIColor.lightGray.cgColor) : (UIColor.init(patternImage: UIImage.init(named: "border_dot.png")!)).cgColor
-        cell.layer.borderColor = borderColor
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
         
         if collectionView == self.collectionCondition {
             (cell.viewWithTag(1) as! UILabel).text = "\(self.arrConditions[indexPath.row]["title"] ?? "New")"
             (cell.viewWithTag(2) as! UILabel).text = "\(self.arrConditions[indexPath.row]["description"] ?? "New")"
+            let borderColor = self.itemCondition == indexPath.row ? UIColor.blue.cgColor : UIColor.lightGray.cgColor
+            cell.layer.borderColor = borderColor
             return cell
         }
         
-        if indexPath.row < self.arrItemImages.count {
-            (cell.viewWithTag(11) as! UIImageView).image = self.arrItemImages[indexPath.row]
-//            (cell.contentView.viewWithTag(101) as! UIButton).tag = indexPath.row
-            (cell.contentView.viewWithTag(101) as! UIButton).addTarget(self, action: #selector(self.btnRemoveImageAction(_:)), for: .touchUpInside)
+        let borderColor = (UIColor.init(patternImage: UIImage.init(named: "border_dot.png")!)).cgColor
+        cell.layer.borderColor = borderColor
+        
+        if indexPath.row < totalImages {
+            if indexPath.row < (self.itemData?.item_images?.count ?? 0) {
+                let storageRef = storage.reference(withPath: (self.itemData?.item_images![indexPath.row])!)
+                (cell.viewWithTag(11) as! UIImageView).image = UIImage.init(named: "no-image")
+                (cell.viewWithTag(11) as! UIImageView).sd_setImage(with: storageRef, placeholderImage: UIImage.init(named: "no-image"))
+            }else {
+                (cell.viewWithTag(11) as! UIImageView).image = self.arrItemImages[indexPath.row - (self.itemData?.item_images?.count ?? 0)]
+//                (cell.contentView.viewWithTag(101) as! UIButton).tag = indexPath.row
+                (cell.contentView.viewWithTag(101) as! UIButton).addTarget(self, action: #selector(self.btnRemoveImageAction(_:)), for: .touchUpInside)
+            }
         }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let totalImages = (self.itemData?.item_images?.count ?? 0) + self.arrItemImages.count
         if collectionView == self.collectionCondition {
             self.itemCondition = indexPath.row
             self.collectionCondition.reloadData()
         }else {
-            if self.arrItemImages.count == indexPath.row && self.arrItemImages.count < 8 {
+            if totalImages == indexPath.row && totalImages < self.maxImages {
                 self.pickImage()
             }
         }
@@ -445,17 +655,19 @@ extension AddSellItemVC : UITextFieldDelegate, UITextViewDelegate {
 }
 //MARK: -
 extension AddSellItemVC : SelectCategoryProtocol {
-    func selectCategory(_ category: String, andSubcategory subcategories: [String]) {
-        self.categories = category
-        self.subCategories = subcategories
-//        self.subCategories.insert(self.categories, at: 0)
-        self.lblCategory.text = category + " -> " + subcategories.joined(separator: ", ")
+    func selectCategory(_ category: [String : [String : Any]], andSubcategory subcategories: [String : [String : Any]]) {
+        var cat = category.values.first!
+        cat["id"] = category.keys.first!
+        self.category = cat
+        self.subCategory = subcategories
+        self.showCategoryAndSubCategory()
     }
 }
 //MARK: -
 extension AddSellItemVC : SelectBrandProtocol {
-    func selectBrand(withName brand: String) {
-        self.lblBrand.text = brand
+    func selectBrand(withName brand:[String : Any]) {
+        self.lblBrand.text = "\(brand["name"] ?? " ")"
+        self.brand = brand
     }
 }
 //MARK: - 

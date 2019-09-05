@@ -9,5 +9,5 @@
 import Foundation
 
 protocol SelectCategoryProtocol {
-    func selectCategory(_ category : String, andSubcategory subcategories : [String])
+    func selectCategory(_ category : [String : [String : Any]], andSubcategory subcategories : [String : [String : Any]])
 }

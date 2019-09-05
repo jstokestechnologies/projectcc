@@ -14,43 +14,53 @@ class ShowLoginDataVC: UIViewController {
     
     @IBOutlet weak var btnShowListedItems: UIButton!
     @IBOutlet weak var btnShowSavedItems: UIButton!
-    
+    @IBOutlet weak var lblName: UILabel!
+    @IBOutlet weak var lblEmail: UILabel!
+    @IBOutlet weak var imgProfile: UIImageView!
     
     var loginDict = Dictionary<String,Any>()
-    let arrTitle = ["First Name", "Last Name", "Email", "Gender", "Birthday", "Hometown", "Current Location", "Relationship Status"]
-    let arrKeys = ["first_name", "last_name", "email", "gender", "birthday", "hometown.name", "location.name"]
+    let arrTitle = ["Edit Profile", "Drafted Items", "Listed Items", "Archived Items", "Logout"]
+//    let arrKeys = ["first_name", "last_name", "email", "gender", "birthday", "hometown.name", "location.name"]
 //    let db = Firestore.firestore()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.saveData()
-        self.title = "User Details"
-        
-        self.btnShowSavedItems.layer.borderColor = UIColor.lightGray.cgColor
-        self.btnShowListedItems.layer.borderColor = UIColor.lightGray.cgColor
-        // Do any additional setup after loading the view.
-        
+        self.title = "More"
+        self.showUserData()
     }
     
-    func saveData() {
-//        var ref: DocumentReference? = nil
-//        ref = db.collection("users").addDocument(data: self.loginDict) { err in
-//            if let err = err {
-//                print("Error adding document: \(err)")
-//            } else {
-//                print("Document added with ID:\n\n\n\n\n \(ref!.documentID)")
-//            }
-//        }
-        
-         db.collection("Users").document("\(loginDict["id"] ?? "N/A")").setData(self.loginDict, completion: { err in
-            if let err = err {
-                print("Error adding document: \(err)")
-            } else {
-                print("Document added with ID:\n\n\n\n\n ")
-            }
-        })
+    func showUserData() {
+        self.lblName.text = userdata.name
+        self.lblEmail.text = userdata.email
     }
-
+    
+    func logoutUser() {
+        self.view.endEditing(true)
+        let alert = UIAlertController.init(title: "", message: "Are you sure you want to logout?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
+            UserDefaults.standard.removeObject(forKey: kUserData)
+            UserDefaults.standard.set(false, forKey: kIsLoggedIn)
+            UserDefaults.standard.synchronize()
+            userdata = UserData()
+            UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "LoginNavVC")
+        }))
+        alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
+            
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func showMyItemsList(isSavedItem : Bool) {
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
+        vc.listType = isSavedItem ? .savedItems : .listedItems
+        self.navigationController?.show(vc, sender: self)
+    }
+    
+    func showDeletedItemsList() {
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "SoldItemsListVC") as! SoldItemsListVC
+        self.navigationController?.show(vc, sender: self)
+    }
+    
     /*
     // MARK: - Navigation
 
@@ -65,15 +75,39 @@ class ShowLoginDataVC: UIViewController {
 
 extension ShowLoginDataVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.arrKeys.count
+        return self.arrTitle.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         cell.textLabel?.text = arrTitle[indexPath.row]
-        cell.detailTextLabel?.text = "\(loginDict[arrKeys[indexPath.row]] ?? "N/A")"
-        cell.detailTextLabel?.text = "\((loginDict as NSDictionary).value(forKeyPath: arrKeys[indexPath.row]) ?? "N/A")"
+        if indexPath.row == 4 {
+            cell.accessoryType = .none
+        }else {
+            cell.accessoryType = .disclosureIndicator
+        }
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            return
+        case 1:
+            self.showMyItemsList(isSavedItem: true)
+        case 2:
+            self.showMyItemsList(isSavedItem: false)
+        case 3:
+            self.showDeletedItemsList()
+        case 4:
+            self.logoutUser()
+        default :
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 55
     }
 }
 

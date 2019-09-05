@@ -30,22 +30,24 @@ class ItemListForSaleVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initialSetup()
+        progressView.showActivity()
+        self.fetchItemList()
         // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.fetchItemList()
     }
     
     func initialSetup() {
+        self.tabBarController?.delegate = self
         self.btnListedItems.layer.borderColor = UIColor.lightGray.cgColor
         self.btnSavedItems.layer.borderColor = UIColor.lightGray.cgColor
     }
     
     //MARK: - Fetch List Of Items
     func fetchItemList() {
-        let itemRef = db.collection(kListedItems).order(by: "created", descending: true)
+        let itemRef = db.collection(kListedItems).whereField("isPosted", isEqualTo: true).whereField("isArchived", isEqualTo: false).order(by: "created", descending: true)
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
                 var arr = Array<[String : Any]>()
@@ -62,18 +64,20 @@ class ItemListForSaleVC: UIViewController {
                 }else {
                     self.tblItemList.tableFooterView = UIView.init(frame: CGRect.zero)
                 }
-
                 do {
                     let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
                     let jsonDecoder = JSONDecoder()
                     //                                    var userdata = UserData.sharedInstance
                     self.arrItems = try jsonDecoder.decode([ItemsDetail].self, from: jsonData!)
-                    self.tblItemList.reloadData()
+                    DispatchQueue.main.async {
+                        self.tblItemList.reloadData()
+                    }
                 }
                 catch {
                     print(error.localizedDescription)
                 }
             }
+            progressView.hideActivity()
         }
     }
     
@@ -136,11 +140,13 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
         let item = self.arrItems![indexPath.row]
         
         cell.lblItemName.text = item.item_name
-        cell.lblItemBrand.text = item.brand
-        cell.lblDesciption.text = item.description
+        cell.lblItemBrand.text = item.brand?["name"]
+//        cell.lblDesciption.text = item.description
         cell.lblItemPrice.text = "$\(item.price ?? "0.00")"
         cell.pageImgPages.numberOfPages = item.item_images?.count ?? 0
+        cell.pageImgPages.isHidden = (item.item_images?.count ?? 0) <= 1
         cell.collectionImages.tag = indexPath.row
+        cell.collectionImages.allowsSelection = false
         cell.collectionImages.reloadData()
         
         return cell
@@ -193,7 +199,15 @@ extension ItemListForSaleVC : UICollectionViewDelegate, UICollectionViewDataSour
         return CGSize(width: self.view.frame.size.width, height: collectionView.frame.size.height)
     }
     
-    
+}
+
+extension ItemListForSaleVC : UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if viewController == self.navigationController {
+            self.tblItemList.scrollRectToVisible(CGRect.init(x: 0, y: 0, width: 50, height: 50), animated: true)
+            self.fetchItemList()
+        }
+    }
 }
 
 
@@ -208,4 +222,7 @@ class ItemListCell : UITableViewCell {
     @IBOutlet weak var lblDesciption: UILabel!
     @IBOutlet weak var collectionImages: UICollectionView!
     @IBOutlet weak var pageImgPages: UIPageControl!
+    @IBOutlet weak var btnMore: UIButton!
+    @IBOutlet weak var btnBuy: UIButton!
+    @IBOutlet weak var btnDetails: UIButton!
 }
