@@ -33,6 +33,7 @@ class ItemListForSaleVC: UIViewController {
         progressView.showActivity()
         self.fetchItemList()
         // Do any additional setup after loading the view.
+        tblItemList.register(UINib(nibName: "ItemCardTableCell", bundle: nil), forCellReuseIdentifier: "Cell")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -136,6 +137,7 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! ItemListCell
         let item = self.arrItems![indexPath.row]
         
@@ -143,8 +145,13 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
         cell.lblItemBrand.text = item.brand?["name"]
 //        cell.lblDesciption.text = item.description
         cell.lblItemPrice.text = "$\(item.price ?? "0.00")"
+        
         cell.pageImgPages.numberOfPages = item.item_images?.count ?? 0
         cell.pageImgPages.isHidden = (item.item_images?.count ?? 0) <= 1
+        
+        cell.collectionImages.register(ItemImagesCollectionCell.classForCoder(), forCellWithReuseIdentifier: "CellItemImage")
+        cell.collectionImages.dataSource = self
+        cell.collectionImages.delegate = self
         cell.collectionImages.tag = indexPath.row
         cell.collectionImages.allowsSelection = false
         cell.collectionImages.reloadData()
@@ -185,12 +192,15 @@ extension ItemListForSaleVC : UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellImg", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellItemImage", for: indexPath) as! ItemImagesCollectionCell
+        let imgView = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: cell.frame.size.width, height: cell.frame.size.height))
+        imgView.contentMode = .scaleAspectFill
+        cell.addSubview(imgView)
         
         let item = self.arrItems![collectionView.tag]
         let storageRef = storage.reference(withPath: item.item_images![indexPath.row])
-        (cell.viewWithTag(11) as! UIImageView).image = UIImage.init(named: "no-image")
-        (cell.viewWithTag(11) as! UIImageView).sd_setImage(with: storageRef, placeholderImage: UIImage.init(named: "no-image"))
+        imgView.image = UIImage.init(named: "no-image")
+        imgView.sd_setImage(with: storageRef, placeholderImage: UIImage.init(named: "no-image"))
         
         return cell
     }
@@ -211,18 +221,3 @@ extension ItemListForSaleVC : UITabBarControllerDelegate {
 }
 
 
-//MARK: - 
-class ItemListCell : UITableViewCell {
-    @IBOutlet weak var imgItem: UIImageView!
-    @IBOutlet weak var lblItemBrand: UILabel!
-    @IBOutlet weak var lblItemName: UILabel!
-    @IBOutlet weak var lblItemCategory: UILabel!
-    @IBOutlet weak var lblItemCondition: UILabel!
-    @IBOutlet weak var lblItemPrice: UILabel!
-    @IBOutlet weak var lblDesciption: UILabel!
-    @IBOutlet weak var collectionImages: UICollectionView!
-    @IBOutlet weak var pageImgPages: UIPageControl!
-    @IBOutlet weak var btnMore: UIButton!
-    @IBOutlet weak var btnBuy: UIButton!
-    @IBOutlet weak var btnDetails: UIButton!
-}
