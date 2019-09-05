@@ -149,7 +149,7 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
         cell.pageImgPages.numberOfPages = item.item_images?.count ?? 0
         cell.pageImgPages.isHidden = (item.item_images?.count ?? 0) <= 1
         
-        cell.collectionImages.register(ItemImagesCollectionCell.classForCoder(), forCellWithReuseIdentifier: "CellImg")
+        cell.collectionImages.register(ItemImagesCollectionCell.classForCoder(), forCellWithReuseIdentifier: "CellItemImage")
         cell.collectionImages.dataSource = self
         cell.collectionImages.delegate = self
         cell.collectionImages.tag = indexPath.row
@@ -192,7 +192,7 @@ extension ItemListForSaleVC : UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellImg", for: indexPath) as! ItemImagesCollectionCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellItemImage", for: indexPath) as! ItemImagesCollectionCell
         let imgView = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: cell.frame.size.width, height: cell.frame.size.height))
         imgView.contentMode = .scaleAspectFill
         cell.addSubview(imgView)
