@@ -27,7 +27,7 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     //MARK: - Firebase -> Save Data
-    func saveData(loginDict : [String : Any]) {
+    func saveDataToFireBase(loginDict : [String : Any]) {
         //        var ref: DocumentReference? = nil
         //        ref = db.collection("users").addDocument(data: self.loginDict) { err in
         //            if let err = err {
@@ -44,6 +44,24 @@ class ViewController: UIViewController {
                 print("Document added with ID:\n\n\n\n\n ")
             }
         })
+    }
+    
+    func getPreviousLoginData(loginDict : NSDictionary) {
+        if let loginData = loginDict.mutableCopy() as? NSMutableDictionary {
+            let timeStamp = Int(Date().timeIntervalSince1970 * 1000)
+            loginData["last_login"] = timeStamp
+            db.collection("Users").document("\(loginData["id"] ?? "N/A")").getDocument(source: .server, completion: { (document, err) in
+                if let data = document?.data() {
+                    loginData["my_bookmarks"] = data["my_bookmarks"]
+                    self.saveDataAndNavigateToHome(loginDict: loginData)
+                }else if err != nil {
+                    print(err?.localizedDescription ?? "Error login")
+                }else {
+                    loginData["my_bookmarks"] = [String]()
+                    self.saveDataAndNavigateToHome(loginDict: loginData)
+                }
+            })
+        }
     }
     
     //MARK: - IBAction
@@ -98,20 +116,12 @@ class ViewController: UIViewController {
             if (error == nil){
                 let fbDetails = result as! NSDictionary
                 print(fbDetails)
-                self.saveUserData(userDict: fbDetails)
-                self.initUserModel(userDict: fbDetails)
-                UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "TabVc")
-                progressView.hideActivity()
+                self.getPreviousLoginData(loginDict: fbDetails)
             }else {
                 print(error?.localizedDescription ?? "Unknown Error.")
                 progressView.hideActivity()
             }
         })
-    }
-    
-    func saveUserData(userDict : NSDictionary) {
-        HelperClass.saveDataToDefaults(dataObject: userDict, key: kUserData)
-        self.saveData(loginDict: userDict as! [String : Any])
     }
     
     func initUserModel(userDict : NSDictionary) {
@@ -125,6 +135,14 @@ class ViewController: UIViewController {
         catch {
             print(error.localizedDescription)
         }
+    }
+    
+    func saveDataAndNavigateToHome(loginDict : NSDictionary) {
+        HelperClass.saveDataToDefaults(dataObject: loginDict, key: kUserData)
+        self.initUserModel(userDict: loginDict)
+        self.saveDataToFireBase(loginDict: loginDict as! [String : Any])
+        UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "TabVc")
+        progressView.hideActivity()
     }
 }
 

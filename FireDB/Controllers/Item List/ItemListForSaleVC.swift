@@ -31,6 +31,7 @@ class ItemListForSaleVC: UIViewController {
         super.viewDidLoad()
         self.initialSetup()
         progressView.showActivity()
+        
         self.fetchItemList()
         // Do any additional setup after loading the view.
         tblItemList.register(UINib(nibName: "ItemCardTableCell", bundle: nil), forCellReuseIdentifier: "Cell")
@@ -44,17 +45,21 @@ class ItemListForSaleVC: UIViewController {
         self.tabBarController?.delegate = self
         self.btnListedItems.layer.borderColor = UIColor.lightGray.cgColor
         self.btnSavedItems.layer.borderColor = UIColor.lightGray.cgColor
+        if userdata.my_bookmarks == nil {
+            userdata.my_bookmarks = [String]()
+        }
     }
     
-    //MARK: - Fetch List Of Items
+    //MARK: - Firebase Methods
     func fetchItemList() {
         let itemRef = db.collection(kListedItems).whereField("isPosted", isEqualTo: true).whereField("isArchived", isEqualTo: false).order(by: "created", descending: true)
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
-                var arr = Array<[String : Any]>()
-                for doc in documents {
-                    arr.append(doc.data())
-                }
+                let arr = documents.map({ (doc) -> [String : Any] in
+                    var dict =  doc.data()
+                    dict["id"] = doc.documentID
+                    return dict
+                })
                 if arr.count <= 0 {
                     let lbl = UILabel()
                     lbl.text = "No items found"
@@ -79,6 +84,28 @@ class ItemListForSaleVC: UIViewController {
                 }
             }
             progressView.hideActivity()
+        }
+    }
+    
+    func saveBookmarkedItemId(itemId : String) {
+        db.collection("Users").document(userdata.id).setData(["my_bookmarks" : FieldValue.arrayUnion([itemId])], merge: true) { (err) in
+            if (err != nil) {
+                HelperClass.showAlert(msg: err?.localizedDescription ?? "Failed to update changes", isBack: false, vc: self)
+            }else {
+                userdata.my_bookmarks?.append(itemId)
+                self.saveBookmarksToUserDefaults()
+            }
+        }
+    }
+    
+    func removeBookmarkedItemId(itemId : String) {
+        db.collection("Users").document(userdata.id).setData(["my_bookmarks" : FieldValue.arrayRemove([itemId])], merge: true) { (err) in
+            if (err != nil) {
+                HelperClass.showAlert(msg: err?.localizedDescription ?? "Failed to update changes", isBack: false, vc: self)
+            }else {
+                userdata.my_bookmarks?.removeAll(where: {$0 == itemId})
+                self.saveBookmarksToUserDefaults()
+            }
         }
     }
     
@@ -118,6 +145,28 @@ class ItemListForSaleVC: UIViewController {
         self.navigationController?.show(vc, sender: self)
     }
     
+    @IBAction func btnBookmarkAction(_ sender: UIButton) {
+        if let itemId = self.arrItems?[sender.tag].id {
+            var imgName = "bookmark_outline"
+            if userdata.my_bookmarks?.contains(itemId) ?? false {
+                self.removeBookmarkedItemId(itemId: itemId)
+            }else {
+                self.saveBookmarkedItemId(itemId: itemId)
+                imgName = "bookmark_filled"
+            }
+            UIView.transition(with: sender as UIView, duration: 0.5, options: .transitionCrossDissolve, animations: {
+                sender.setImage(UIImage(named: imgName), for: .normal)
+            }, completion: nil)
+        }
+    }
+    
+    //MARK: - Custom methods
+    func saveBookmarksToUserDefaults() {
+        let userDict = HelperClass.fetchDataFromDefaults(with: kUserData).mutableCopy() as! NSMutableDictionary
+        userDict["my_bookmarks"] = userdata.my_bookmarks
+        HelperClass.saveDataToDefaults(dataObject: userDict, key: kUserData)
+    }
+    
     /*
     // MARK - Navigation
 
@@ -155,7 +204,13 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
         cell.collectionImages.tag = indexPath.row
         cell.collectionImages.allowsSelection = false
         cell.collectionImages.reloadData()
-        
+        cell.btnBookmark.tag = indexPath.row
+        cell.btnBookmark.addTarget(self, action: #selector(self.btnBookmarkAction(_:)), for: .touchUpInside)
+        if userdata.my_bookmarks?.contains(item.id ?? " ") ?? false {
+            cell.btnBookmark.setImage(UIImage.init(named: "bookmark_filled"), for: .normal)
+        }else {
+            cell.btnBookmark.setImage(UIImage.init(named: "bookmark_outline"), for: .normal)
+        }
         return cell
     }
     
