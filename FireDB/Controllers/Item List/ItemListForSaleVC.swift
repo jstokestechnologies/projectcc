@@ -22,18 +22,16 @@ class ItemListForSaleVC: UIViewController {
     
     
     //MARK: - Variables
-    var refreshControl = UIRefreshControl()
     var arrItems : [ItemsDetail]?
     lazy var storage = Storage.storage()
-    var bookmarkPage = 0
-    var isLoadingList = true
+    
     
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initialSetup()
+        progressView.showActivity()
         if self.tabBarController?.selectedIndex == 0 {
-            progressView.showActivity()
             self.fetchItemList()
         }
         // Do any additional setup after loading the view.
@@ -49,11 +47,6 @@ class ItemListForSaleVC: UIViewController {
         super.viewDidAppear(animated)
         if self.tabBarController?.selectedIndex == 3 {
             self.arrItems = [ItemsDetail]()
-            self.arrItems?.removeAll()
-            self.tblItemList.reloadData()
-            self.bookmarkPage = 0
-            self.isLoadingList = true
-            progressView.showActivity()
             self.fetchBookmarkedItems()
         }
     }
@@ -65,57 +58,33 @@ class ItemListForSaleVC: UIViewController {
         if userdata.my_bookmarks == nil {
             userdata.my_bookmarks = [String]()
         }
-        self.refreshControl.addTarget(self, action: #selector(self.refreshControllAction(_:)), for: .valueChanged)
-        self.tblItemList.refreshControl = self.refreshControl
     }
     
     //MARK: - Firebase Methods
     func fetchBookmarkedItems() {
-        let concurrentQueue = DispatchQueue(label: "com.queue.Concurrent", attributes: .concurrent)
-        let group = DispatchGroup()
-        
-        // Fetch item data
-        if (userdata.my_bookmarks?.count ?? 0) > (self.bookmarkPage * 2) {
-            var arrBookmarks = userdata.my_bookmarks
-            if arrBookmarks?.count ?? 0 <= self.bookmarkPage * 2 {
-                return
-            }
-            arrBookmarks?.removeFirst(self.bookmarkPage * 2)
-            let remainingItems = arrBookmarks?.count ?? 0
-            if remainingItems > 2 {
-                arrBookmarks?.removeLast(remainingItems - 2)
-            }
-            for itemId in arrBookmarks! {
-                group.enter()
-                concurrentQueue.async {
-                    let itemRef = db.collection(kListedItems).document("/\(itemId)")
-                    itemRef.getDocument { (doc, err) in
-                        if let data = doc?.data() {
-                            do {
-                                let jsonData  = try? JSONSerialization.data(withJSONObject: data, options:.prettyPrinted)
-                                let jsonDecoder = JSONDecoder()
-                                let itemData = try jsonDecoder.decode(ItemsDetail.self, from: jsonData!)
-                                itemData.id = itemId
-                                self.arrItems?.append(itemData)
-                            }
-                            catch {
-                                print(error.localizedDescription)
-                            }
-                            group.leave()
+        if userdata.my_bookmarks?.count ?? 0 > 0 {
+            let reqParam = ["documents" : userdata.my_bookmarks?.compactMap({"projects/projectcc-a98a4/databases/(default)/documents/listed_items/\($0)"}) ?? " ",
+                            "newTransaction"  : NSDictionary()] as [String : Any]
+            HelperClass.requestForAllApiWithBody(param: reqParam as NSDictionary, serverUrl: "https://firestore.googleapis.com/v1beta1/projects/projectcc-a98a4/databases/(default)/documents:batchGet", vc: self) { (itemData, msg, status) in
+                if var arrItems = itemData["array"] as? Array<Any> , arrItems.count > 1 {
+                    arrItems.remove(at: 0)
+                    let arr = arrItems.map({(($0 as? NSDictionary)?.object(forKey: "found") as? NSDictionary)?.object(forKey: "fields") })
+                    
+                    for i in 0..<arr.count {
+                        var itemId = (((arrItems[i]) as? NSDictionary)?.object(forKey: "found") as? NSDictionary)?.value(forKey: "name") as? String
+                        itemId = itemId?.components(separatedBy: "/").last
+                        
+                        let item = arr[i]
+                        if let itemDict = item as? NSDictionary {
+                            self.addNewItemToListWithData(itemDict: itemDict, itemId: itemId)
                         }
                     }
+                    self.tblItemList.reloadData()
                 }
-            }
-        }
-        
-        // Notify when done fetching bookmarked items
-        group.notify(queue: DispatchQueue.main) {
-            DispatchQueue.main.async {
-                self.setTableFooter(count: self.arrItems?.count ?? 0)
-                self.tblItemList.reloadData()
                 progressView.hideActivity()
-                self.isLoadingList = false
             }
+        }else {
+            
         }
     }
     
@@ -219,21 +188,6 @@ class ItemListForSaleVC: UIViewController {
         }
     }
     
-    @IBAction func refreshControllAction(_ sender: Any) {
-        progressView.showActivity()
-        if self.tabBarController?.selectedIndex == 0 {
-            self.fetchItemList()
-        }else {
-            self.arrItems = [ItemsDetail]()
-            self.arrItems?.removeAll()
-            self.isLoadingList = true
-            self.bookmarkPage = 0
-            self.tblItemList.reloadData()
-            self.fetchBookmarkedItems()
-        }
-        self.refreshControl.endRefreshing()
-    }
-    
     //MARK: - Custom methods
     func saveBookmarksToUserDefaults() {
         let userDict = HelperClass.fetchDataFromDefaults(with: kUserData).mutableCopy() as! NSMutableDictionary
@@ -254,13 +208,25 @@ class ItemListForSaleVC: UIViewController {
         }
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if (((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height ) && !isLoadingList) && (userdata.my_bookmarks?.count ?? 0) > (self.arrItems?.count ?? 0) && self.tabBarController?.selectedIndex == 3 {
-            self.isLoadingList = true
-            self.bookmarkPage = self.bookmarkPage + 1
-            self.fetchBookmarkedItems()
-//            self.tblItemList.reloadData()
-        }
+    func addNewItemToListWithData(itemDict : NSDictionary, itemId : String?) {
+        let itemObj = ItemsDetail()
+        itemObj.item_name = "\((itemDict.value(forKey: "item_name") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"
+        
+        itemObj.price = "\((itemDict.value(forKey: "price") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"
+        
+        let brand = ((itemDict.value(forKey: "brand") as? NSDictionary)?.object(forKey: "mapValue") as? NSDictionary)?.object(forKey: "fields") as? NSDictionary
+        itemObj.brand = ["id" :  "\((brand?.object(forKey: "id") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")",
+            "name" :  "\((brand?.object(forKey: "name") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")",
+            "user" :  "\((brand?.object(forKey: "user") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"]
+        
+        let imagesData = ((itemDict.value(forKey: "item_images") as? NSDictionary)?.object(forKey: "arrayValue") as? NSDictionary)?.object(forKey: "values") as? [NSDictionary]
+        let arrImages = imagesData?.compactMap({"\($0.value(forKey: "stringValue") ?? "")"})
+        
+        itemObj.item_images = arrImages
+        itemObj.images_added = itemObj.item_images?.count ?? 0
+        itemObj.id = itemId
+        
+        self.arrItems?.append(itemObj)
     }
     
     /*
@@ -364,7 +330,7 @@ extension ItemListForSaleVC : UICollectionViewDelegate, UICollectionViewDataSour
 
 extension ItemListForSaleVC : UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        if self.tabBarController?.selectedIndex == 0  {
+        if viewController == self.navigationController && self.tabBarController?.selectedIndex == 0  {
             self.tblItemList.scrollRectToVisible(CGRect.init(x: 0, y: 0, width: 50, height: 50), animated: true)
             self.fetchItemList()
         }
