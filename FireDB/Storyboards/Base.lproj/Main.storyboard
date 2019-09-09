@@ -1837,7 +1837,7 @@
                                                     <color key="pageIndicatorTintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <color key="currentPageIndicatorTintColor" red="0.25098039220000001" green="0.34509803919999998" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </pageControl>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HZJ-nJ-3nP">
+                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HZJ-nJ-3nP">
                                                     <rect key="frame" x="5" y="366.66666666666669" width="40" height="30"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="30" id="9eF-gV-OGC"/>
@@ -1973,7 +1973,7 @@
                         </textAttributes>
                     </navigationBar>
                     <connections>
-                        <segue destination="9SD-80-2I5" kind="relationship" relationship="rootViewController" id="cJD-rd-hZ6"/>
+                        <segue destination="eI2-LX-5aT" kind="relationship" relationship="rootViewController" id="rss-17-oAN"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="B0K-s5-Atg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2089,7 +2089,7 @@
                                                     <color key="pageIndicatorTintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <color key="currentPageIndicatorTintColor" red="0.25098039220000001" green="0.34509803919999998" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </pageControl>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Slc-pe-xWm">
+                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Slc-pe-xWm">
                                                     <rect key="frame" x="5" y="366.66666666666669" width="40" height="30"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="30" id="BH8-fA-Y9m"/>
@@ -2180,11 +2180,11 @@
             <objects>
                 <viewController title="Items For Sale" useStoryboardIdentifierAsRestorationIdentifier="YES" id="9SD-80-2I5" customClass="ItemListForSaleVC" customModule="FireDB" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="2Vx-bS-hWb">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="641"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="zcL-vr-YCn">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="641"/>
+                                <rect key="frame" x="0.0" y="44" width="375" height="734"/>
                                 <color key="backgroundColor" red="0.97490410719999998" green="0.97338014309999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <view key="tableFooterView" contentMode="scaleToFill" id="YEq-Lk-tvb">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
@@ -2197,7 +2197,7 @@
                                 </connections>
                             </tableView>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iGp-ok-97t">
-                                <rect key="frame" x="0.0" y="641" width="375" height="0.0"/>
+                                <rect key="frame" x="0.0" y="778" width="375" height="0.0"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gd6-pi-0c4">
                                         <rect key="frame" x="20" y="10" width="335" height="45"/>
@@ -2335,4 +2335,7 @@
         <image name="more" width="128" height="128"/>
         <image name="upload" width="40" height="40"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="rss-17-oAN"/>
+    </inferredMetricsTieBreakers>
 </document>

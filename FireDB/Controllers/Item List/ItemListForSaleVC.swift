@@ -22,23 +22,40 @@ class ItemListForSaleVC: UIViewController {
     
     
     //MARK: - Variables
+    var refreshControl = UIRefreshControl()
     var arrItems : [ItemsDetail]?
     lazy var storage = Storage.storage()
-    
+    var bookmarkPage = 0
+    var isLoadingList = true
     
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initialSetup()
-        progressView.showActivity()
-        
-        self.fetchItemList()
+        if self.tabBarController?.selectedIndex == 0 {
+            progressView.showActivity()
+            self.fetchItemList()
+        }
         // Do any additional setup after loading the view.
         tblItemList.register(UINib(nibName: "ItemCardTableCell", bundle: nil), forCellReuseIdentifier: "Cell")
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if self.tabBarController?.selectedIndex == 3 {
+            self.arrItems = [ItemsDetail]()
+            self.arrItems?.removeAll()
+            self.tblItemList.reloadData()
+            self.bookmarkPage = 0
+            self.isLoadingList = true
+            progressView.showActivity()
+            self.fetchBookmarkedItems()
+        }
     }
     
     func initialSetup() {
@@ -48,9 +65,60 @@ class ItemListForSaleVC: UIViewController {
         if userdata.my_bookmarks == nil {
             userdata.my_bookmarks = [String]()
         }
+        self.refreshControl.addTarget(self, action: #selector(self.refreshControllAction(_:)), for: .valueChanged)
+        self.tblItemList.refreshControl = self.refreshControl
     }
     
     //MARK: - Firebase Methods
+    func fetchBookmarkedItems() {
+        let concurrentQueue = DispatchQueue(label: "com.queue.Concurrent", attributes: .concurrent)
+        let group = DispatchGroup()
+        
+        // Fetch item data
+        if (userdata.my_bookmarks?.count ?? 0) > (self.bookmarkPage * 2) {
+            var arrBookmarks = userdata.my_bookmarks
+            if arrBookmarks?.count ?? 0 <= self.bookmarkPage * 2 {
+                return
+            }
+            arrBookmarks?.removeFirst(self.bookmarkPage * 2)
+            let remainingItems = arrBookmarks?.count ?? 0
+            if remainingItems > 2 {
+                arrBookmarks?.removeLast(remainingItems - 2)
+            }
+            for itemId in arrBookmarks! {
+                group.enter()
+                concurrentQueue.async {
+                    let itemRef = db.collection(kListedItems).document("/\(itemId)")
+                    itemRef.getDocument { (doc, err) in
+                        if let data = doc?.data() {
+                            do {
+                                let jsonData  = try? JSONSerialization.data(withJSONObject: data, options:.prettyPrinted)
+                                let jsonDecoder = JSONDecoder()
+                                let itemData = try jsonDecoder.decode(ItemsDetail.self, from: jsonData!)
+                                itemData.id = itemId
+                                self.arrItems?.append(itemData)
+                            }
+                            catch {
+                                print(error.localizedDescription)
+                            }
+                            group.leave()
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Notify when done fetching bookmarked items
+        group.notify(queue: DispatchQueue.main) {
+            DispatchQueue.main.async {
+                self.setTableFooter(count: self.arrItems?.count ?? 0)
+                self.tblItemList.reloadData()
+                progressView.hideActivity()
+                self.isLoadingList = false
+            }
+        }
+    }
+    
     func fetchItemList() {
         let itemRef = db.collection(kListedItems).whereField("isPosted", isEqualTo: true).whereField("isArchived", isEqualTo: false).order(by: "created", descending: true)
         itemRef.getDocuments { (docs, err) in
@@ -60,16 +128,7 @@ class ItemListForSaleVC: UIViewController {
                     dict["id"] = doc.documentID
                     return dict
                 })
-                if arr.count <= 0 {
-                    let lbl = UILabel()
-                    lbl.text = "No items found"
-                    lbl.textAlignment = .center
-                    lbl.sizeToFit()
-                    lbl.frame.size.height = 60
-                    self.tblItemList.tableFooterView = lbl
-                }else {
-                    self.tblItemList.tableFooterView = UIView.init(frame: CGRect.zero)
-                }
+                self.setTableFooter(count: arr.count)
                 do {
                     let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
                     let jsonDecoder = JSONDecoder()
@@ -160,11 +219,48 @@ class ItemListForSaleVC: UIViewController {
         }
     }
     
+    @IBAction func refreshControllAction(_ sender: Any) {
+        progressView.showActivity()
+        if self.tabBarController?.selectedIndex == 0 {
+            self.fetchItemList()
+        }else {
+            self.arrItems = [ItemsDetail]()
+            self.arrItems?.removeAll()
+            self.isLoadingList = true
+            self.bookmarkPage = 0
+            self.tblItemList.reloadData()
+            self.fetchBookmarkedItems()
+        }
+        self.refreshControl.endRefreshing()
+    }
+    
     //MARK: - Custom methods
     func saveBookmarksToUserDefaults() {
         let userDict = HelperClass.fetchDataFromDefaults(with: kUserData).mutableCopy() as! NSMutableDictionary
         userDict["my_bookmarks"] = userdata.my_bookmarks
         HelperClass.saveDataToDefaults(dataObject: userDict, key: kUserData)
+    }
+    
+    func setTableFooter(count : Int) {
+        if count <= 0 {
+            let lbl = UILabel()
+            lbl.text = "No items found"
+            lbl.textAlignment = .center
+            lbl.sizeToFit()
+            lbl.frame.size.height = 60
+            self.tblItemList.tableFooterView = lbl
+        }else {
+            self.tblItemList.tableFooterView = UIView.init(frame: CGRect.zero)
+        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if (((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height ) && !isLoadingList) && (userdata.my_bookmarks?.count ?? 0) > (self.arrItems?.count ?? 0) && self.tabBarController?.selectedIndex == 3 {
+            self.isLoadingList = true
+            self.bookmarkPage = self.bookmarkPage + 1
+            self.fetchBookmarkedItems()
+//            self.tblItemList.reloadData()
+        }
     }
     
     /*
@@ -268,7 +364,7 @@ extension ItemListForSaleVC : UICollectionViewDelegate, UICollectionViewDataSour
 
 extension ItemListForSaleVC : UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        if viewController == self.navigationController {
+        if self.tabBarController?.selectedIndex == 0  {
             self.tblItemList.scrollRectToVisible(CGRect.init(x: 0, y: 0, width: 50, height: 50), animated: true)
             self.fetchItemList()
         }
