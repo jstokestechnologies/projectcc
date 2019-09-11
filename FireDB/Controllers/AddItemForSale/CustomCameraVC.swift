@@ -18,7 +18,9 @@ class CustomCameraVC: UIViewController, UINavigationControllerDelegate, UIImageP
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.addCameraView()
+        DispatchQueue.main.async {
+            self.addCameraView()
+        }
         // Do any additional setup after loading the view.
     }
     

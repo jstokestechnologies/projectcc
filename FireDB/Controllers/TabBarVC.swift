@@ -12,7 +12,7 @@ class TabBarVC: UITabBarController {
     @IBOutlet weak var btnSell: UIButton!
     
     var btnWidth = CGFloat(60.0)
-    var btnHeightOverTab = CGFloat(-15.0)
+    var btnHeightOverTab = CGFloat(-20.0)
     
     override func viewDidLoad() {
         super.viewDidLoad()
