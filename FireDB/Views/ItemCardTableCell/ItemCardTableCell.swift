@@ -34,6 +34,8 @@ class ItemListCell : UITableViewCell {
     @IBOutlet weak var btnMore: UIButton!
     @IBOutlet weak var btnBuy: UIButton!
     @IBOutlet weak var btnDetails: UIButton!
+    @IBOutlet weak var btnBookmark: UIButton!
+    @IBOutlet weak var btnShare: UIButton!
     
     override func draw(_ rect: CGRect) {
 //        self.collectionImages.register(CollectionImagesCell.classForCoder(), forCellWithReuseIdentifier: "CellImg")
