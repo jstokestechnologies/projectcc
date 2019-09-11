@@ -13,6 +13,7 @@ class CustomCameraVC: UIViewController, UINavigationControllerDelegate, UIImageP
     @IBOutlet weak var viewCamera: UIView!
     @IBOutlet weak var viewCrop: UIView!
     
+    @IBOutlet weak var btnFlash: UIButton!
     
     let imagePickers = UIImagePickerController()
     
@@ -30,6 +31,7 @@ class CustomCameraVC: UIViewController, UINavigationControllerDelegate, UIImageP
             imagePickers.delegate = self
             imagePickers.sourceType = .camera
             imagePickers.cameraDevice = .rear
+            self.imagePickers.cameraFlashMode = .off
             //add as a childviewcontroller
             addChild(imagePickers)
             
@@ -62,6 +64,25 @@ class CustomCameraVC: UIViewController, UINavigationControllerDelegate, UIImageP
         imagePicker.sourceType = .savedPhotosAlbum
         imagePicker.allowsEditing = true
         present(imagePicker, animated: true, completion: nil)
+    }
+    
+    @IBAction func btnChangeCameraFlashAction(_ sender : UIButton) {
+        let alert = UIAlertController.init(title: nil, message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction.init(title: "Auto", style: .default, handler: { (alrt) in
+            self.imagePickers.cameraFlashMode = .auto
+            self.btnFlash.setImage(UIImage.init(named: "auto_focus"), for: .normal)
+        }))
+        alert.addAction(UIAlertAction.init(title: "On", style: .default, handler: { (alrt) in
+            self.imagePickers.cameraFlashMode = .on
+            self.btnFlash.setImage(UIImage.init(named: "camera-flash"), for: .normal)
+        }))
+        alert.addAction(UIAlertAction.init(title: "Off", style: .default, handler: { (alrt) in
+            self.imagePickers.cameraFlashMode = .off
+            self.btnFlash.setImage(UIImage.init(named: "no_focus"), for: .normal)
+        }))
+        alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (alrt) in
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
     
     @IBAction func btnCloseAction(_ sender : UIButton) {

@@ -1738,6 +1738,19 @@
                                     <constraint firstAttribute="trailing" secondItem="mJp-sF-ofx" secondAttribute="trailing" constant="20" id="jqM-ns-ycK"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m6i-Kb-fPi">
+                                <rect key="frame" x="320" y="49" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="YKX-pg-Yye"/>
+                                    <constraint firstAttribute="width" constant="40" id="mTu-mB-g7H"/>
+                                </constraints>
+                                <color key="tintColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <inset key="imageEdgeInsets" minX="6" minY="8" maxX="6" maxY="8"/>
+                                <state key="normal" image="no_focus"/>
+                                <connections>
+                                    <action selector="btnChangeCameraFlashAction:" destination="cuJ-FN-BHq" eventType="touchUpInside" id="YHU-qI-Pez"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ac2-QM-JxA">
                                 <rect key="frame" x="15" y="49" width="40" height="40"/>
                                 <constraints>
@@ -1763,6 +1776,7 @@
                             <constraint firstItem="ac2-QM-JxA" firstAttribute="leading" secondItem="L2P-KN-tPh" secondAttribute="leading" constant="15" id="EBd-se-9Rh"/>
                             <constraint firstItem="NRj-DD-EcG" firstAttribute="centerX" secondItem="Mgg-sx-8DK" secondAttribute="centerX" id="IHo-9q-4TC"/>
                             <constraint firstItem="LsT-99-ci0" firstAttribute="top" secondItem="6nm-ew-Py2" secondAttribute="bottom" id="MSY-9s-hDo"/>
+                            <constraint firstItem="L2P-KN-tPh" firstAttribute="trailing" secondItem="m6i-Kb-fPi" secondAttribute="trailing" constant="15" id="NKJ-k6-tUq"/>
                             <constraint firstItem="g1w-Cg-6fK" firstAttribute="bottom" secondItem="6nm-ew-Py2" secondAttribute="bottom" id="RYV-Yv-VJF"/>
                             <constraint firstItem="L2P-KN-tPh" firstAttribute="trailing" secondItem="g1w-Cg-6fK" secondAttribute="trailing" id="U0u-iw-uQB"/>
                             <constraint firstItem="L2P-KN-tPh" firstAttribute="trailing" secondItem="59Q-cr-NcE" secondAttribute="trailing" id="VLt-Jd-Zx1"/>
@@ -1770,6 +1784,7 @@
                             <constraint firstItem="ac2-QM-JxA" firstAttribute="top" secondItem="L2P-KN-tPh" secondAttribute="top" constant="5" id="aRp-pN-XFA"/>
                             <constraint firstItem="L2P-KN-tPh" firstAttribute="trailing" secondItem="LsT-99-ci0" secondAttribute="trailing" id="bsK-Tv-K5F"/>
                             <constraint firstItem="2T4-58-eKq" firstAttribute="leading" secondItem="L2P-KN-tPh" secondAttribute="leading" id="cV0-UW-nBc"/>
+                            <constraint firstItem="m6i-Kb-fPi" firstAttribute="centerY" secondItem="ac2-QM-JxA" secondAttribute="centerY" id="gYS-iy-gTU"/>
                             <constraint firstItem="59Q-cr-NcE" firstAttribute="leading" secondItem="L2P-KN-tPh" secondAttribute="leading" id="gb4-6z-waD"/>
                             <constraint firstItem="g1w-Cg-6fK" firstAttribute="top" secondItem="NRj-DD-EcG" secondAttribute="bottom" id="gdQ-i3-Qzx"/>
                             <constraint firstItem="L2P-KN-tPh" firstAttribute="bottom" secondItem="59Q-cr-NcE" secondAttribute="bottom" id="iDA-lc-L0I"/>
@@ -1782,6 +1797,7 @@
                         <viewLayoutGuide key="safeArea" id="L2P-KN-tPh"/>
                     </view>
                     <connections>
+                        <outlet property="btnFlash" destination="m6i-Kb-fPi" id="J2J-eO-nuM"/>
                         <outlet property="viewCamera" destination="6nm-ew-Py2" id="5S5-H2-x7W"/>
                         <outlet property="viewCrop" destination="NRj-DD-EcG" id="qym-II-6h9"/>
                     </connections>
@@ -1890,7 +1906,7 @@
                                     <constraint firstItem="Cgw-rb-h99" firstAttribute="leading" secondItem="l6u-pC-Ga8" secondAttribute="leading" constant="20" id="shY-Ik-kka"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jts-vg-md3">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jts-vg-md3">
                                 <rect key="frame" x="0.0" y="698" width="375" height="114"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hhf-V9-iIb">
@@ -2592,6 +2608,7 @@
         <image name="jmjcloud-logo.png" width="587" height="148"/>
         <image name="minus.png" width="96" height="96"/>
         <image name="more" width="128" height="128"/>
+        <image name="no_focus" width="40" height="40"/>
         <image name="photo-camera" width="30" height="30"/>
         <image name="photo_lib" width="40" height="40"/>
         <image name="retake" width="40" height="40"/>
