@@ -67,7 +67,19 @@ class AddSellItemVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.prepareViews()
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "CustomCameraVC") as! CustomCameraVC
+        vc.modalPresentationStyle = .custom
+        self.present(vc, animated: false, completion: nil)
         // Do any additional setup after loading the view.
+        NotificationCenter.default.addObserver(self, selector: #selector(self.notificationImageSelected(_:)), name: Notification.Name.init(rawValue: "ImageSelected"), object: nil)
+        
+        self.hidesBottomBarWhenPushed = true
+//        self.tabBarController?.tabBar.isHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.init("ImageSelected"), object: nil)
     }
     
     func prepareViews() {
@@ -219,7 +231,8 @@ class AddSellItemVC: UITableViewController {
         self.view.endEditing(true)
         let alert = UIAlertController.init(title: "", message: "Are you sure you want to close this window?", preferredStyle: .alert)
         alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
-            self.navigationController?.dismiss(animated: true, completion: nil)
+            self.tabBarController?.selectedIndex = 0
+//            self.navigationController?.dismiss(animated: true, completion: nil)
         }))
         alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
             
@@ -231,6 +244,13 @@ class AddSellItemVC: UITableViewController {
         self.view.endEditing(true)
         if self.validateTextFields() {
             self.showSaveAlert(msg: "Are you sure you want update?")
+        }
+    }
+    
+    @IBAction func notificationImageSelected(_ sender : Any) {
+        if let img = (sender as? Notification)?.userInfo?["image"] as? UIImage {
+            self.arrItemImages.append(img)
+            self.collectionImages.reloadData()
         }
     }
     
