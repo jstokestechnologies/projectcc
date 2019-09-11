@@ -18,6 +18,7 @@ class TabBarVC: UITabBarController {
         super.viewDidLoad()
         UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12, weight: .medium)], for: .normal)
         self.view.insertSubview(self.btnSell, aboveSubview: self.tabBar)
+        self.tabBar.addSubview(self.btnSell)
         btnSell.layer.shadowColor = btnSell.backgroundColor?.cgColor
         btnSell.layer.masksToBounds = false
         btnSell.layer.shadowOffset = CGSize(width: 1, height: 1)
@@ -27,10 +28,20 @@ class TabBarVC: UITabBarController {
         // Do any additional setup after loading the view.
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        self.btnSell.frame = CGRect.init(x: self.tabBar.center.x - (btnWidth/2.0), y: self.view.bounds.height - (self.tabBar.frame.height - self.btnHeightOverTab), width: btnWidth, height: btnWidth)
+        self.btnSell.frame = CGRect.init(x: self.tabBar.center.x - (btnWidth/2.0), y:  (self.btnHeightOverTab), width: btnWidth, height: btnWidth)
         self.btnSell.layer.cornerRadius = btnWidth/2.0
+        self.tabBar.clipsToBounds = false
     }
     
     @IBAction func btnSellAction(_ sender : UIButton) {

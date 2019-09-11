@@ -2,10 +2,7 @@
 //  ViewController.swift
 //  LyEditImageView
 //
-//  Created by Li,Yan(MMS) on 2017/6/10.
-//  Copyright © 2017年 Li,Yan(MMS). All rights reserved.
 
-//<div>Icons made by <a href="http://www.flaticon.com/authors/icon-monk" title="Icon Monk">Icon Monk</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 
 import UIKit
 import AVFoundation
@@ -23,10 +20,10 @@ class LyEditImageView: UIView, UIGestureRecognizerDelegate, CropViewDelegate {
     static let RIGHT_LINE_TAG = 1107
     static let DOWN_LINE_TAG = 1108
     
-    let INIT_CROP_VIEW_SIZE = UIScreen.main.bounds.size.width - 20.0
+    let INIT_CROP_VIEW_SIZE = UIScreen.main.bounds.size.width
     let MINIMAL_CROP_VIEW_SIZE: CGFloat = 100.0
     let MINIMUM_ZOOM_SCALE: CGFloat = 1.0
-    let MAXIMUM_ZOOM_SCALE: CGFloat = 2.0
+    let MAXIMUM_ZOOM_SCALE: CGFloat = 1.0
     
     let screenHeight = UIScreen.main.bounds.size.height
     let screenWidth = UIScreen.main.bounds.size.width
@@ -63,7 +60,7 @@ class LyEditImageView: UIView, UIGestureRecognizerDelegate, CropViewDelegate {
         // set gesture
         initGestureRecognizer()
         
-        initButton()
+//        initButton()
         
         self.isMultipleTouchEnabled = true
     }
@@ -84,7 +81,10 @@ class LyEditImageView: UIView, UIGestureRecognizerDelegate, CropViewDelegate {
         
         imageView.image = image
         imageView.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height);
-        let frame = AVMakeRect(aspectRatio: imageView.frame.size, insideRect: self.frame);
+        var frame = AVMakeRect(aspectRatio: imageView.frame.size, insideRect: self.frame);
+        frame.origin.x = 15.0
+        frame.size.height = (frame.size.height/frame.size.width) * (frame.size.width - 30)
+        frame.size.width = frame.size.width - 30
         imageView.frame = frame
         originImageViewFrame = frame
         NSLog("initWithImage %@", NSCoder.string(for: originImageViewFrame))
@@ -128,16 +128,28 @@ class LyEditImageView: UIView, UIGestureRecognizerDelegate, CropViewDelegate {
         
         initOverLayView()
         
-        cropView = CropView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        var frame = originImageViewFrame!
+        if frame.size.height < frame.size.width {
+            frame.size.width = frame.size.height
+        }else if frame.size.width < frame.size.height {
+            frame.size.height = frame.size.width
+        }
+        
+        cropView = CropView(frame: frame)
+        cropView.center = self.imageView.center
+        
         cropView.tag = CROP_VIEW_TAG;
         cropView.translatesAutoresizingMaskIntoConstraints = false
         cropView.delegate = self
         self.addSubview(cropView)
-
+        
         cropRightMargin = (CGFloat)(originImageViewFrame.size.width / 2) - (CGFloat)(INIT_CROP_VIEW_SIZE / 2)
+        cropRightMargin = cropRightMargin < 15 ? 15 : cropRightMargin
         cropLeftMargin = cropRightMargin
-        cropTopMargin = (CGFloat)(originImageViewFrame.size.height / 2) - (CGFloat)(INIT_CROP_VIEW_SIZE / 2) + (CGFloat)((screenHeight - originImageViewFrame.size.height) / 2)
+        cropTopMargin = (CGFloat)(frame.size.height / 2) - (CGFloat)(INIT_CROP_VIEW_SIZE / 2) + (CGFloat)((screenHeight - frame.size.height) / 2)
+//        cropTopMargin = cropTopMargin < 15 ? 15 : cropTopMargin
         cropBottomMargin = cropTopMargin
+        cropBottomMargin = cropBottomMargin + 30
         
 //        cropLeftMargin = originImageViewFrame.origin.x + 10
 //        cropTopMargin = originImageViewFrame.origin.y + 10
@@ -145,14 +157,14 @@ class LyEditImageView: UIView, UIGestureRecognizerDelegate, CropViewDelegate {
 //        cropBottomMargin = screenHeight - originImageViewFrame.origin.y - originImageViewFrame.size.height + 10
         
         let views = ["cropView":cropView!, "imageView":imageView!] as [String : UIView]
-        let Hvfl = String(format: "H:|-%f-[cropView]-%f-|", cropLeftMargin, cropRightMargin);
-        let Vvfl = String(format: "V:|-%f-[cropView]-%f-|", cropTopMargin, cropBottomMargin)
-        let cropViewHorizentalConstraints = NSLayoutConstraint.constraints(withVisualFormat: Hvfl, options: [], metrics: nil, views: views)
-        let cropViewVerticalConstraints = NSLayoutConstraint.constraints(withVisualFormat: Vvfl, options: [], metrics: nil, views: views)
-        cropViewConstraints += cropViewHorizentalConstraints
-        cropViewConstraints += cropViewVerticalConstraints
-        self.addConstraints(cropViewVerticalConstraints)
-        self.addConstraints(cropViewHorizentalConstraints)
+//        let Hvfl = String(format: "H:|-%f-[cropView]-%f-|", cropLeftMargin, cropRightMargin);
+//        let Vvfl = String(format: "V:|-%f-[cropView]-%f-|", cropTopMargin, cropBottomMargin)
+//        let cropViewHorizentalConstraints = NSLayoutConstraint.constraints(withVisualFormat: Hvfl, options: [], metrics: nil, views: views)
+//        let cropViewVerticalConstraints = NSLayoutConstraint.constraints(withVisualFormat: Vvfl, options: [], metrics: nil, views: views)
+//        cropViewConstraints += cropViewHorizentalConstraints
+//        cropViewConstraints += cropViewVerticalConstraints
+//        self.addConstraints(cropViewVerticalConstraints)
+//        self.addConstraints(cropViewHorizentalConstraints)
         self.layoutIfNeeded()
         
         cropView.initCropViewSubViews()

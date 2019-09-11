@@ -27,7 +27,7 @@ class CustomCameraVC: UIViewController, UINavigationControllerDelegate, UIImageP
         if UIImagePickerController.isCameraDeviceAvailable( UIImagePickerController.CameraDevice.front) {
             imagePickers.delegate = self
             imagePickers.sourceType = .camera
-            imagePickers.cameraDevice = .front
+            imagePickers.cameraDevice = .rear
             //add as a childviewcontroller
             addChild(imagePickers)
             
