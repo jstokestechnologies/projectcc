@@ -25,6 +25,9 @@
 		848293032320DE9C001DF6F5 /* ItemCardTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 848293022320DE9C001DF6F5 /* ItemCardTableCell.xib */; };
 		848293052320DEBF001DF6F5 /* ItemCardTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848293042320DEBF001DF6F5 /* ItemCardTableCell.swift */; };
 		8486F8C822FB1227009BE82C /* minus.png in Resources */ = {isa = PBXBuildFile; fileRef = 8486F8C722FB1227009BE82C /* minus.png */; };
+		84891B2F2327A27A00448539 /* CustomCameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84891B2E2327A27A00448539 /* CustomCameraVC.swift */; };
+		84891B312327AA0000448539 /* LyEditImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84891B302327AA0000448539 /* LyEditImageView.swift */; };
+		84891B332327ACDE00448539 /* CropImageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84891B322327ACDE00448539 /* CropImageVC.swift */; };
 		848A43DC22F04380002D9444 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848A43DB22F04380002D9444 /* AppDelegate.swift */; };
 		848A43DE22F04380002D9444 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848A43DD22F04380002D9444 /* ViewController.swift */; };
 		848A43E122F04380002D9444 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 848A43DF22F04380002D9444 /* Main.storyboard */; };
@@ -78,6 +81,9 @@
 		848293022320DE9C001DF6F5 /* ItemCardTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ItemCardTableCell.xib; sourceTree = "<group>"; };
 		848293042320DEBF001DF6F5 /* ItemCardTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCardTableCell.swift; sourceTree = "<group>"; };
 		8486F8C722FB1227009BE82C /* minus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = minus.png; sourceTree = "<group>"; };
+		84891B2E2327A27A00448539 /* CustomCameraVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCameraVC.swift; sourceTree = "<group>"; };
+		84891B302327AA0000448539 /* LyEditImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LyEditImageView.swift; sourceTree = "<group>"; };
+		84891B322327ACDE00448539 /* CropImageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropImageVC.swift; sourceTree = "<group>"; };
 		848A43D822F04380002D9444 /* FireDB.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FireDB.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		848A43DB22F04380002D9444 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		848A43DD22F04380002D9444 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -189,6 +195,7 @@
 		845801E622FDA5C200AE6FEE /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				84891B302327AA0000448539 /* LyEditImageView.swift */,
 				842FFED5230D1BB0000DADF2 /* Helper.swift */,
 				842FFED7230D1BBF000DADF2 /* StringContants.swift */,
 			);
@@ -218,6 +225,8 @@
 				84F9F6C922FAB67C00E754A7 /* AddSellItemVC.swift */,
 				845801D522FD48FE00AE6FEE /* SelectCategoryVC.swift */,
 				845801D922FD978A00AE6FEE /* SelectBrandVC.swift */,
+				84891B2E2327A27A00448539 /* CustomCameraVC.swift */,
+				84891B322327ACDE00448539 /* CropImageVC.swift */,
 			);
 			path = AddItemForSale;
 			sourceTree = "<group>";
@@ -548,7 +557,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84891B332327ACDE00448539 /* CropImageVC.swift in Sources */,
 				845801DC22FD992800AE6FEE /* SelectBrandProtocol.swift in Sources */,
+				84891B312327AA0000448539 /* LyEditImageView.swift in Sources */,
 				842FFED6230D1BB0000DADF2 /* Helper.swift in Sources */,
 				848A440A22F04839002D9444 /* ShowLoginDataVC.swift in Sources */,
 				848A43DE22F04380002D9444 /* ViewController.swift in Sources */,
@@ -560,6 +571,7 @@
 				84B1ACC2230D09E2002E6B30 /* ProgressHud.swift in Sources */,
 				842C007023192A570061CE46 /* SoldItemsListVC.swift in Sources */,
 				847D49BB23014B6D00FE900C /* ItemListForSaleVC.swift in Sources */,
+				84891B2F2327A27A00448539 /* CustomCameraVC.swift in Sources */,
 				848A43DC22F04380002D9444 /* AppDelegate.swift in Sources */,
 				845801D822FD8C0D00AE6FEE /* SelectCategoryProtocol.swift in Sources */,
 				849464DD22FC3CD000ED0213 /* UserModel.swift in Sources */,
