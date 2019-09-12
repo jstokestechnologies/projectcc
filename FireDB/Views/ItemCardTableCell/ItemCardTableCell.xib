@@ -173,8 +173,10 @@
             </tableViewCellContentView>
             <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
             <connections>
+                <outlet property="btnBookmark" destination="eBX-nB-vHM" id="IXZ-AS-aTo"/>
                 <outlet property="btnBuy" destination="x2Y-ge-leG" id="zlJ-YZ-YWs"/>
                 <outlet property="btnDetails" destination="PSm-Yz-5lw" id="NPw-E7-Q8I"/>
+                <outlet property="btnShare" destination="LAh-sf-zsJ" id="xtl-uf-aMD"/>
                 <outlet property="collectionImages" destination="0Qg-aN-0oc" id="ncy-ea-IrO"/>
                 <outlet property="lblItemBrand" destination="2zq-xg-A99" id="c3I-a0-q9p"/>
                 <outlet property="lblItemName" destination="y2t-xv-Cmi" id="la2-pE-mib"/>

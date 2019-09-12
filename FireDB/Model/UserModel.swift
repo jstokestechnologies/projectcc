@@ -24,6 +24,7 @@ class UserData : Codable
     var name = String()
     var first_name = String()
     var last_name = String()
+    var my_bookmarks : [String]?
 }
 
 class ItemsDetail : Codable {

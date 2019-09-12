@@ -31,40 +31,73 @@ class ItemListForSaleVC: UIViewController {
         super.viewDidLoad()
         self.initialSetup()
         progressView.showActivity()
-        self.fetchItemList()
+        if self.tabBarController?.selectedIndex == 0 {
+            self.fetchItemList()
+        }
         // Do any additional setup after loading the view.
         tblItemList.register(UINib(nibName: "ItemCardTableCell", bundle: nil), forCellReuseIdentifier: "Cell")
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if self.tabBarController?.selectedIndex == 3 {
+            self.arrItems = [ItemsDetail]()
+            self.fetchBookmarkedItems()
+        }
     }
     
     func initialSetup() {
         self.tabBarController?.delegate = self
         self.btnListedItems.layer.borderColor = UIColor.lightGray.cgColor
         self.btnSavedItems.layer.borderColor = UIColor.lightGray.cgColor
+        if userdata.my_bookmarks == nil {
+            userdata.my_bookmarks = [String]()
+        }
     }
     
-    //MARK: - Fetch List Of Items
+    //MARK: - Firebase Methods
+    func fetchBookmarkedItems() {
+        if userdata.my_bookmarks?.count ?? 0 > 0 {
+            let reqParam = ["documents" : userdata.my_bookmarks?.compactMap({"projects/projectcc-a98a4/databases/(default)/documents/listed_items/\($0)"}) ?? " ",
+                            "newTransaction"  : NSDictionary()] as [String : Any]
+            HelperClass.requestForAllApiWithBody(param: reqParam as NSDictionary, serverUrl: "https://firestore.googleapis.com/v1beta1/projects/projectcc-a98a4/databases/(default)/documents:batchGet", vc: self) { (itemData, msg, status) in
+                if var arrItems = itemData["array"] as? Array<Any> , arrItems.count > 1 {
+                    arrItems.remove(at: 0)
+                    let arr = arrItems.map({(($0 as? NSDictionary)?.object(forKey: "found") as? NSDictionary)?.object(forKey: "fields") })
+                    
+                    for i in 0..<arr.count {
+                        var itemId = (((arrItems[i]) as? NSDictionary)?.object(forKey: "found") as? NSDictionary)?.value(forKey: "name") as? String
+                        itemId = itemId?.components(separatedBy: "/").last
+                        
+                        let item = arr[i]
+                        if let itemDict = item as? NSDictionary {
+                            self.addNewItemToListWithData(itemDict: itemDict, itemId: itemId)
+                        }
+                    }
+                    self.tblItemList.reloadData()
+                }
+                progressView.hideActivity()
+            }
+        }else {
+            
+        }
+    }
+    
     func fetchItemList() {
         let itemRef = db.collection(kListedItems).whereField("isPosted", isEqualTo: true).whereField("isArchived", isEqualTo: false).order(by: "created", descending: true)
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
-                var arr = Array<[String : Any]>()
-                for doc in documents {
-                    arr.append(doc.data())
-                }
-                if arr.count <= 0 {
-                    let lbl = UILabel()
-                    lbl.text = "No items found"
-                    lbl.textAlignment = .center
-                    lbl.sizeToFit()
-                    lbl.frame.size.height = 60
-                    self.tblItemList.tableFooterView = lbl
-                }else {
-                    self.tblItemList.tableFooterView = UIView.init(frame: CGRect.zero)
-                }
+                let arr = documents.map({ (doc) -> [String : Any] in
+                    var dict =  doc.data()
+                    dict["id"] = doc.documentID
+                    return dict
+                })
+                self.setTableFooter(count: arr.count)
                 do {
                     let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
                     let jsonDecoder = JSONDecoder()
@@ -79,6 +112,28 @@ class ItemListForSaleVC: UIViewController {
                 }
             }
             progressView.hideActivity()
+        }
+    }
+    
+    func saveBookmarkedItemId(itemId : String) {
+        db.collection("Users").document(userdata.id).setData(["my_bookmarks" : FieldValue.arrayUnion([itemId])], merge: true) { (err) in
+            if (err != nil) {
+                HelperClass.showAlert(msg: err?.localizedDescription ?? "Failed to update changes", isBack: false, vc: self)
+            }else {
+                userdata.my_bookmarks?.append(itemId)
+                self.saveBookmarksToUserDefaults()
+            }
+        }
+    }
+    
+    func removeBookmarkedItemId(itemId : String) {
+        db.collection("Users").document(userdata.id).setData(["my_bookmarks" : FieldValue.arrayRemove([itemId])], merge: true) { (err) in
+            if (err != nil) {
+                HelperClass.showAlert(msg: err?.localizedDescription ?? "Failed to update changes", isBack: false, vc: self)
+            }else {
+                userdata.my_bookmarks?.removeAll(where: {$0 == itemId})
+                self.saveBookmarksToUserDefaults()
+            }
         }
     }
     
@@ -118,6 +173,62 @@ class ItemListForSaleVC: UIViewController {
         self.navigationController?.show(vc, sender: self)
     }
     
+    @IBAction func btnBookmarkAction(_ sender: UIButton) {
+        if let itemId = self.arrItems?[sender.tag].id {
+            var imgName = "bookmark_outline"
+            if userdata.my_bookmarks?.contains(itemId) ?? false {
+                self.removeBookmarkedItemId(itemId: itemId)
+            }else {
+                self.saveBookmarkedItemId(itemId: itemId)
+                imgName = "bookmark_filled"
+            }
+            UIView.transition(with: sender as UIView, duration: 0.5, options: .transitionCrossDissolve, animations: {
+                sender.setImage(UIImage(named: imgName), for: .normal)
+            }, completion: nil)
+        }
+    }
+    
+    //MARK: - Custom methods
+    func saveBookmarksToUserDefaults() {
+        let userDict = HelperClass.fetchDataFromDefaults(with: kUserData).mutableCopy() as! NSMutableDictionary
+        userDict["my_bookmarks"] = userdata.my_bookmarks
+        HelperClass.saveDataToDefaults(dataObject: userDict, key: kUserData)
+    }
+    
+    func setTableFooter(count : Int) {
+        if count <= 0 {
+            let lbl = UILabel()
+            lbl.text = "No items found"
+            lbl.textAlignment = .center
+            lbl.sizeToFit()
+            lbl.frame.size.height = 60
+            self.tblItemList.tableFooterView = lbl
+        }else {
+            self.tblItemList.tableFooterView = UIView.init(frame: CGRect.zero)
+        }
+    }
+    
+    func addNewItemToListWithData(itemDict : NSDictionary, itemId : String?) {
+        let itemObj = ItemsDetail()
+        itemObj.item_name = "\((itemDict.value(forKey: "item_name") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"
+        
+        itemObj.price = "\((itemDict.value(forKey: "price") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"
+        
+        let brand = ((itemDict.value(forKey: "brand") as? NSDictionary)?.object(forKey: "mapValue") as? NSDictionary)?.object(forKey: "fields") as? NSDictionary
+        itemObj.brand = ["id" :  "\((brand?.object(forKey: "id") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")",
+            "name" :  "\((brand?.object(forKey: "name") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")",
+            "user" :  "\((brand?.object(forKey: "user") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"]
+        
+        let imagesData = ((itemDict.value(forKey: "item_images") as? NSDictionary)?.object(forKey: "arrayValue") as? NSDictionary)?.object(forKey: "values") as? [NSDictionary]
+        let arrImages = imagesData?.compactMap({"\($0.value(forKey: "stringValue") ?? "")"})
+        
+        itemObj.item_images = arrImages
+        itemObj.images_added = itemObj.item_images?.count ?? 0
+        itemObj.id = itemId
+        
+        self.arrItems?.append(itemObj)
+    }
+    
     /*
     // MARK - Navigation
 
@@ -155,7 +266,13 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
         cell.collectionImages.tag = indexPath.row
         cell.collectionImages.allowsSelection = false
         cell.collectionImages.reloadData()
-        
+        cell.btnBookmark.tag = indexPath.row
+        cell.btnBookmark.addTarget(self, action: #selector(self.btnBookmarkAction(_:)), for: .touchUpInside)
+        if userdata.my_bookmarks?.contains(item.id ?? " ") ?? false {
+            cell.btnBookmark.setImage(UIImage.init(named: "bookmark_filled"), for: .normal)
+        }else {
+            cell.btnBookmark.setImage(UIImage.init(named: "bookmark_outline"), for: .normal)
+        }
         return cell
     }
     
@@ -213,7 +330,7 @@ extension ItemListForSaleVC : UICollectionViewDelegate, UICollectionViewDataSour
 
 extension ItemListForSaleVC : UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        if viewController == self.navigationController {
+        if viewController == self.navigationController && self.tabBarController?.selectedIndex == 0  {
             self.tblItemList.scrollRectToVisible(CGRect.init(x: 0, y: 0, width: 50, height: 50), animated: true)
             self.fetchItemList()
         }
