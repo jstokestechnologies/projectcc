@@ -9,13 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FireDB/Controllers/Login/ViewController.swift"
-            timestampString = "589452111.9397351"
+            filePath = "FireDB/Helper/LyEditImageView.swift"
+            timestampString = "589902791.2525361"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
-            landmarkName = "getPreviousLoginData(loginDict:)"
+            startingLineNumber = "559"
+            endingLineNumber = "559"
+            landmarkName = "rotateImage()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
