@@ -53,9 +53,6 @@ class ViewController: UIViewController {
             db.collection("Users").document("\(loginData["id"] ?? "N/A")").getDocument(source: .server, completion: { (document, err) in
                 if let data = document?.data() {
                     loginData["my_bookmarks"] = data["my_bookmarks"]
-                    if let profilePic = data["profile_pic"] {
-                        loginData["profile_pic"] = profilePic
-                    }
                     self.saveDataAndNavigateToHome(loginDict: loginData)
                 }else if err != nil {
                     print(err?.localizedDescription ?? "Error login")
@@ -143,10 +140,6 @@ class ViewController: UIViewController {
     func saveDataAndNavigateToHome(loginDict : NSDictionary) {
         HelperClass.saveDataToDefaults(dataObject: loginDict, key: kUserData)
         self.initUserModel(userDict: loginDict)
-        if userdata.profile_pic == nil {
-            userdata.profile_pic = "http://graph.facebook.com/\(userdata.id)/picture?type=large"
-            loginDict.setValue(userdata.profile_pic!, forKey: "profile_pic")
-        }
         self.saveDataToFireBase(loginDict: loginDict as! [String : Any])
         UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "TabVc")
         progressView.hideActivity()
