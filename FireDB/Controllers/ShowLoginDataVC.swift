@@ -19,7 +19,7 @@ class ShowLoginDataVC: UIViewController {
     @IBOutlet weak var imgProfile: UIImageView!
     
     var loginDict = Dictionary<String,Any>()
-    let arrTitle = ["Edit Profile", "Drafted Items", "Listed Items", "Archived Items", "Logout"]
+    let arrTitle = ["Edit Profile", "Listed Items", "Archived Items", "Logout"]
 //    let arrKeys = ["first_name", "last_name", "email", "gender", "birthday", "hometown.name", "location.name"]
 //    let db = Firestore.firestore()
     
@@ -93,13 +93,13 @@ extension ShowLoginDataVC : UITableViewDelegate, UITableViewDataSource {
         switch indexPath.row {
         case 0:
             return
+//        case 1:
+//            self.showMyItemsList(isSavedItem: true)
         case 1:
-            self.showMyItemsList(isSavedItem: true)
-        case 2:
             self.showMyItemsList(isSavedItem: false)
-        case 3:
+        case 2:
             self.showDeletedItemsList()
-        case 4:
+        case 3:
             self.logoutUser()
         default :
             tableView.deselectRow(at: indexPath, animated: true)

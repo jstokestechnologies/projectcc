@@ -11,36 +11,33 @@ import Firebase
 import FirebaseFirestore
 import FirebaseStorage
 
-class AddSellItemVC: UITableViewController {
+class AddSellItemVC: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet weak var collectionCondition: UICollectionView!
     @IBOutlet weak var collectionImages: UICollectionView!
     
-    @IBOutlet weak var btnSaveDraft: UIButton!
-    @IBOutlet weak var btnFreeShipYes: UIButton!
-    @IBOutlet weak var btnFreeShipNo: UIButton!
+    @IBOutlet weak var imgItem: UIImageView!
+    
+    @IBOutlet weak var constCollectionImagesWidth: NSLayoutConstraint!
     
     @IBOutlet weak var txtItemName: UITextField!
     @IBOutlet weak var txtItemDescription: UITextView!
-//    @IBOutlet weak var txtZipCode: UITextField!
     @IBOutlet weak var txtItemPrice: UITextField!
     
     @IBOutlet weak var lblItemDescriptionRange: UILabel!
     @IBOutlet weak var lblItemNameRange: UILabel!
     @IBOutlet weak var lblPrice: UILabel!
-    @IBOutlet weak var lblItemColor: UILabel!
     @IBOutlet weak var lblCategory: UILabel!
     @IBOutlet weak var lblBrand: UILabel!
     
-    @IBOutlet weak var viewUpdate: UIView!
-    
+    @IBOutlet weak var btnPost: UIButton!
     
     //MARK: - Properties
     let picker = UIImagePickerController()
     let arrConditions = [["title":"New","description":"New with tags (NWT). Unopened packaging. Unused."],
                          ["title":"Like New","description":"NNew without tags (NWOT). No signs of usage. Looks Unused."],
                          ["title":"Good","description":"Gently used having few minor scratches. Functioning properly."]]
-    let maxImages = 8
+    let maxImages = 5
     var arrItemImages = Array<UIImage>()
     var itemCondition = 0
     var categories = String()
@@ -67,9 +64,6 @@ class AddSellItemVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.prepareViews()
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "CustomCameraVC") as! CustomCameraVC
-        vc.modalPresentationStyle = .custom
-        self.present(vc, animated: false, completion: nil)
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(self.notificationImageSelected(_:)), name: Notification.Name.init(rawValue: "ImageSelected"), object: nil)
         
@@ -83,21 +77,17 @@ class AddSellItemVC: UITableViewController {
     }
     
     func prepareViews() {
-        self.btnSaveDraft.layer.borderColor = UIColor(red:0.25, green:0.35, blue:0.82, alpha:1.0).cgColor
         self.lblBrand.text = " "
         self.lblCategory.text = " "
-        
         if isEditingItem {
+            self.btnPost.setTitle("Update", for: .normal)
+            self.btnPost.removeTarget(nil, action: nil, for: .allEvents)
+            self.btnPost.addTarget(self, action: #selector(self.btnUpdateAction(_:)), for: .touchUpInside)
             if self.itemData != nil {
                 self.setPreviousData()
             }else {
                 self.fetchItemData()
             }
-            self.viewUpdate.isHidden = false
-            let fView = self.tableView.tableFooterView
-            fView?.frame.size.height = 80
-            self.tableView.tableFooterView = fView
-            self.tableView.reloadData()
         }
     }
     
@@ -112,8 +102,7 @@ class AddSellItemVC: UITableViewController {
         self.txtItemDescription.textColor = .darkGray
         self.lblItemDescriptionRange.text = "\(self.txtItemDescription.text!.count)/1000"
         
-        // Set Color and Price of the item
-        self.lblItemColor.text = self.itemData?.color
+        // Price of the item
         self.lblPrice.text = self.itemData?.price
         self.txtItemPrice.text = self.itemData?.price
         
@@ -128,6 +117,10 @@ class AddSellItemVC: UITableViewController {
         // Set item condition
         let conditionIndex = self.arrConditions.firstIndex(where: {"\($0["title"] ?? "")" == self.itemData?.condition ?? ""})
         self.itemCondition = conditionIndex ?? 0
+        
+        // Set first image
+        let storageRef = storage.reference(withPath: (self.itemData?.item_images![0])!)
+        self.imgItem.sd_setImage(with: storageRef, placeholderImage: UIImage.init(named: "no-image"))
         
         // Reload Collections
         self.collectionImages.reloadData()
@@ -219,19 +212,11 @@ class AddSellItemVC: UITableViewController {
         self.collectionImages.reloadData()
     }
     
-    @IBAction func btnFreeShippingAction(_ sender: UIButton) {
-        self.view.endEditing(true)
-        self.btnFreeShipYes.setImage(UIImage.init(named: sender == btnFreeShipYes ? "checked" : "uncheck"), for: .normal)
-        self.btnFreeShipNo.setImage(UIImage.init(named: sender == btnFreeShipNo ? "checked" : "uncheck"), for: .normal)
-        self.btnFreeShipYes.isSelected = sender == btnFreeShipYes
-        self.btnFreeShipNo.isSelected = sender == btnFreeShipNo
-    }
-    
     @IBAction func btnCloseAction(_ sender: UIButton) {
         self.view.endEditing(true)
         let alert = UIAlertController.init(title: "", message: "Are you sure you want to close this window?", preferredStyle: .alert)
         alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
-            self.tabBarController?.selectedIndex = 0
+            self.navigationController?.dismiss(animated: true, completion: nil)
 //            self.navigationController?.dismiss(animated: true, completion: nil)
         }))
         alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
@@ -251,6 +236,20 @@ class AddSellItemVC: UITableViewController {
         if let img = (sender as? Notification)?.userInfo?["image"] as? UIImage {
             self.arrItemImages.append(img)
             self.collectionImages.reloadData()
+            if arrItemImages.count == 1 {
+                self.imgItem.image = self.arrItemImages[0]
+                self.constCollectionImagesWidth.constant = 90.0
+            }else if arrItemImages.count > 1 {
+                var width = CGFloat((self.arrItemImages.count * 80) + 10)
+                if (self.arrItemImages.count + (self.itemData?.item_images?.count ?? 0)) >= self.maxImages {
+                    width -= 80
+                }else if width > self.view.frame.width {
+                    width = self.view.frame.width
+                }
+                self.constCollectionImagesWidth.constant = width
+            }else {
+                self.constCollectionImagesWidth.constant = 90.0
+            }
         }
     }
     
@@ -301,9 +300,6 @@ class AddSellItemVC: UITableViewController {
         }else if self.lblBrand.text!.count < 2 {
             self.showAlert(msg: "Please select brand.", isBack: false)
             return false
-        }else if self.lblItemColor.text!.count < 2 {
-            self.showAlert(msg: "Please enter color.", isBack: false)
-            return false
         }else if self.txtItemPrice.text!.count <= 0 {
             self.showAlert(msg: "Please enter item price.", isBack: false)
             return false
@@ -324,7 +320,6 @@ class AddSellItemVC: UITableViewController {
                                             "sub_category"  : Array(self.subCategory.keys),
                                             "brand"         : self.brand,
                                             "condition"     : "\(self.arrConditions[self.itemCondition]["title"] ?? "")",
-                                            "color"         : (self.lblItemColor.text)!,
                                             "price"         : (self.txtItemPrice.text)!,
                                             "user_id"       : userdata.id,
                                             "item_images"   : imgPath,
@@ -358,16 +353,14 @@ class AddSellItemVC: UITableViewController {
         }
     }
     
-    func showAlert(msg : String, isBack : Bool){
+    func showAlert(msg : String, isBack : Bool) {
         let alert = UIAlertController.init(title: "", message: msg, preferredStyle: .alert)
         alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: { (alrt) in
             if isBack {
                 if self.isEditingItem {
                     self.navigationController?.popViewController(animated: true)
                 }else {
-                    let tabBarVC = self.tabBarController
-                    self.navigationController?.setViewControllers([(self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC"))!], animated: false)
-                    tabBarVC?.selectedIndex = 0
+                    self.navigationController?.dismiss(animated: true, completion: nil)
                 }
             }
         }))
@@ -407,26 +400,6 @@ class AddSellItemVC: UITableViewController {
         }
     }
     
-    func showColorTextView() {
-        let alert = UIAlertController.init(title: "", message: "Enter Color", preferredStyle: .alert)
-        
-        alert.addTextField { (textfield) in
-            textfield.placeholder = "Enter color name"
-            textfield.font = UIFont.systemFont(ofSize: 15)
-            textfield.textColor = .black
-            textfield.keyboardType = .asciiCapable
-            textfield.text = self.lblItemColor.text?.trimmingCharacters(in: .whitespacesAndNewlines)
-        }
-        
-        alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: { (alrt) in
-            self.lblItemColor.text = alert.textFields?.first?.text
-        }))
-        alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (alert) in
-            
-        }))
-        self.present(alert, animated: true, completion: nil)
-    }
-    
      // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -445,26 +418,6 @@ class AddSellItemVC: UITableViewController {
     }
 }
 
-//MARK: - TableView Delegate Methods
-extension AddSellItemVC {
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
-        let lbl = UILabel.init(frame: CGRect.init(x: 0.0, y: 0.0, width: 100.0, height: 22.0))
-        lbl.backgroundColor = UIColor(red:0.97, green:0.97, blue:0.97, alpha:1.0)
-        lbl.text = section == 0 ? "    * REQUIRED" : " "
-        lbl.textColor = UIColor(red:0.72, green:0.00, blue:0.02, alpha:1.0)
-        lbl.font = UIFont.systemFont(ofSize: 15)
-        
-        return lbl
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 3 {
-            self.showColorTextView()
-        }
-    }
-}
-
 //MARK: - CollectionView Delegate
 extension AddSellItemVC : UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -472,7 +425,10 @@ extension AddSellItemVC : UICollectionViewDelegate, UICollectionViewDataSource {
             return self.arrConditions.count
         }
         var count = (self.itemData?.item_images?.count ?? 0) + self.arrItemImages.count + 1
-        count = count > maxImages ? maxImages : count
+        if count > 1 {
+            count -= 1
+        }
+        count = count >= maxImages ? (maxImages - 1) : count
         return count
     }
     
@@ -482,7 +438,7 @@ extension AddSellItemVC : UICollectionViewDelegate, UICollectionViewDataSource {
         if collectionView == self.collectionCondition {
             identifier = "CellCondition"
         }else {
-            if indexPath.row == totalImages {
+            if (indexPath.row + 1) == totalImages {
                 identifier = "CellAdd"
             }else {
                 identifier = "CellImage"
@@ -502,13 +458,15 @@ extension AddSellItemVC : UICollectionViewDelegate, UICollectionViewDataSource {
         let borderColor = (UIColor.init(patternImage: UIImage.init(named: "border_dot.png")!)).cgColor
         cell.layer.borderColor = borderColor
         
-        if indexPath.row < totalImages {
+        let index = indexPath.row + 1
+        
+        if index < totalImages {
             if indexPath.row < (self.itemData?.item_images?.count ?? 0) {
-                let storageRef = storage.reference(withPath: (self.itemData?.item_images![indexPath.row])!)
+                let storageRef = storage.reference(withPath: (self.itemData?.item_images![index])!)
                 (cell.viewWithTag(11) as! UIImageView).image = UIImage.init(named: "no-image")
                 (cell.viewWithTag(11) as! UIImageView).sd_setImage(with: storageRef, placeholderImage: UIImage.init(named: "no-image"))
             }else {
-                (cell.viewWithTag(11) as! UIImageView).image = self.arrItemImages[indexPath.row - (self.itemData?.item_images?.count ?? 0)]
+                (cell.viewWithTag(11) as! UIImageView).image = self.arrItemImages[index - (self.itemData?.item_images?.count ?? 0)]
 //                (cell.contentView.viewWithTag(101) as! UIButton).tag = indexPath.row
                 (cell.contentView.viewWithTag(101) as! UIButton).addTarget(self, action: #selector(self.btnRemoveImageAction(_:)), for: .touchUpInside)
             }
@@ -518,13 +476,16 @@ extension AddSellItemVC : UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let totalImages = (self.itemData?.item_images?.count ?? 0) + self.arrItemImages.count
+        let totalImages = (self.itemData?.item_images?.count ?? 0) + self.arrItemImages.count - 1
         if collectionView == self.collectionCondition {
             self.itemCondition = indexPath.row
             self.collectionCondition.reloadData()
         }else {
             if totalImages == indexPath.row && totalImages < self.maxImages {
-                self.pickImage()
+//                self.pickImage()
+                let vc = self.storyboard?.instantiateViewController(withIdentifier: "CustomCameraVC") as! CustomCameraVC
+                vc.modalPresentationStyle = .custom
+                self.present(vc, animated: true, completion: nil)
             }
         }
     }
@@ -583,15 +544,11 @@ extension AddSellItemVC : UINavigationControllerDelegate, UIImagePickerControlle
 extension AddSellItemVC : UITextFieldDelegate, UITextViewDelegate {
     //MARK: TextField Delegate
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        if textField.text == "* What are you selling?" {
-            textField.text = ""
-            textField.textColor = .darkGray
-        }
+        
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        if textField.text == "* What are you selling?" || textField.text == "" || (textField.text?.trimmingCharacters(in: .whitespacesAndNewlines)) == "" {
-            
+        if textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
             let partOne = NSMutableAttributedString(string: "*", attributes: [NSAttributedString.Key.foregroundColor : UIColor(red:0.72, green:0.00, blue:0.02, alpha:1.0), NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17)])
             let partTwo = NSMutableAttributedString(string: " What are you selling?", attributes: [NSAttributedString.Key.foregroundColor : UIColor.lightGray, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17)])
             
@@ -623,7 +580,9 @@ extension AddSellItemVC : UITextFieldDelegate, UITextViewDelegate {
                 return false
             }
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2, execute: {
-                self.lblPrice.text = "$\(textField.text!)"
+                let myDouble = Double(textField.text!)
+                let price = String(format: "%.2f", myDouble ?? 0.0)
+                self.lblPrice.text = "$\(price)"
             })
         }
         

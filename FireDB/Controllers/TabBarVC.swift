@@ -45,12 +45,19 @@ class TabBarVC: UITabBarController {
     }
     
     @IBAction func btnSellAction(_ sender : UIButton) {
-        if self.selectedIndex != 2 {
-            if (self.viewControllers?.count ?? 0) > 2, let navVC = self.viewControllers?[2] as? UINavigationController {
-                let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC")
-                navVC.setViewControllers([vc!], animated: false)
+        if let topVC = (self.selectedViewController as? UINavigationController)?.topViewController {
+            
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "CustomCameraVC") as! CustomCameraVC
+            vc.modalPresentationStyle = .custom
+            
+            let navVC = self.storyboard?.instantiateViewController(withIdentifier: "navSell") as! UINavigationController
+            let addVc = self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC")
+            navVC.setViewControllers([addVc!], animated: false)
+            navVC.modalPresentationStyle = .fullScreen
+            
+            topVC.present(navVC, animated: false) {
+                addVc?.present(vc, animated: false, completion: nil)
             }
-            self.selectedIndex = 2
         }
     }
     /*

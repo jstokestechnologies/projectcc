@@ -86,9 +86,9 @@ class CustomCameraVC: UIViewController, UINavigationControllerDelegate, UIImageP
     }
     
     @IBAction func btnCloseAction(_ sender : UIButton) {
-        if let tabVC = self.presentingViewController as? TabBarVC {
+        if let vc = self.presentingViewController  {
             self.dismiss(animated: false) {
-                tabVC.selectedIndex = 0
+                vc.dismiss(animated: false, completion: nil)
             }
         }
     }
