@@ -80,6 +80,7 @@ class AddSellItemVC: UIViewController {
         self.lblBrand.text = " "
         self.lblCategory.text = " "
         if isEditingItem {
+            self.navigationItem.leftBarButtonItems = nil
             self.btnPost.setTitle("Update", for: .normal)
             self.btnPost.removeTarget(nil, action: nil, for: .allEvents)
             self.btnPost.addTarget(self, action: #selector(self.btnUpdateAction(_:)), for: .touchUpInside)
