@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="KmN-hT-DZk">
     <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -2567,8 +2567,8 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="swi-eS-XRj">
                                 <rect key="frame" x="0.0" y="44" width="375" height="734"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LwI-NS-hkO">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="880"/>
+                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LwI-NS-hkO">
+                                        <rect key="frame" x="0.0" y="-155" width="375" height="880"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sFA-O2-rHJ">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="225"/>
@@ -2599,6 +2599,9 @@
                                                                 <integer key="value" value="23"/>
                                                             </userDefinedRuntimeAttribute>
                                                         </userDefinedRuntimeAttributes>
+                                                        <connections>
+                                                            <action selector="btnSelectImageAction:" destination="s49-DI-ZDd" eventType="touchUpInside" id="wGL-FW-ykC"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -2880,11 +2883,23 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                 <state key="normal" title="Save"/>
+                                <connections>
+                                    <action selector="btnSaveAction:" destination="s49-DI-ZDd" eventType="touchUpInside" id="mR7-4t-cK4"/>
+                                </connections>
                             </button>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="imgProfile" destination="RIR-4b-TYh" id="Zfv-Ek-gU4"/>
+                        <outlet property="txtApatmentNo" destination="xQf-vv-kE3" id="tZt-hI-RXC"/>
+                        <outlet property="txtCity" destination="D6F-Zn-moA" id="AkT-Z1-Erl"/>
+                        <outlet property="txtMpc" destination="5mK-xn-QCU" id="BGj-kl-87I"/>
+                        <outlet property="txtName" destination="IpO-gh-TJh" id="eH3-uX-X8T"/>
+                        <outlet property="txtPhoneNo" destination="U8D-Ee-sTJ" id="35R-Ng-Nz9"/>
+                        <outlet property="txtState" destination="aGB-RU-nVB" id="E6i-yb-Jeg"/>
+                        <outlet property="txtStreetNo" destination="2aF-ci-szm" id="dh4-Rd-ljq"/>
+                        <outlet property="txtSubDivision" destination="zke-LV-Vvn" id="N32-GK-aAC"/>
+                        <outlet property="txtZipCode" destination="Roq-ze-OiL" id="iHI-Td-aKo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ong-O9-u9o" userLabel="First Responder" sceneMemberID="firstResponder"/>

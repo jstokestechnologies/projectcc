@@ -26,6 +26,17 @@ class UserData : Codable
     var last_name = String()
     var my_bookmarks : [String]?
     var profile_pic : String?
+    var location : [String : String]?
+    var hometown : [String : String]?
+    
+    var city        : String?
+    var state       : String?
+    var street      : String?
+    var apartment_no : String?
+    var zipcode     : String?
+    var phone_number : String?
+    var mpc         : String?
+    var sub_division : String?
 }
 
 class ItemsDetail : Codable {
