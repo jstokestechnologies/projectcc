@@ -18,6 +18,10 @@ class CropImageVC: UIViewController {
     var imageToCrop = UIImage()
     var editView = LyEditImageView()
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.imgItem.image = imageToCrop

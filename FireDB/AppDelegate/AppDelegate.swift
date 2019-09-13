@@ -51,8 +51,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.window?.rootViewController = UIStoryboard.init(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "TabVc")
         }
         
-        application.statusBarStyle = .lightContent
-        
         return true
     }
     
