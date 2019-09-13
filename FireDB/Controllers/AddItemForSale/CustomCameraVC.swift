@@ -16,6 +16,7 @@ class CustomCameraVC: UIViewController, UINavigationControllerDelegate, UIImageP
     @IBOutlet weak var btnFlash: UIButton!
     
     let imagePickers = UIImagePickerController()
+    var isFirstVC = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,10 +87,10 @@ class CustomCameraVC: UIViewController, UINavigationControllerDelegate, UIImageP
     }
     
     @IBAction func btnCloseAction(_ sender : UIButton) {
-        if let vc = self.presentingViewController  {
-            self.dismiss(animated: false) {
-                vc.dismiss(animated: false, completion: nil)
-            }
+        if self.isFirstVC {
+            self.navigationController?.dismiss(animated: true, completion: nil)
+        }else {
+            self.dismiss(animated: true, completion: nil)
         }
     }
     
@@ -129,7 +130,11 @@ extension CustomCameraVC  {
     func showImageCropView(withImage img: UIImage) {
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "CropImageVC") as! CropImageVC
         vc.imageToCrop = img
-        self.present(vc, animated: false, completion: nil)
+        if self.isFirstVC {
+            self.navigationController?.show(vc, sender: nil)
+        }else {
+            self.present(vc, animated: true, completion: nil)
+        }
     }
 }
 

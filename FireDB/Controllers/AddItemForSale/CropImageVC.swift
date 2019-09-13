@@ -21,19 +21,36 @@ class CropImageVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.imgItem.image = imageToCrop
+        
         // Do any additional setup after loading the view.
     }
     
     @IBAction func btnRetakeAction(_ sender : UIButton) {
-        self.dismiss(animated: true, completion: nil)
+        if (self.navigationController != nil) {
+            self.navigationController?.popViewController(animated: true)
+        }else {
+            self.dismiss(animated: false, completion: nil)
+        }
     }
     
     @IBAction func btnSellAction(_ sender : UIButton) {
-        let parentVC = self.presentingViewController
-        NotificationCenter.default.post(name: Notification.Name.init(rawValue: "ImageSelected"), object: nil, userInfo: ["image" : self.imageToCrop])
-        self.dismiss(animated: false) {
-            parentVC?.dismiss(animated: true, completion: nil)
+        if (self.navigationController != nil) {
+            let addVc = self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC") as! AddSellItemVC
+            let itemImage = ItemImages()
+            itemImage.image = self.imageToCrop
+            itemImage.action = .new
+            addVc.arrImages.append(itemImage)
+            self.navigationController?.pushViewController(addVc, animated: false)
+        }else {
+            let parentVC = self.presentingViewController
+            self.dismiss(animated: false) {
+                parentVC?.dismiss(animated: true, completion: nil)
+            }
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name.init(rawValue: "ImageSelected"), object: nil, userInfo: ["image" : self.imageToCrop])
+            }
         }
+        
     }
     
     @IBAction func btnCropImageAction(_ sender : UIButton) {

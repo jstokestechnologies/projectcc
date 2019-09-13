@@ -48,15 +48,16 @@ class TabBarVC: UITabBarController {
         if let topVC = (self.selectedViewController as? UINavigationController)?.topViewController {
             
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "CustomCameraVC") as! CustomCameraVC
-            vc.modalPresentationStyle = .custom
+            vc.isFirstVC = true
             
             let navVC = self.storyboard?.instantiateViewController(withIdentifier: "navSell") as! UINavigationController
-            let addVc = self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC")
-            navVC.setViewControllers([addVc!], animated: false)
+//            let addVc = self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC")
+            navVC.setViewControllers([vc], animated: false)
             navVC.modalPresentationStyle = .fullScreen
+            navVC.navigationBar.isHidden = true
             
-            topVC.present(navVC, animated: false) {
-                addVc?.present(vc, animated: false, completion: nil)
+            topVC.present(navVC, animated: true) {
+//                addVc?.present(vc, animated: true, completion: nil)
             }
         }
     }
