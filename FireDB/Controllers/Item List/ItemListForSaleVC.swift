@@ -33,6 +33,8 @@ class ItemListForSaleVC: UIViewController {
         progressView.showActivity()
         if self.tabBarController?.selectedIndex == 0 {
             self.fetchItemList()
+        }else {
+            self.title = "Favorites"
         }
         // Do any additional setup after loading the view.
         tblItemList.register(UINib(nibName: "ItemCardTableCell", bundle: nil), forCellReuseIdentifier: "Cell")
@@ -84,7 +86,8 @@ class ItemListForSaleVC: UIViewController {
                 progressView.hideActivity()
             }
         }else {
-            
+            self.setNoDataLabel()
+            progressView.hideActivity()
         }
     }
     
@@ -198,7 +201,7 @@ class ItemListForSaleVC: UIViewController {
     func setTableFooter(count : Int) {
         if count <= 0 {
             let lbl = UILabel()
-            lbl.text = "No items found"
+            lbl.text = "No items in favorites"
             lbl.textAlignment = .center
             lbl.sizeToFit()
             lbl.frame.size.height = 60
@@ -227,6 +230,19 @@ class ItemListForSaleVC: UIViewController {
         itemObj.id = itemId
         
         self.arrItems?.append(itemObj)
+    }
+    
+    func setNoDataLabel() {
+        if self.arrItems?.count ?? 0 <= 0 {
+            let lbl = UILabel()
+            lbl.text = "No items found"
+            lbl.textAlignment = .center
+            lbl.sizeToFit()
+            lbl.frame.size.height = 60
+            self.tblItemList.tableFooterView = lbl
+        }else {
+            self.tblItemList.tableFooterView = UIView.init(frame: CGRect.zero)
+        }
     }
     
     /*
