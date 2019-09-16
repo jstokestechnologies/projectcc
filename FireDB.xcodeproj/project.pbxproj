@@ -41,6 +41,7 @@
 		849E18CD230ECDDF00C94431 /* TabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849E18CC230ECDDF00C94431 /* TabBarVC.swift */; };
 		84B1ACC0230D0813002E6B30 /* ProgressHud.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84B1ACBF230D0813002E6B30 /* ProgressHud.xib */; };
 		84B1ACC2230D09E2002E6B30 /* ProgressHud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B1ACC1230D09E2002E6B30 /* ProgressHud.swift */; };
+		84DDCBA4232BCBCD00613C2F /* EditProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DDCBA3232BCBCD00613C2F /* EditProfileVC.swift */; };
 		84F9F6C822FAB35A00E754A7 /* border_dot.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F9F6C722FAB35A00E754A7 /* border_dot.png */; };
 		84F9F6CA22FAB67C00E754A7 /* AddSellItemVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F9F6C922FAB67C00E754A7 /* AddSellItemVC.swift */; };
 /* End PBXBuildFile section */
@@ -103,6 +104,7 @@
 		849E18CC230ECDDF00C94431 /* TabBarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarVC.swift; sourceTree = "<group>"; };
 		84B1ACBF230D0813002E6B30 /* ProgressHud.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProgressHud.xib; sourceTree = "<group>"; };
 		84B1ACC1230D09E2002E6B30 /* ProgressHud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHud.swift; sourceTree = "<group>"; };
+		84DDCBA3232BCBCD00613C2F /* EditProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileVC.swift; sourceTree = "<group>"; };
 		84F9F6C722FAB35A00E754A7 /* border_dot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = border_dot.png; sourceTree = "<group>"; };
 		84F9F6C922FAB67C00E754A7 /* AddSellItemVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSellItemVC.swift; sourceTree = "<group>"; };
 		E3F95B0181BFB9BF4E053C4C /* Pods_FireDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FireDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -143,6 +145,7 @@
 				845801EA22FDA70100AE6FEE /* AddItemForSale */,
 				848A440922F04839002D9444 /* ShowLoginDataVC.swift */,
 				849E18CC230ECDDF00C94431 /* TabBarVC.swift */,
+				84DDCBA3232BCBCD00613C2F /* EditProfileVC.swift */,
 				842C006F23192A570061CE46 /* SoldItemsListVC.swift */,
 			);
 			path = Controllers;
@@ -561,6 +564,7 @@
 				845801DC22FD992800AE6FEE /* SelectBrandProtocol.swift in Sources */,
 				84891B312327AA0000448539 /* LyEditImageView.swift in Sources */,
 				842FFED6230D1BB0000DADF2 /* Helper.swift in Sources */,
+				84DDCBA4232BCBCD00613C2F /* EditProfileVC.swift in Sources */,
 				848A440A22F04839002D9444 /* ShowLoginDataVC.swift in Sources */,
 				848A43DE22F04380002D9444 /* ViewController.swift in Sources */,
 				848293052320DEBF001DF6F5 /* ItemCardTableCell.swift in Sources */,

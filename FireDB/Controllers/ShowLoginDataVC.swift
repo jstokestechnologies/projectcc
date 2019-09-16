@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import FirebaseFirestore
+import SDWebImage
 
 class ShowLoginDataVC: UIViewController {
     
@@ -23,15 +24,32 @@ class ShowLoginDataVC: UIViewController {
 //    let arrKeys = ["first_name", "last_name", "email", "gender", "birthday", "hometown.name", "location.name"]
 //    let db = Firestore.firestore()
     
+    lazy var storage = Storage.storage()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "More"
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.showUserData()
     }
     
     func showUserData() {
         self.lblName.text = userdata.name
         self.lblEmail.text = userdata.email
+        
+        if let img = userdata.profile_pic {
+            let url = URL.init(fileURLWithPath: img)
+            if url.pathExtension != "" {
+                let placeholderImg = self.imgProfile.image
+                let storageRef = storage.reference(withPath: img)
+                self.imgProfile.sd_setImage(with: storageRef, maxImageSize: 200000, placeholderImage: placeholderImg ?? UIImage.init(named: "no-image"), options: .fromLoaderOnly, completion: nil)
+            }else {
+                self.imgProfile?.sd_setImage(with: URL.init(string: img), placeholderImage: UIImage.init(named: "no-image"), options: .retryFailed, context: nil)
+            }
+        }
     }
     
     func logoutUser() {
@@ -92,9 +110,8 @@ extension ShowLoginDataVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case 0:
-            return
-//        case 1:
-//            self.showMyItemsList(isSavedItem: true)
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "EditProfileVC")
+            self.navigationController?.show(vc!, sender: self)
         case 1:
             self.showMyItemsList(isSavedItem: false)
         case 2:
