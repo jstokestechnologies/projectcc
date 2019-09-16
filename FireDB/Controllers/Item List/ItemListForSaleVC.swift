@@ -30,9 +30,11 @@ class ItemListForSaleVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initialSetup()
-        progressView.showActivity()
         if self.tabBarController?.selectedIndex == 0 {
+            progressView.showActivity()
             self.fetchItemList()
+        }else {
+            self.title = "Favorites"
         }
         // Do any additional setup after loading the view.
         tblItemList.register(UINib(nibName: "ItemCardTableCell", bundle: nil), forCellReuseIdentifier: "Cell")
@@ -46,6 +48,7 @@ class ItemListForSaleVC: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if self.tabBarController?.selectedIndex == 3 {
+            progressView.showActivity()
             self.arrItems = [ItemsDetail]()
             self.fetchBookmarkedItems()
         }else {
@@ -64,6 +67,7 @@ class ItemListForSaleVC: UIViewController {
     
     //MARK: - Firebase Methods
     func fetchBookmarkedItems() {
+        self.arrItems?.removeAll()
         if userdata.my_bookmarks?.count ?? 0 > 0 {
             let reqParam = ["documents" : userdata.my_bookmarks?.compactMap({"projects/projectcc-a98a4/databases/(default)/documents/listed_items/\($0)"}) ?? " ",
                             "newTransaction"  : NSDictionary()] as [String : Any]
@@ -83,10 +87,13 @@ class ItemListForSaleVC: UIViewController {
                     }
                     self.tblItemList.reloadData()
                 }
+                self.setNoDataLabel()
                 progressView.hideActivity()
             }
         }else {
-            
+            self.setNoDataLabel()
+            progressView.hideActivity()
+            self.tblItemList.reloadData()
         }
     }
     
@@ -200,7 +207,7 @@ class ItemListForSaleVC: UIViewController {
     func setTableFooter(count : Int) {
         if count <= 0 {
             let lbl = UILabel()
-            lbl.text = "No items found"
+            lbl.text = "No items in favorites"
             lbl.textAlignment = .center
             lbl.sizeToFit()
             lbl.frame.size.height = 60
@@ -229,6 +236,19 @@ class ItemListForSaleVC: UIViewController {
         itemObj.id = itemId
         
         self.arrItems?.append(itemObj)
+    }
+    
+    func setNoDataLabel() {
+        if self.arrItems?.count ?? 0 <= 0 {
+            let lbl = UILabel()
+            lbl.text = "No items found"
+            lbl.textAlignment = .center
+            lbl.sizeToFit()
+            lbl.frame.size.height = 60
+            self.tblItemList.tableFooterView = lbl
+        }else {
+            self.tblItemList.tableFooterView = UIView.init(frame: CGRect.zero)
+        }
     }
     
     /*
