@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import UIKit
 
 class UserData : Codable
 {
@@ -60,4 +60,17 @@ class ItemsDetail : Codable {
     var watchers    : String?
     var seller_name : String?
     var id          : String?
+}
+
+class ItemImages : NSObject {
+    var image : UIImage?
+    var imageUrl : String?
+    var action : ImageAction?
+    
+    
+    enum ImageAction {
+        case new
+        case saved
+        case deleted
+    }
 }

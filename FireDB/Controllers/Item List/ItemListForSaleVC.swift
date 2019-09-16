@@ -48,6 +48,8 @@ class ItemListForSaleVC: UIViewController {
         if self.tabBarController?.selectedIndex == 3 {
             self.arrItems = [ItemsDetail]()
             self.fetchBookmarkedItems()
+        }else {
+            self.fetchItemList()
         }
     }
     
