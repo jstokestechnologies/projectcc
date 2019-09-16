@@ -51,6 +51,8 @@ class ItemListForSaleVC: UIViewController {
             progressView.showActivity()
             self.arrItems = [ItemsDetail]()
             self.fetchBookmarkedItems()
+        }else {
+            self.fetchItemList()
         }
     }
     
