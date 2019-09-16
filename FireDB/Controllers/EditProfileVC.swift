@@ -8,6 +8,8 @@
 
 import UIKit
 import Firebase
+import SDWebImage
+import IQKeyboardManagerSwift
 
 class EditProfileVC: UIViewController {
     
@@ -30,19 +32,24 @@ class EditProfileVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.showProfileImage()
         self.showProfileData()
         // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+    }
+    
+    func showProfileImage() {
         if let img = userdata.profile_pic {
             let url = URL.init(fileURLWithPath: img)
             if url.pathExtension != "" {
                 let storageRef = storage.reference(withPath: img)
-                self.imgProfile.sd_setImage(with: storageRef, placeholderImage: UIImage.init(named: "no-image"))
+                self.imgProfile.sd_setImage(with: storageRef, placeholderImage: UIImage.init(named: "no-image"), completion: nil)
             }else {
-                self.imgProfile?.sd_setImage(with: URL.init(string: img), placeholderImage: UIImage.init(named: "no-image"), options: .retryFailed, context: nil)
+                self.imgProfile?.sd_setImage(with: URL.init(string: img), placeholderImage: UIImage.init(named: "no-image"), options: .refreshCached, context: nil)
             }
         }
         DispatchQueue.main.async {
@@ -57,7 +64,7 @@ class EditProfileVC: UIViewController {
         self.txtCity.text = userdata.city
         self.txtState.text = userdata.state
         self.txtZipCode.text = userdata.zipcode
-        self.txtPhoneNo.text = userdata.mpc
+        self.txtPhoneNo.text = userdata.phone_number
         self.txtMpc.text = userdata.mpc
         self.txtSubDivision.text = userdata.sub_division
         
@@ -96,12 +103,11 @@ class EditProfileVC: UIViewController {
                 print("Error adding document: \(err)")
             } else {
                 print("Document added with ID:\n\n\n\n\n ")
+                
                 HelperClass.saveDataToDefaults(dataObject: profile_data, key: kUserData)
-                let vc = self
-                self.navigationController?.popViewController(animated: true)
-                HelperClass.showAlert(msg: "Profile updated successfully", isBack: true, vc: vc)
+                HelperClass.showAlert(msg: "Profile updated successfully", isBack: true, vc: self)
+                progressView.hideActivity()
             }
-            progressView.hideActivity()
         })
     }
     
@@ -113,10 +119,18 @@ class EditProfileVC: UIViewController {
         let imgData = (self.imgProfile.image)!.jpegData(compressionQuality: 0.25)
         spaceRef.putData(imgData!, metadata: metadata)
         
+        let storageRef = self.storage.reference(withPath: (userdata.profile_pic)!)
+        storageRef.downloadURL { (url, err) in
+            if url != nil {
+                SDImageCache.shared.removeImage(forKey: (url?.absoluteString)!, cacheType: .all, completion: nil)
+            }
+        }
+        
         return spaceRef.fullPath
     }
     
     @IBAction func btnSelectImageAction(_ sender : UIButton) {
+        self.view.endEditing(true)
         let alert:UIAlertController=UIAlertController(title: "Select Image", message: nil, preferredStyle: UIAlertController.Style.actionSheet)
         
         alert.addAction(UIAlertAction(title: "Open Camera", style: UIAlertAction.Style.default) {
@@ -138,6 +152,19 @@ class EditProfileVC: UIViewController {
     }
     
     @IBAction func btnSaveAction(_ sender : UIButton) {
+        self.view.endEditing(true)
+        if self.validateTextFields() {
+            let alert = UIAlertController.init(title: nil, message: "Do you want to save changes?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alrt) in
+                self.saveProfileData()
+            }))
+            alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alrt) in
+            }))
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    func saveProfileData() {
         var imgPath = userdata.profile_pic != nil ? userdata.profile_pic! : ""
         if isProfilePicChanged {
             imgPath = self.saveProfileImage()
@@ -173,6 +200,41 @@ class EditProfileVC: UIViewController {
         self.present(picker, animated: true, completion: nil)
     }
     
+    func validateTextFields() -> Bool {
+        if (self.txtName.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
+            HelperClass.showAlert(msg: "Please enter name.", isBack: false, vc: self)
+            return false
+        }else if (self.txtStreetNo.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
+            HelperClass.showAlert(msg: "Please enter street name.", isBack: false, vc: self)
+            return false
+        }else if (self.txtApatmentNo.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
+            HelperClass.showAlert(msg: "Please enter apartment number.", isBack: false, vc: self)
+            return false
+        }else if (self.txtCity.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
+            HelperClass.showAlert(msg: "Please enter city name.", isBack: false, vc: self)
+            return false
+        }else if (self.txtState.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
+            HelperClass.showAlert(msg: "Please enter state.", isBack: false, vc: self)
+            return false
+        }else if (self.txtZipCode.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
+            HelperClass.showAlert(msg: "Please enter zipcode.", isBack: false, vc: self)
+            return false
+        }else if (self.txtPhoneNo.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
+            HelperClass.showAlert(msg: "Please enter phone number.", isBack: false, vc: self)
+            return false
+        }else if (self.txtPhoneNo.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 8 {
+            HelperClass.showAlert(msg: "Please enter valid phone number.", isBack: false, vc: self)
+            return false
+        }else if (self.txtMpc.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
+            HelperClass.showAlert(msg: "Please enter MPC.", isBack: false, vc: self)
+            return false
+        }else if (self.txtSubDivision.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
+            HelperClass.showAlert(msg: "Please enter sub division.", isBack: false, vc: self)
+            return false
+        }
+        return true
+    }
+    
     /*
     // MARK: - Navigation
 
@@ -185,6 +247,46 @@ class EditProfileVC: UIViewController {
 
 }
 
+//MARK: -
+extension EditProfileVC : UITextFieldDelegate {
+    //MARK: TextField Delegate
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if textField.text == "" || (textField.text?.trimmingCharacters(in: .whitespacesAndNewlines)) == "" {
+            
+        }
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if string.rangeOfCharacter(from: CharacterSet.alphanumerics.inverted) != nil && string != "," && string != " " {
+            return false
+        }
+        if textField == txtPhoneNo {
+            if (textField.text!.count + string.count) > 10 && string != "" {
+                return false
+            }
+        }else if textField == txtZipCode {
+            if (textField.text!.count + string.count) > 6 && string != "" {
+                return false
+            }
+        }else {
+            if (textField.text!.count + string.count) > 50 && string != "" {
+                return false
+            }
+        }
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+//        if textField == self.txtSubDivision {
+            textField.resignFirstResponder()
+//        }else if let txtField = textField.next?.next as? UITextField {
+//            txtField.becomeFirstResponder()
+//        }
+        return true
+    }
+}
+
+//MARK: -
 extension EditProfileVC : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let img = info[.editedImage] as? UIImage {

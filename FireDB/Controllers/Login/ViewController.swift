@@ -127,22 +127,8 @@ class ViewController: UIViewController {
         })
     }
     
-    func initUserModel(userDict : NSDictionary) {
-        do {
-            let jsonData  = try? JSONSerialization.data(withJSONObject: userDict, options:.prettyPrinted)
-            let jsonDecoder = JSONDecoder()
-            //                                    var userdata = UserData.sharedInstance
-            userdata = try jsonDecoder.decode(UserData.self, from: jsonData!)
-            print(userdata.id)
-        }
-        catch {
-            print(error.localizedDescription)
-        }
-    }
-    
     func saveDataAndNavigateToHome(loginDict : NSDictionary) {
         HelperClass.saveDataToDefaults(dataObject: loginDict, key: kUserData)
-        self.initUserModel(userDict: loginDict)
         if userdata.profile_pic == nil {
             userdata.profile_pic = "http://graph.facebook.com/\(userdata.id)/picture?type=large"
             loginDict.setValue(userdata.profile_pic!, forKey: "profile_pic")

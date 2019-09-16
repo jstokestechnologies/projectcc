@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 import FirebaseFirestore
-
+import SDWebImage
 
 class ShowLoginDataVC: UIViewController {
     
@@ -43,8 +43,9 @@ class ShowLoginDataVC: UIViewController {
         if let img = userdata.profile_pic {
             let url = URL.init(fileURLWithPath: img)
             if url.pathExtension != "" {
+                let placeholderImg = self.imgProfile.image
                 let storageRef = storage.reference(withPath: img)
-                self.imgProfile.sd_setImage(with: storageRef, placeholderImage: UIImage.init(named: "no-image"))
+                self.imgProfile.sd_setImage(with: storageRef, maxImageSize: 200000, placeholderImage: placeholderImg ?? UIImage.init(named: "no-image"), options: .fromLoaderOnly, completion: nil)
             }else {
                 self.imgProfile?.sd_setImage(with: URL.init(string: img), placeholderImage: UIImage.init(named: "no-image"), options: .retryFailed, context: nil)
             }
