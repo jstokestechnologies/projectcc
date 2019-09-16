@@ -25,7 +25,9 @@ class EditProfileVC: UIViewController {
     
     
     lazy var storage = Storage.storage()
-
+    let picker = UIImagePickerController()
+    var isProfilePicChanged = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.showProfileData()
@@ -34,7 +36,6 @@ class EditProfileVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        userdata.profile_pic = "http://graph.facebook.com/10156247148412161/picture?type=large"
         if let img = userdata.profile_pic {
             let url = URL.init(fileURLWithPath: img)
             if url.pathExtension != "" {
@@ -88,13 +89,19 @@ class EditProfileVC: UIViewController {
         }
     }
     
-    func saveDataToFireBase(profile_data : [String : Any]) {
-        db.collection("Users").document(userdata.id).setData(profile_data, completion: { err in
+    func saveDataToFireBase(profile_data : NSMutableDictionary) {
+        progressView.showActivity()
+        db.collection("Users").document(userdata.id).setData(profile_data as! [String : Any], completion: { err in
             if let err = err {
                 print("Error adding document: \(err)")
             } else {
                 print("Document added with ID:\n\n\n\n\n ")
+                HelperClass.saveDataToDefaults(dataObject: profile_data, key: kUserData)
+                let vc = self
+                self.navigationController?.popViewController(animated: true)
+                HelperClass.showAlert(msg: "Profile updated successfully", isBack: true, vc: vc)
             }
+            progressView.hideActivity()
         })
     }
     
@@ -110,24 +117,60 @@ class EditProfileVC: UIViewController {
     }
     
     @IBAction func btnSelectImageAction(_ sender : UIButton) {
+        let alert:UIAlertController=UIAlertController(title: "Select Image", message: nil, preferredStyle: UIAlertController.Style.actionSheet)
         
+        alert.addAction(UIAlertAction(title: "Open Camera", style: UIAlertAction.Style.default) {
+            UIAlertAction in
+            self.openCamera()
+        })
+        
+        alert.addAction(UIAlertAction(title: "Photo Library", style: UIAlertAction.Style.default) {
+            UIAlertAction in
+            self.openGallary()
+        })
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel) {
+            UIAlertAction in
+        })
+        picker.delegate = self
+        picker.allowsEditing = true
+        self.present(alert, animated: true, completion: nil)
     }
     
     @IBAction func btnSaveAction(_ sender : UIButton) {
-        let imgPath = self.saveProfileImage()
-        
-        let param = ["city"         : self.txtCity.text!,
-                     "state"        : self.txtState.text!,
-                     "street"       : self.txtStreetNo.text!,
-                     "apartment_no" : self.txtApatmentNo.text!,
-                     "zipcode"      : self.txtZipCode.text!,
-                     "phone_number" : self.txtPhoneNo.text!,
-                     "mpc"          : self.txtMpc.text!,
-                     "sub_division" : self.txtSubDivision.text!,
-                     "name"         : self.txtName.text!,
-                     "profile_pic"  : imgPath]
+        var imgPath = userdata.profile_pic != nil ? userdata.profile_pic! : ""
+        if isProfilePicChanged {
+            imgPath = self.saveProfileImage()
+        }
+        let param = HelperClass.fetchDataFromDefaults(with: kUserData).mutableCopy() as! NSMutableDictionary
+        param["city" ]        = self.txtCity.text!
+        param["state"       ] = self.txtState.text!
+        param["street"      ] = self.txtStreetNo.text!
+        param["apartment_no"] = self.txtApatmentNo.text!
+        param["zipcode"     ] = self.txtZipCode.text!
+        param["phone_number"] = self.txtPhoneNo.text!
+        param["mpc"         ] = self.txtMpc.text!
+        param["sub_division"] = self.txtSubDivision.text!
+        param["name"        ] = self.txtName.text!
+        if isProfilePicChanged && imgPath.count > 0 {
+            param["profile_pic" ] = imgPath
+        }
         
         self.saveDataToFireBase(profile_data: param)
+    }
+    
+    func openCamera()
+    {
+        if(UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera)) {
+            picker.sourceType = UIImagePickerController.SourceType.camera
+            self.present(picker, animated: true, completion: nil)
+        }
+    }
+    
+    func openGallary()
+    {
+        picker.sourceType = UIImagePickerController.SourceType.photoLibrary
+        self.present(picker, animated: true, completion: nil)
     }
     
     /*
@@ -140,4 +183,20 @@ class EditProfileVC: UIViewController {
     }
     */
 
+}
+
+extension EditProfileVC : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let img = info[.editedImage] as? UIImage {
+            self.imgProfile?.image = img
+        }else if let img = info[.originalImage] as? UIImage {
+            self.imgProfile?.image = img
+        }
+        isProfilePicChanged = true
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
 }
