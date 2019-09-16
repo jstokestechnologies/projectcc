@@ -30,8 +30,8 @@ class ItemListForSaleVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initialSetup()
-        progressView.showActivity()
         if self.tabBarController?.selectedIndex == 0 {
+            progressView.showActivity()
             self.fetchItemList()
         }else {
             self.title = "Favorites"
@@ -48,6 +48,7 @@ class ItemListForSaleVC: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if self.tabBarController?.selectedIndex == 3 {
+            progressView.showActivity()
             self.arrItems = [ItemsDetail]()
             self.fetchBookmarkedItems()
         }
@@ -64,6 +65,7 @@ class ItemListForSaleVC: UIViewController {
     
     //MARK: - Firebase Methods
     func fetchBookmarkedItems() {
+        self.arrItems?.removeAll()
         if userdata.my_bookmarks?.count ?? 0 > 0 {
             let reqParam = ["documents" : userdata.my_bookmarks?.compactMap({"projects/projectcc-a98a4/databases/(default)/documents/listed_items/\($0)"}) ?? " ",
                             "newTransaction"  : NSDictionary()] as [String : Any]
@@ -83,11 +85,13 @@ class ItemListForSaleVC: UIViewController {
                     }
                     self.tblItemList.reloadData()
                 }
+                self.setNoDataLabel()
                 progressView.hideActivity()
             }
         }else {
             self.setNoDataLabel()
             progressView.hideActivity()
+            self.tblItemList.reloadData()
         }
     }
     
