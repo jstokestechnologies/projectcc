@@ -206,10 +206,10 @@ class EditProfileVC: UIViewController {
         }else if (self.txtStreetNo.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
             HelperClass.showAlert(msg: "Please enter street name.", isBack: false, vc: self)
             return false
-        }else if (self.txtApatmentNo.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
+        }/*else if (self.txtApatmentNo.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
             HelperClass.showAlert(msg: "Please enter apartment number.", isBack: false, vc: self)
             return false
-        }else if (self.txtCity.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
+        }*/else if (self.txtCity.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
             HelperClass.showAlert(msg: "Please enter city name.", isBack: false, vc: self)
             return false
         }else if (self.txtState.text?.trimmingCharacters(in: .whitespaces).count ?? 0) <= 0 {
