@@ -9,7 +9,6 @@
 import UIKit
 import Firebase
 import SDWebImage
-import IQKeyboardManagerSwift
 
 class EditProfileVC: UIViewController {
     

@@ -21,5 +21,6 @@ pod 'Fabric', '~> 1.10.2'
 pod 'Crashlytics', '~> 3.13.4'
 
 pod 'SkyFloatingLabelTextField', '~> 3.0'
+pod 'IQKeyboardManagerSwift'
 
 end
