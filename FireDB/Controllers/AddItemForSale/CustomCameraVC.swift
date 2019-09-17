@@ -11,7 +11,7 @@ import UIKit
 class CustomCameraVC: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
     @IBOutlet weak var viewCamera: UIView!
-    @IBOutlet weak var viewCrop: UIView!
+//    @IBOutlet weak var viewCrop: UIView!
     
     @IBOutlet weak var btnFlash: UIButton!
     
@@ -33,15 +33,15 @@ class CustomCameraVC: UIViewController, UINavigationControllerDelegate, UIImageP
             imagePickers.sourceType = .camera
             imagePickers.cameraDevice = .rear
             self.imagePickers.cameraFlashMode = .off
+            imagePickers.view.frame = viewCamera.bounds
             //add as a childviewcontroller
             addChild(imagePickers)
             
             // Add the child's View as a subview
             self.viewCamera.addSubview((imagePickers.view)!)
-            imagePickers.view.frame = viewCamera.bounds
             imagePickers.allowsEditing = true
             imagePickers.showsCameraControls = false
-            imagePickers.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//            imagePickers.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         }
     }
     
@@ -113,8 +113,8 @@ extension CustomCameraVC  {
             selectedImg = img
         }else if let img = info[.originalImage] as? UIImage {
             selectedImg = img
-            selectedImg = selectedImg?.resizeImage(targetSize: self.viewCamera.bounds.size)
-            selectedImg = selectedImg?.cropToBounds(width: self.view.bounds.width, height: self.view.bounds.width, origin: CGPoint.init(x: 0.0, y: self.viewCrop.frame.origin.y - self.viewCamera.frame.origin.y))
+//            selectedImg = selectedImg?.resizeImage(targetSize: self.viewCamera.bounds.size)
+//            selectedImg = selectedImg?.cropToBounds(width: self.view.bounds.width, height: self.view.bounds.width, origin: CGPoint.init(x: 0.0, y: self.viewCrop.frame.origin.y - self.viewCamera.frame.origin.y))
         }
         if let img = selectedImg {
             if picker != self.imagePickers {
@@ -122,7 +122,7 @@ extension CustomCameraVC  {
                     self.showImageCropView(withImage: img)
                 })
             }else {
-                self.showImageCropView(withImage: img)
+                self.showSystemImageCropView(withImage: img)
             }
         }
     }
@@ -135,6 +135,17 @@ extension CustomCameraVC  {
         }else {
             self.present(vc, animated: true, completion: nil)
         }
+    }
+    
+    func showSystemImageCropView(withImage img : UIImage) {
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "SystemCropVC") as! SystemCropVC
+        vc.imgToCrop = img
+        vc.isFirstVC = self.isFirstVC
+//        if self.isFirstVC {
+//            self.navigationController?.show(vc, sender: nil)
+//        }else {
+            self.present(vc, animated: false, completion: nil)
+//        }
     }
 }
 
