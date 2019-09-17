@@ -60,7 +60,19 @@ class SystemCropVC: UIViewController, UIScrollViewDelegate {
     }
     
     @IBAction func btnCropAction(_ sender: Any) {
-        let cropX = self.scrolView.contentOffset.x
+        let zoomScale = self.scrolView.zoomScale
+        
+        let imgViewHeight = self.imgView.frame.height/zoomScale
+        let imgViewWidth = self.imgView.frame.width/zoomScale
+        
+        let imageHeight = self.imgToCrop.size.height
+        let imageWidth = self.imgToCrop.size.width
+        
+        var cropX = (self.scrolView.contentOffset.x)/zoomScale
+        cropX = (cropX/imgViewWidth)*imageWidth
+        
+        
+        
         let cropY = self.scrolView.contentOffset.y
         let width = self.scrolView.frame.width
         let height = self.scrolView.frame.height
