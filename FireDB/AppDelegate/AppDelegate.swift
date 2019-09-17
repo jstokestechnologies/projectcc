@@ -13,7 +13,7 @@ import FBSDKCoreKit
 import Firebase
 import FirebaseFirestore
 import SDWebImage
-
+import IQKeyboardManagerSwift
 
 var db = Firestore.firestore()
 var userdata = UserData()
@@ -45,7 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
 //        SDImageCache.shared.clearMemory()
 //        SDImageCache.shared.clearDisk()
-        
+        IQKeyboardManager.shared.enable = true
         return true
     }
     
