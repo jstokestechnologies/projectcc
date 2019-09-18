@@ -228,7 +228,7 @@ extension MyListedItemsVC : UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 148.00
+        return 500.00
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -258,7 +258,7 @@ extension MyListedItemsVC : UICollectionViewDelegate, UICollectionViewDataSource
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellImg", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: kCellItemImage, for: indexPath)
         
         let item = self.arrItems![collectionView.tag]
         let storageRef = storage.reference(withPath: item.item_images![indexPath.row])

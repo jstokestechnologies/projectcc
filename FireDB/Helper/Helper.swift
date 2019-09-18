@@ -30,6 +30,7 @@ class HelperClass : NSObject {
         }catch {
             
         }
+        self.setUserDataModel(userDict: dataObject)
     }
     
     class func fetchDataFromDefaults(with key : String)->NSDictionary {
@@ -44,6 +45,18 @@ class HelperClass : NSObject {
         return  NSDictionary()
     }
     
+    class func setUserDataModel(userDict : NSDictionary) {
+        do {
+            let jsonData  = try? JSONSerialization.data(withJSONObject: userDict, options:.prettyPrinted)
+            let jsonDecoder = JSONDecoder()
+            //                                    var userdata = UserData.sharedInstance
+            userdata = try jsonDecoder.decode(UserData.self, from: jsonData!)
+            print(userdata.id)
+        }
+        catch {
+            print(error.localizedDescription)
+        }
+    }
     
     class func showAlert(msg : String, isBack : Bool, vc : UIViewController?){
         let alert = UIAlertController.init(title: "", message: msg, preferredStyle: .alert)
@@ -89,7 +102,7 @@ class HelperClass : NSObject {
         
         request.timeoutInterval = 45
         var postDataTask = URLSessionDataTask()
-        postDataTask.priority = URLSessionDataTask.highPriority
+//        postDataTask.priority = URLSessionDataTask.highPriority
         
         postDataTask = session.dataTask(with: request, completionHandler: { (data : Data?,response : URLResponse?, error : Error?) in
             //            var json : (Any);

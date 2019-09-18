@@ -53,6 +53,9 @@ class ViewController: UIViewController {
             db.collection("Users").document("\(loginData["id"] ?? "N/A")").getDocument(source: .server, completion: { (document, err) in
                 if let data = document?.data() {
                     loginData["my_bookmarks"] = data["my_bookmarks"]
+                    if let profilePic = data["profile_pic"] {
+                        loginData["profile_pic"] = profilePic
+                    }
                     self.saveDataAndNavigateToHome(loginDict: loginData)
                 }else if err != nil {
                     print(err?.localizedDescription ?? "Error login")
@@ -79,20 +82,20 @@ class ViewController: UIViewController {
                                          .userFriends,
                                          .userVideos,
                                          .userTaggedPlaces], viewController: self) { loginResult in
-            switch loginResult {
-            case .failed(let error):
-                print(error)
-            case .cancelled:
-                print("User cancelled login.")
-            case .success(let grantedPermissions, let declinedPermissions, let accessToken):
-                print("Logged in! \(grantedPermissions.description), Token : \(accessToken.tokenString), DeclinePermition Details : \(declinedPermissions.description)")
-                //get facebook access token
-                let credential = FacebookAuthProvider.credential(withAccessToken: AccessToken.current!.tokenString)
-                // Signin with facebook into Firebase
-                self.authenticateFireBase(cred: credential)
-//                HelperClass.showProgressView()
-                progressView.showActivity()
-            }
+                                            switch loginResult {
+                                            case .failed(let error):
+                                                print(error)
+                                            case .cancelled:
+                                                print("User cancelled login.")
+                                            case .success(let grantedPermissions, let declinedPermissions, let accessToken):
+                                                print("Logged in! \(grantedPermissions.description), Token : \(accessToken.tokenString), DeclinePermition Details : \(declinedPermissions.description)")
+                                                //get facebook access token
+                                                let credential = FacebookAuthProvider.credential(withAccessToken: AccessToken.current!.tokenString)
+                                                // Signin with facebook into Firebase
+                                                self.authenticateFireBase(cred: credential)
+                                                //                HelperClass.showProgressView()
+                                                progressView.showActivity()
+                                            }
         }
     }
     
@@ -101,7 +104,7 @@ class ViewController: UIViewController {
         Auth.auth().signIn(with: cred, completion: { (authResult, error) in
             if let error = error {
                 print(error.localizedDescription)
-//                HelperClass.hideProgressView()
+                //                HelperClass.hideProgressView()
                 progressView.hideActivity()
                 return
             }else {
@@ -124,22 +127,12 @@ class ViewController: UIViewController {
         })
     }
     
-    func initUserModel(userDict : NSDictionary) {
-        do {
-            let jsonData  = try? JSONSerialization.data(withJSONObject: userDict, options:.prettyPrinted)
-            let jsonDecoder = JSONDecoder()
-            //                                    var userdata = UserData.sharedInstance
-            userdata = try jsonDecoder.decode(UserData.self, from: jsonData!)
-            print(userdata.id)
-        }
-        catch {
-            print(error.localizedDescription)
-        }
-    }
-    
     func saveDataAndNavigateToHome(loginDict : NSDictionary) {
         HelperClass.saveDataToDefaults(dataObject: loginDict, key: kUserData)
-        self.initUserModel(userDict: loginDict)
+        if userdata.profile_pic == nil {
+            userdata.profile_pic = "http://graph.facebook.com/\(userdata.id)/picture?type=large"
+            loginDict.setValue(userdata.profile_pic!, forKey: "profile_pic")
+        }
         self.saveDataToFireBase(loginDict: loginDict as! [String : Any])
         UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "TabVc")
         progressView.hideActivity()

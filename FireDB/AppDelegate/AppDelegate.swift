@@ -12,7 +12,8 @@ import Fabric
 import FBSDKCoreKit
 import Firebase
 import FirebaseFirestore
-
+import SDWebImage
+import IQKeyboardManagerSwift
 
 var db = Firestore.firestore()
 var userdata = UserData()
@@ -36,21 +37,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Fabric.with([Crashlytics.self])
         
         if UserDefaults.standard.bool(forKey: kIsLoggedIn) {
-            let userDict = HelperClass.fetchDataFromDefaults(with: kUserData) as! [String : Any]
-            do {
-                let jsonData  = try? JSONSerialization.data(withJSONObject: userDict, options:.prettyPrinted)
-                let jsonDecoder = JSONDecoder()
-                //                                    var userdata = UserData.sharedInstance
-                userdata = try jsonDecoder.decode(UserData.self, from: jsonData!)
-                print(userdata.id)
-            }
-            catch {
-                print(error.localizedDescription)
-            }
+            let userDict = HelperClass.fetchDataFromDefaults(with: kUserData)
+            HelperClass.setUserDataModel(userDict: userDict)
             
             self.window?.rootViewController = UIStoryboard.init(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "TabVc")
         }
         
+//        SDImageCache.shared.clearMemory()
+//        SDImageCache.shared.clearDisk()
+        IQKeyboardManager.shared.enable = true
         return true
     }
     

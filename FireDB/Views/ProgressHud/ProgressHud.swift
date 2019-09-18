@@ -40,10 +40,14 @@ class ProgressHud: UIView {
     func showActivity() {
         self.activityView?.viewActivity.startAnimating()
         UIApplication.shared.keyWindow?.addSubview(self)
+        UIApplication.shared.beginIgnoringInteractionEvents()
     }
     
     func hideActivity() {
         self.activityView?.viewActivity.stopAnimating()
         self.removeFromSuperview()
+        UIApplication.shared.endIgnoringInteractionEvents()
     }
+    
+    
 }
