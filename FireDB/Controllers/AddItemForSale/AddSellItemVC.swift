@@ -339,10 +339,11 @@ class AddSellItemVC: UIViewController {
     
     func getItemDetails() -> Dictionary<String,Any> {
         let timestamp =  Int64(Date().timeIntervalSince1970 * 1000)
-        var imgPath = self.saveItemImages(timestamp)
-        if let savedImgs = self.itemData?.item_images, isEditingItem {
-            imgPath.append(contentsOf: savedImgs)
-        }
+        let imgPath = self.saveItemImages(timestamp)
+        self.deleteRemovedImages()
+//        if let savedImgs = self.itemData?.item_images, isEditingItem {
+//            imgPath.append(contentsOf: savedImgs)
+//        }
         
         let itemDetails : [String : Any] = ["item_name"     : (self.txtItemName.text)!,
                                             "description"   : (self.txtItemDescription.text)!,
@@ -421,6 +422,22 @@ class AddSellItemVC: UIViewController {
         imgPaths.append(contentsOf: arrSavedImgPath)
         
         return imgPaths
+    }
+    
+    func deleteRemovedImages() {
+        for img in self.arrRemovedImages {
+            let storageRef = storage.reference()
+            let desertRef = storageRef.child(img.imageUrl!)
+            
+            //Removes image from storage
+            desertRef.delete { error in
+                if let error = error {
+                    print(error)
+                } else {
+                    // File deleted successfully
+                }
+            }
+        }
     }
     
     func saveEditedItemDetails(itemData : Dictionary<String,Any>, completionHandler:@escaping (Error?, Bool) -> ()) {
