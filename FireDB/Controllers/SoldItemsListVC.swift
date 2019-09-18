@@ -132,7 +132,7 @@ extension SoldItemsListVC : UICollectionViewDelegate, UICollectionViewDataSource
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellImg", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: kCellItemImage, for: indexPath)
         
         let item = self.arrItems![collectionView.tag]
         let storageRef = storage.reference(withPath: item.item_images![indexPath.row])

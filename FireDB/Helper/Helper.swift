@@ -102,7 +102,7 @@ class HelperClass : NSObject {
         
         request.timeoutInterval = 45
         var postDataTask = URLSessionDataTask()
-        postDataTask.priority = URLSessionDataTask.highPriority
+//        postDataTask.priority = URLSessionDataTask.highPriority
         
         postDataTask = session.dataTask(with: request, completionHandler: { (data : Data?,response : URLResponse?, error : Error?) in
             //            var json : (Any);
