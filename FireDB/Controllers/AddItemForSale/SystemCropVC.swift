@@ -65,19 +65,23 @@ class SystemCropVC: UIViewController, UIScrollViewDelegate {
         let imgViewHeight = self.imgView.frame.height/zoomScale
         let imgViewWidth = self.imgView.frame.width/zoomScale
         
-        let imageHeight = self.imgToCrop.size.height
-        let imageWidth = self.imgToCrop.size.width
+        let imgHeight = self.imgToCrop.size.height
+        let imgWidth = self.imgToCrop.size.width
         
         var cropX = (self.scrolView.contentOffset.x)/zoomScale
-        cropX = (cropX/imgViewWidth)*imageWidth
+        cropX = (cropX/imgViewWidth)*imgWidth
         
+        var cropY = (self.scrolView.contentOffset.y)/zoomScale
+        cropY = (cropY/imgViewHeight)*imgHeight
         
+        var width = (self.scrolView.frame.width)/zoomScale
+        width = (width/imgViewWidth)*imgWidth
         
-        let cropY = self.scrolView.contentOffset.y
-        let width = self.scrolView.frame.width
-        let height = self.scrolView.frame.height
-        let image = self.imgToCrop.resizeImage(targetSize: self.imgView.bounds.size)
-        if let img = image.sd_croppedImage(with: CGRect.init(x: cropX, y: cropY, width: width, height: height)) {
+        var height = (self.scrolView.frame.height)/zoomScale
+        height = (height/imgViewHeight)*imgHeight
+        
+//        let image = self.imgToCrop.resizeImage(targetSize: self.imgView.bounds.size)
+         let img = self.imgToCrop.cropToBounds(width: width, height: height, origin: CGPoint.init(x: cropX, y: cropY)) //{
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "CropImageVC") as! CropImageVC
             vc.imageToCrop = img
             if let navVC = self.presentingViewController as? UINavigationController, self.isFirstVC {
@@ -89,7 +93,7 @@ class SystemCropVC: UIViewController, UIScrollViewDelegate {
                     parentVC.present(vc, animated: false, completion: nil)
                 }
             }
-        }
+        //}
     }
     /*
     // MARK: - Navigation

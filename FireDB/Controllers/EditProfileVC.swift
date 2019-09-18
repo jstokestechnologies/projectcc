@@ -104,7 +104,7 @@ class EditProfileVC: UIViewController {
                 print("Document added with ID:\n\n\n\n\n ")
                 
                 HelperClass.saveDataToDefaults(dataObject: profile_data, key: kUserData)
-                HelperClass.showAlert(msg: "Profile updated successfully", isBack: true, vc: self)
+//                HelperClass.showAlert(msg: "Profile updated successfully", isBack: true, vc: self)
                 progressView.hideActivity()
             }
         })
@@ -152,15 +152,15 @@ class EditProfileVC: UIViewController {
     
     @IBAction func btnSaveAction(_ sender : UIButton) {
         self.view.endEditing(true)
-        if self.validateTextFields() {
-            let alert = UIAlertController.init(title: nil, message: "Do you want to save changes?", preferredStyle: .alert)
-            alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alrt) in
+//        if self.validateTextFields() {
+//            let alert = UIAlertController.init(title: nil, message: "Do you want to save changes?", preferredStyle: .alert)
+//            alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alrt) in
                 self.saveProfileData()
-            }))
-            alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alrt) in
-            }))
-            self.present(alert, animated: true, completion: nil)
-        }
+//            }))
+//            alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alrt) in
+//            }))
+//            self.present(alert, animated: true, completion: nil)
+//        }
     }
     
     func saveProfileData() {

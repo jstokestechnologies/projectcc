@@ -151,37 +151,36 @@ extension CustomCameraVC  {
 
 extension UIImage {
     func cropToBounds(width: CGFloat, height: CGFloat, origin : CGPoint) -> UIImage {
+        let img = self.fixOrientation()
+        let cgimage = img.cgImage!
         
-        let cgimage = self.cgImage!
-        let contextImage: UIImage = UIImage(cgImage: cgimage)
-        let contextSize: CGSize = contextImage.size
-        var posX: CGFloat = origin.x
-        var posY: CGFloat = origin.y
-        var cgwidth: CGFloat = CGFloat(width)
-        var cgheight: CGFloat = CGFloat(height)
-        
-        // See what size is longer and create the center off of that
-        if contextSize.width > contextSize.height {
-            posX = ((contextSize.width - contextSize.height) / 2)
-            posY = 0
-            cgwidth = contextSize.height
-            cgheight = contextSize.height
-        } else {
-            posX = 0
-            posY = ((contextSize.height - contextSize.width) / 2)
-            cgwidth = contextSize.width
-            cgheight = contextSize.width
-        }
-        
+        let posX: CGFloat = origin.x
+        let posY: CGFloat = origin.y
+        let cgwidth: CGFloat = CGFloat(width)
+        let cgheight: CGFloat = CGFloat(height)
         let rect: CGRect = CGRect(x: posX, y: posY, width: cgwidth, height: cgheight)
         
         // Create bitmap image from context using the rect
         let imageRef: CGImage = cgimage.cropping(to: rect)!
         
         // Create a new image based on the imageRef and rotate back to the original orientation
-        let image: UIImage = UIImage(cgImage: imageRef, scale: self.scale, orientation: self.imageOrientation)
+        let image: UIImage = UIImage(cgImage: imageRef, scale: img.scale, orientation: img.imageOrientation)
         
         return image
+    }
+    
+    func fixOrientation() -> UIImage {
+        if self.imageOrientation == UIImage.Orientation.up {
+            return self
+        }
+        UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
+        self.draw(in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height))
+        if let normalizedImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() {
+            UIGraphicsEndImageContext()
+            return normalizedImage
+        } else {
+            return self
+        }
     }
     
     func resizeImage(targetSize: CGSize) -> UIImage {
