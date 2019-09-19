@@ -18,3 +18,9 @@ let kUsersCollection        = "Users"
 let kListedItems            = "listed_items"
 let kSavedItems             = "saved_items"
 let kCellItemImage          = "CellImg"
+
+
+
+// Notification Name
+let kNotification_Category      = "Selected Category"
+let kNotification_Image         = "Selected Image"

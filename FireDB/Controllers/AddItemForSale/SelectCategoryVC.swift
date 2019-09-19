@@ -11,38 +11,32 @@ import UIKit
 class SelectCategoryVC: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet weak var tlbCategory: UITableView!
-    @IBOutlet weak var tblSubCategory: UITableView!
-    
-    @IBOutlet weak var const_ViewSubCat_Center_Y: NSLayoutConstraint!
-    @IBOutlet weak var const_tblSubCat_bottom: NSLayoutConstraint!
-    @IBOutlet weak var const_tblCat_bottom: NSLayoutConstraint!
     
     //MARK: - Variables
     var delegate : SelectCategoryProtocol?
     
-    
-//    var arrCategories = [[String : [String : Any]]]()
-//    var arrSubCategory = [[String : Any]]()
     var dictCategory = [String : [String : Any]]()
-    var dictSubCategory = [String : [String : Any]]()
-    var selectedCat = [String : Any]()
-    var selectedCatId = String()
-    var arrSelectedCategory = Array<String>()
-    
-    var previousCategory : [String : [String : Any]]?
-    var arrPreviousSubCat = Array<String>()
+    var parentCategories = [String : [String : Any]]()
+    var parentCatIDs : [String]?
+    var collectionName = String()
     
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.fetchCategories()
+        if self.parentCatIDs != nil {
+            self.fetchSubCategories()
+            self.title = "Select Subcategory"
+        }else {
+            self.fetchCategories()
+            self.title = "Category"
+        }
         // Do any additional setup after loading the view.
     }
     
     //MARK: - Firebase Methods
     func fetchCategories() {
         progressView.showActivity()
-        let itemRef = db.collection("categories")
+        let itemRef = db.collection(self.collectionName).order(by: "name", descending: false)
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
                 let arr = documents.map({ (doc) -> [String : [String : Any]] in
@@ -58,15 +52,12 @@ class SelectCategoryVC: UIViewController {
                 self.tlbCategory.reloadData()
             }
             progressView.hideActivity()
-            if self.previousCategory != nil {
-                self.getPreviousSubCategory()
-            }
         }
     }
     
-    func fetchSubCategoryFromFireBase(_ key : String) {
+    func fetchSubCategories() {
         progressView.showActivity()
-        let itemRef = db.collection("subcategories").whereField("cat_id", isEqualTo: key)
+        let itemRef = db.collection(self.collectionName).order(by: "name", descending: false).whereField("cat_id", isEqualTo: (self.parentCatIDs?.last ?? ""))
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
                 let arr = documents.map({ (doc) -> [String : [String : Any]] in
@@ -74,47 +65,18 @@ class SelectCategoryVC: UIViewController {
                 })
                 let dict = Dictionary.init(uniqueKeysWithValues: arr.map{ ($0.keys.first!, $0.values.first!) })
                 if arr.count <= 0 {
-                    self.showNoDataLabel(msg: "No sub-categories found", table: self.tblSubCategory)
+                    self.showNoDataLabel(msg: "No sub-categories found", table: self.tlbCategory)
                 }else {
-                    self.tblSubCategory.tableFooterView = UIView.init(frame: CGRect.zero)
+                    self.tlbCategory.tableFooterView = UIView.init(frame: CGRect.zero)
                 }
-                self.dictSubCategory = dict
-                self.categorySetSelected(key)
-                self.animateSubCategoryList()
+                self.dictCategory = dict
+                self.tlbCategory.reloadData()
             }
             progressView.hideActivity()
         }
     }
     
     //MARK: - Other Helper Methods
-    
-    func getPreviousSubCategory() {
-        let key = (self.previousCategory?.keys.first) ?? "-"
-        self.previousCategory = nil
-        fetchSubCategoryFromFireBase(key)
-    }
-    
-    func categorySetSelected(_ key : String) {
-        self.selectedCatId = key
-        self.selectedCat = dictCategory[key] ?? [String : Any]()
-        self.arrSelectedCategory.removeAll()
-        if self.arrPreviousSubCat.count > 0 {
-            self.arrSelectedCategory.append(contentsOf: self.arrPreviousSubCat)
-            self.arrPreviousSubCat.removeAll()
-        }
-        self.tlbCategory.reloadData()
-    }
-    
-    func animateSubCategoryList() {
-        UIView.animate(withDuration: 0.4) {
-            self.const_tblSubCat_bottom.priority = .defaultHigh
-            self.const_ViewSubCat_Center_Y.priority = .defaultHigh
-            self.const_tblCat_bottom.priority = .defaultLow
-            self.view.layoutIfNeeded()
-        }
-        self.tblSubCategory.reloadData()
-    }
-    
     func showNoDataLabel(msg : String, table : UITableView) {
         let lbl = UILabel()
         lbl.text = msg
@@ -126,13 +88,7 @@ class SelectCategoryVC: UIViewController {
     
     //MARK: - IBAction
     @IBAction func btnSaveAction(_ sender: Any) {
-        if self.arrSelectedCategory.count > 0 {
-            let dictSelectedSubCat = dictSubCategory.filter({self.arrSelectedCategory.contains($0.key)})
-            self.delegate?.selectCategory([self.selectedCatId : self.selectedCat], andSubcategory: dictSelectedSubCat)
-            self.navigationController?.popViewController(animated: true)
-        }else {
-            
-        }
+        
     }
     
     /*
@@ -149,53 +105,60 @@ class SelectCategoryVC: UIViewController {
 //MARK: -
 extension SelectCategoryVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if tableView == self.tlbCategory {
-            return self.dictCategory.keys.count
-        }else {
-            
-            return  self.dictSubCategory.keys.count
-        }
+        return self.dictCategory.keys.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if self.tlbCategory == tableView {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CellCategory", for: indexPath)
-            let dictCat = Array(dictCategory.values)[indexPath.row]
-            let catKey = Array(dictCategory.keys)[indexPath.row]
-            let catName =  "\(dictCat["name"] ?? "-")"
-            cell.textLabel?.text = catName
-            cell.accessoryType = catKey == self.selectedCatId ? .checkmark : .none
-            return cell
-        }
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CellSubcategory", for: indexPath)
-        
-        let dictSubCat = Array(dictSubCategory.values)[indexPath.row]
-        let subCatKey = Array(dictSubCategory.keys)[indexPath.row]
-        let subCatName =  "\(dictSubCat["name"] ?? "-")"
-        
-        cell.textLabel?.text = subCatName
-        let isSelected = self.arrSelectedCategory.contains(subCatKey)
-        cell.accessoryType = isSelected ? .checkmark : .none
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CellCategory", for: indexPath)
+        let dictCat = Array(dictCategory.values)[indexPath.row]
+        let catName =  "\(dictCat["name"] ?? "-")"
+        cell.textLabel?.text = catName
+        cell.accessoryType = self.parentCatIDs == nil ? .disclosureIndicator : .none
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if tableView == self.tblSubCategory {
-            let cell = tableView.cellForRow(at: indexPath)
-            let subCatKey = Array(dictSubCategory.keys)[indexPath.row]
-            if cell?.accessoryType != .checkmark {
-                self.arrSelectedCategory.append(subCatKey)
+        tableView.deselectRow(at: indexPath, animated: true)
+        let catKey = Array(dictCategory.keys)[indexPath.row]
+        let category = dictCategory[catKey]
+        if (category?["is_subcategory"] as? Bool ?? false) {
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "SelectCategoryVC") as! SelectCategoryVC
+            vc.collectionName = "subcategories"
+            if self.parentCatIDs != nil {
+                vc.parentCatIDs = self.parentCatIDs
+                vc.parentCatIDs?.append(catKey)
             }else {
-                self.arrSelectedCategory.removeAll(where: {$0 == subCatKey})
+                vc.parentCatIDs = [catKey]
             }
-            
-            self.tlbCategory.reloadData()
-            self.tblSubCategory.reloadData()
+            vc.parentCategories[catKey] = category
+            self.navigationController?.show(vc, sender: self)
         }else {
-            let catKey = Array(dictCategory.keys)[indexPath.row]
-            if catKey != self.selectedCatId {
-                self.fetchSubCategoryFromFireBase(catKey)
+            if self.parentCatIDs != nil {
+                self.parentCatIDs?.append(catKey)
+            }else {
+                self.parentCatIDs = [catKey]
+            }
+            self.parentCategories[catKey] = category
+            
+            let userInfo = ["cat_ids"   : self.parentCatIDs!,
+                            "categories": self.parentCategories] as [String : Any]
+            
+            NotificationCenter.default.post(name: NSNotification.Name.init(kNotification_Category), object: nil, userInfo: userInfo)
+            if let vcs = self.navigationController?.viewControllers {
+                for vc in vcs {
+                    if vc.isKind(of: AddSellItemVC.classForCoder()) {
+                        self.navigationController?.popToViewController(vc, animated: true)
+                        return
+                    }
+                }
+                if self.parentCatIDs != nil && vcs.count >= (self.parentCatIDs?.count ?? 0) {
+                    var count = vcs.count - (self.parentCatIDs?.count ?? 0)
+                    count = count < 0 ? 0 : count
+                    let vc = vcs[count - 1]
+                    self.navigationController?.popToViewController(vc, animated: true)
+                }else {
+                    self.navigationController?.popViewController(animated: true)
+                }
             }
         }
     }

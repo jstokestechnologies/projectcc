@@ -51,10 +51,9 @@ class CropImageVC: UIViewController {
                 parentVC?.dismiss(animated: true, completion: nil)
             }
             DispatchQueue.main.async {
-                NotificationCenter.default.post(name: Notification.Name.init(rawValue: "ImageSelected"), object: nil, userInfo: ["image" : self.imageToCrop])
+                NotificationCenter.default.post(name: Notification.Name.init(rawValue: kNotification_Image), object: nil, userInfo: ["image" : self.imageToCrop])
             }
         }
-        
     }
     
     @IBAction func btnCropImageAction(_ sender : UIButton) {

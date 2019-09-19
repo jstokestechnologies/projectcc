@@ -72,21 +72,19 @@ class AddSellItemVC: UIViewController {
         super.viewDidLoad()
         self.prepareViews()
         // Do any additional setup after loading the view.
-        NotificationCenter.default.addObserver(self, selector: #selector(self.notificationImageSelected(_:)), name: Notification.Name.init(rawValue: "ImageSelected"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.notificationImageSelected(_:)), name: Notification.Name.init(rawValue: kNotification_Image), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.notificationCategoreySelected(_:)), name: Notification.Name.init(rawValue: kNotification_Category), object: nil)
         
         self.navigationController?.navigationBar.isHidden = false
-//        self.tabBarController?.tabBar.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        self.hideMainView(true)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.init("ImageSelected"), object: nil)
-//        self.hideMainView(false)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.init(kNotification_Image), object: nil)
     }
     
     func prepareViews() {
@@ -222,6 +220,7 @@ class AddSellItemVC: UIViewController {
         let alert = UIAlertController.init(title: "", message: "Are you sure you want to close this window?", preferredStyle: .alert)
         alert.addAction(UIAlertAction.init(title: "Yes", style: .default, handler: { (alert) in
             self.navigationController?.dismiss(animated: true, completion: nil)
+            NotificationCenter.default.removeObserver(self, name: Notification.Name.init(kNotification_Category), object: nil)
 //            self.navigationController?.dismiss(animated: true, completion: nil)
         }))
         alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
@@ -248,6 +247,29 @@ class AddSellItemVC: UIViewController {
             self.resizeImageCollection()
             
             self.setSelectedImage()
+        }
+    }
+    
+    @IBAction func notificationCategoreySelected(_ sender : Any) {
+        self.category.removeAll()
+        self.subCategory.removeAll()
+        if let userInfo = (sender as? Notification)?.userInfo {
+            if let catIds = userInfo["cat_ids"] as? [String], let cat_dict = userInfo["categories"] as? [String : [String : Any]] {
+                if let cat = catIds.first, var cat_data = cat_dict[cat] {
+                    cat_data["id"] = cat
+                    self.category = cat_data
+                }
+                if catIds.count > 1 {
+                    let catId = catIds[1]
+                    if let cat_data = cat_dict[catId] {
+                        self.subCategory[catId] = cat_data
+                    }
+                }
+            }
+//            cat["id"] = category.keys.first!
+//            self.category = cat
+//            self.subCategory = subcategories
+            self.showCategoryAndSubCategory()
         }
     }
     
@@ -506,10 +528,7 @@ class AddSellItemVC: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueSelectCategory" {
             let vc = segue.destination as! SelectCategoryVC
-            if self.subCategory.keys.count > 0 {
-                vc.previousCategory = ["\(self.category["id"] ?? "")" :  self.category]
-                vc.arrPreviousSubCat = Array(self.subCategory.keys)
-            }
+            vc.collectionName = "categories"
             vc.delegate = self
         }else if segue.identifier == "segueSelectBrand" {
             let vc = segue.destination as! SelectBrandVC
