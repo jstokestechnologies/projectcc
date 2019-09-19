@@ -17,6 +17,8 @@ pod 'Firebase/Auth'
 pod 'Firebase/Storage'
 pod 'FirebaseUI/Storage'
 
+pod 'GoogleSignIn'
+
 pod 'Fabric', '~> 1.10.2'
 pod 'Crashlytics', '~> 3.13.4'
 
