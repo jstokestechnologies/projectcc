@@ -15,7 +15,8 @@ class SelectCategoryVC: UIViewController {
     //MARK: - Variables
     var delegate : SelectCategoryProtocol?
     
-    var dictCategory = [String : [String : Any]]()
+//    var dictCategory = [String : [String : Any]]()
+    var arrCategory = [[String : Any]]()
     var parentCategories = [String : [String : Any]]()
     var parentCatIDs : [String]?
     var collectionName = String()
@@ -39,16 +40,19 @@ class SelectCategoryVC: UIViewController {
         let itemRef = db.collection(self.collectionName).order(by: "name", descending: false)
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
-                let arr = documents.map({ (doc) -> [String : [String : Any]] in
-                    return [doc.documentID : doc.data()]
+                let arr = documents.map({ (doc) -> [String : Any] in
+                    var dict = doc.data()
+                    dict["id"] = doc.documentID
+                    return dict
                 })
-                let dict = Dictionary.init(uniqueKeysWithValues: arr.map{ ($0.keys.first!, $0.values.first!) })
+//                let dict = Dictionary.init(uniqueKeysWithValues: arr.map{ ($0.keys.first!, $0.values.first!) })
                 if arr.count <= 0 {
                     self.showNoDataLabel(msg: "No categories found", table: self.tlbCategory)
                 }else {
                     self.tlbCategory.tableFooterView = UIView.init(frame: CGRect.zero)
                 }
-                self.dictCategory = dict
+                self.arrCategory = arr
+//                self.dictCategory = dict
                 self.tlbCategory.reloadData()
             }
             progressView.hideActivity()
@@ -60,16 +64,19 @@ class SelectCategoryVC: UIViewController {
         let itemRef = db.collection(self.collectionName).order(by: "name", descending: false).whereField("cat_id", isEqualTo: (self.parentCatIDs?.last ?? ""))
         itemRef.getDocuments { (docs, err) in
             if let documents = docs?.documents {
-                let arr = documents.map({ (doc) -> [String : [String : Any]] in
-                    return [doc.documentID : doc.data()]
+                let arr = documents.map({ (doc) -> [String : Any] in
+                    var dict = doc.data()
+                    dict["id"] = doc.documentID
+                    return dict
                 })
-                let dict = Dictionary.init(uniqueKeysWithValues: arr.map{ ($0.keys.first!, $0.values.first!) })
+//                let dict = Dictionary.init(uniqueKeysWithValues: arr.map{ ($0.keys.first!, $0.values.first!) })
                 if arr.count <= 0 {
                     self.showNoDataLabel(msg: "No sub-categories found", table: self.tlbCategory)
                 }else {
                     self.tlbCategory.tableFooterView = UIView.init(frame: CGRect.zero)
                 }
-                self.dictCategory = dict
+                self.arrCategory = arr
+//                self.dictCategory = dict
                 self.tlbCategory.reloadData()
             }
             progressView.hideActivity()
@@ -105,12 +112,12 @@ class SelectCategoryVC: UIViewController {
 //MARK: -
 extension SelectCategoryVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.dictCategory.keys.count
+        return self.arrCategory.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CellCategory", for: indexPath)
-        let dictCat = Array(dictCategory.values)[indexPath.row]
+        let dictCat = arrCategory[indexPath.row]
         let catName =  "\(dictCat["name"] ?? "-")"
         cell.textLabel?.text = catName
         cell.accessoryType = self.parentCatIDs == nil ? .disclosureIndicator : .none
@@ -119,9 +126,10 @@ extension SelectCategoryVC : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let catKey = Array(dictCategory.keys)[indexPath.row]
-        let category = dictCategory[catKey]
-        if (category?["is_subcategory"] as? Bool ?? false) {
+        let catKey = (self.arrCategory[indexPath.row])["id"] as? String ?? ""
+        var category = self.arrCategory[indexPath.row]
+        category.removeValue(forKey: "id")
+        if (category["is_subcategory"] as? Bool ?? false) {
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "SelectCategoryVC") as! SelectCategoryVC
             vc.collectionName = "subcategories"
             if self.parentCatIDs != nil {
@@ -163,4 +171,7 @@ extension SelectCategoryVC : UITableViewDelegate, UITableViewDataSource {
         }
     }
     
+}
+extension Dictionary where Value:Comparable {
+    var sortedByValue:[(Key,Value)] {return Array(self).sorted{$0.1 < $1.1}}
 }
