@@ -24,7 +24,7 @@ class ItemListForSaleVC: UIViewController {
     //MARK: - Variables
     var arrItems : [ItemsDetail]?
     lazy var storage = Storage.storage()
-    
+    var refreshControl = UIRefreshControl()
     
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
@@ -58,6 +58,11 @@ class ItemListForSaleVC: UIViewController {
     
     func initialSetup() {
         self.tabBarController?.delegate = self
+        
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(pullToRefresh(_:)), for: UIControl.Event.valueChanged)
+        self.tblItemList.addSubview(refreshControl)
+        
         self.btnListedItems.layer.borderColor = UIColor.lightGray.cgColor
         self.btnSavedItems.layer.borderColor = UIColor.lightGray.cgColor
         if userdata.my_bookmarks == nil {
@@ -89,11 +94,13 @@ class ItemListForSaleVC: UIViewController {
                 }
                 self.setNoDataLabel()
                 progressView.hideActivity()
+                self.refreshControl.endRefreshing()
             }
         }else {
             self.setNoDataLabel()
             progressView.hideActivity()
-            self.tblItemList.reloadData()
+            self.refreshControl.endRefreshing()
+            self.tblItemList.reloadData();
         }
     }
     
@@ -121,6 +128,7 @@ class ItemListForSaleVC: UIViewController {
                 }
             }
             progressView.hideActivity()
+            self.refreshControl.endRefreshing()
         }
     }
     
@@ -194,6 +202,16 @@ class ItemListForSaleVC: UIViewController {
             UIView.transition(with: sender as UIView, duration: 0.5, options: .transitionCrossDissolve, animations: {
                 sender.setImage(UIImage(named: imgName), for: .normal)
             }, completion: nil)
+        }
+    }
+    
+    @IBAction func pullToRefresh(_ sender : Any) {
+        if self.tabBarController?.selectedIndex == 3 {
+            progressView.showActivity()
+            self.arrItems = [ItemsDetail]()
+            self.fetchBookmarkedItems()
+        }else {
+            self.fetchItemList()
         }
     }
     
