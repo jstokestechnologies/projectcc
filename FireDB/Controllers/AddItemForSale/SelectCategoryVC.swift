@@ -26,7 +26,7 @@ class SelectCategoryVC: UIViewController {
         super.viewDidLoad()
         if self.parentCatIDs != nil {
             self.fetchSubCategories()
-            self.title = "Select Subcategory"
+            self.title = (self.parentCategories[self.parentCatIDs?.last ?? ""])?["name"] as? String ?? "Subcategories"
         }else {
             self.fetchCategories()
             self.title = "Category"
@@ -131,6 +131,7 @@ extension SelectCategoryVC : UITableViewDelegate, UITableViewDataSource {
         category.removeValue(forKey: "id")
         if (category["is_subcategory"] as? Bool ?? false) {
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "SelectCategoryVC") as! SelectCategoryVC
+            category.removeValue(forKey: "is_subcategory")
             vc.collectionName = "subcategories"
             if self.parentCatIDs != nil {
                 vc.parentCatIDs = self.parentCatIDs
