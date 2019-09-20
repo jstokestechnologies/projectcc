@@ -12,6 +12,7 @@ import Fabric
 import FBSDKCoreKit
 import Firebase
 import FirebaseFirestore
+import GoogleSignIn
 import SDWebImage
 import IQKeyboardManagerSwift
 
@@ -35,6 +36,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //Initialize Fabric SDK
         Fabric.with([Crashlytics.self])
+        
+        //Initialize Google Signin SDK
+        GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
         
         if UserDefaults.standard.bool(forKey: kIsLoggedIn) {
             let userDict = HelperClass.fetchDataFromDefaults(with: kUserData)
@@ -76,8 +80,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if ApplicationDelegate.shared.application(app, open: url, options: options) {
             return true
+        }else {
+            return (GIDSignIn.sharedInstance()?.handle(url))!
         }
-        return false
 
     }
 }

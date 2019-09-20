@@ -41,11 +41,15 @@ class ShowLoginDataVC: UIViewController {
         self.lblEmail.text = userdata.email
         
         if let img = userdata.profile_pic {
-            let url = URL.init(fileURLWithPath: img)
-            if url.pathExtension != "" {
+            let url = URL.init(string: img)
+            if url != nil && url?.pathExtension != "" {
                 let placeholderImg = self.imgProfile.image
                 let storageRef = storage.reference(withPath: img)
-                self.imgProfile.sd_setImage(with: storageRef, maxImageSize: 200000, placeholderImage: placeholderImg ?? UIImage.init(named: "no-image"), options: .fromLoaderOnly, completion: nil)
+                self.imgProfile.sd_setImage(with: storageRef, maxImageSize: 200000, placeholderImage: placeholderImg ?? UIImage.init(named: "no-image"), options: .fromLoaderOnly, completion: { (downloadedImage, err, cache, ref) in
+                    if let error = err {
+                        print(error.localizedDescription)
+                        self.imgProfile?.sd_setImage(with: URL.init(string: img), placeholderImage: UIImage.init(named: "no-image"), options: .retryFailed, context: nil)
+                    }})
             }else {
                 self.imgProfile?.sd_setImage(with: URL.init(string: img), placeholderImage: UIImage.init(named: "no-image"), options: .retryFailed, context: nil)
             }
@@ -60,6 +64,12 @@ class ShowLoginDataVC: UIViewController {
             UserDefaults.standard.set(false, forKey: kIsLoggedIn)
             UserDefaults.standard.synchronize()
             userdata = UserData()
+            let firebaseAuth = Auth.auth()
+            do {
+                try firebaseAuth.signOut()
+            } catch let signOutError as NSError {
+                print ("Error signing out: %@", signOutError)
+            }
             UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "LoginNavVC")
         }))
         alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
