@@ -11,32 +11,32 @@ import FacebookCore
 import FacebookLogin
 import FBSDKCoreKit
 import FBSDKLoginKit
+import Firebase
 import FirebaseAuth
 import FirebaseFirestore
+import GoogleSignIn
 
 
 
 class ViewController: UIViewController {
+    
     @IBOutlet weak var btnShowListedItems: UIButton!
     //MARK: - Variables
     let connection = GraphRequestConnection()
     
+    enum LoginType {
+        case fb
+        case google
+    }
+    
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        GIDSignIn.sharedInstance().delegate = self
     }
+    
     //MARK: - Firebase -> Save Data
     func saveDataToFireBase(loginDict : [String : Any]) {
-        //        var ref: DocumentReference? = nil
-        //        ref = db.collection("users").addDocument(data: self.loginDict) { err in
-        //            if let err = err {
-        //                print("Error adding document: \(err)")
-        //            } else {
-        //                print("Document added with ID:\n\n\n\n\n \(ref!.documentID)")
-        //            }
-        //        }
-        
         db.collection("Users").document("\(loginDict["id"] ?? "N/A")").setData(loginDict, completion: { err in
             if let err = err {
                 print("Error adding document: \(err)")
@@ -51,12 +51,9 @@ class ViewController: UIViewController {
             let timeStamp = Int(Date().timeIntervalSince1970 * 1000)
             loginData["last_login"] = timeStamp
             db.collection("Users").document("\(loginData["id"] ?? "N/A")").getDocument(source: .server, completion: { (document, err) in
-                if let data = document?.data() {
-                    loginData["my_bookmarks"] = data["my_bookmarks"]
-                    if let profilePic = data["profile_pic"] {
-                        loginData["profile_pic"] = profilePic
-                    }
-                    self.saveDataAndNavigateToHome(loginDict: loginData)
+                if var data = document?.data() {
+                    data = (loginData as! [String : Any]).merging(data, uniquingKeysWith: { (_, last) in last })
+                    self.saveDataAndNavigateToHome(loginDict: data as NSDictionary)
                 }else if err != nil {
                     print(err?.localizedDescription ?? "Error login")
                 }else {
@@ -92,24 +89,39 @@ class ViewController: UIViewController {
                                                 //get facebook access token
                                                 let credential = FacebookAuthProvider.credential(withAccessToken: AccessToken.current!.tokenString)
                                                 // Signin with facebook into Firebase
-                                                self.authenticateFireBase(cred: credential)
+                                                self.authenticateFireBase(cred: credential, loginType: .fb)
                                                 //                HelperClass.showProgressView()
                                                 progressView.showActivity()
                                             }
         }
     }
     
+    @IBAction func btnGoogleTapped(_ sender: UIButton) {
+        GIDSignIn.sharedInstance()?.presentingViewController = self
+        GIDSignIn.sharedInstance().signIn()
+    }
+    
     //MARK: - Login Helper
-    func authenticateFireBase(cred : AuthCredential) {
+    func authenticateFireBase(cred : AuthCredential, loginType : LoginType) {
         Auth.auth().signIn(with: cred, completion: { (authResult, error) in
             if let error = error {
                 print(error.localizedDescription)
-                //                HelperClass.hideProgressView()
                 progressView.hideActivity()
                 return
             }else {
                 //User authenticated to Firebase
-                self.fetchDataFromFacebook()
+                if loginType == .fb {
+                    self.fetchDataFromFacebook()
+                }else if loginType == .google {
+                    let userData = GIDSignIn.sharedInstance()?.currentUser.profile
+                    let loginData = ["name"         : userData?.name ?? "",
+                                     "first_name"   : userData?.givenName ?? "",
+                                     "last_name"    : userData?.familyName ?? "",
+                                     "email"        : userData?.email ?? "",
+                                     "id"           : Auth.auth().currentUser?.uid,
+                                     "profile_pic"  : (userData?.imageURL(withDimension: 100))?.absoluteString ?? ""]
+                    self.getPreviousLoginData(loginDict: loginData as NSDictionary)
+                }
             }
         })
     }
@@ -140,3 +152,20 @@ class ViewController: UIViewController {
 }
 
 
+extension ViewController : GIDSignInDelegate {
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
+        // ...
+        if let error = error {
+            print(error.localizedDescription)
+            return
+        }
+        guard let authentication = user.authentication else { return }
+        let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken,
+                                                       accessToken: authentication.accessToken)
+        self.authenticateFireBase(cred: credential, loginType: .google)
+    }
+    
+    func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!) {
+        print(error.localizedDescription)
+    }
+}
