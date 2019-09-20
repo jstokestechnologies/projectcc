@@ -46,7 +46,11 @@ class EditProfileVC: UIViewController {
             let url = URL.init(fileURLWithPath: img)
             if url.pathExtension != "" {
                 let storageRef = storage.reference(withPath: img)
-                self.imgProfile.sd_setImage(with: storageRef, placeholderImage: UIImage.init(named: "no-image"), completion: nil)
+                self.imgProfile.sd_setImage(with: storageRef, placeholderImage: UIImage.init(named: "no-image"), completion: { (downloadedImage, err, cache, ref) in
+                    if let error = err {
+                        print(error.localizedDescription)
+                        self.imgProfile?.sd_setImage(with: URL.init(string: img), placeholderImage: UIImage.init(named: "no-image"), options: .refreshCached, context: nil)
+                    }})
             }else {
                 self.imgProfile?.sd_setImage(with: URL.init(string: img), placeholderImage: UIImage.init(named: "no-image"), options: .refreshCached, context: nil)
             }
@@ -169,7 +173,7 @@ class EditProfileVC: UIViewController {
             imgPath = self.saveProfileImage()
         }
         let param = HelperClass.fetchDataFromDefaults(with: kUserData).mutableCopy() as! NSMutableDictionary
-        param["city" ]        = self.txtCity.text!
+        param["city"        ] = self.txtCity.text!
         param["state"       ] = self.txtState.text!
         param["street"      ] = self.txtStreetNo.text!
         param["apartment_no"] = self.txtApatmentNo.text!
