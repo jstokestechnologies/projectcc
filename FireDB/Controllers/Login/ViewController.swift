@@ -103,8 +103,9 @@ class ViewController: UIViewController {
                                                         }
                                                         self.checkPreviousLogin(key: key, value: username, completion: { (userData, success) in
                                                             if success {
-                                                                if let user = userData {
-                                                                    self.saveDataAndNavigateToHome(loginDict: user as NSDictionary, saveToFirebase: false)
+                                                                if var userDict = userData {
+                                                                    userDict = userDict.merging(self.fbUserData, uniquingKeysWith: { (_, last) in last })
+                                                                    self.saveDataAndNavigateToHome(loginDict: userDict as NSDictionary)
                                                                 }else {
                                                                     self.authenticateFireBase(cred: credential, loginType: .fb)
                                                                 }
@@ -137,17 +138,10 @@ class ViewController: UIViewController {
                 if loginType == .fb {
                     self.fbUserData["fb_id"] = self.fbUserData["id"] as? String ?? "Na"
                     self.fbUserData["id"] = Auth.auth().currentUser?.uid ?? ""
-                    self.saveDataAndNavigateToHome(loginDict: self.fbUserData as NSDictionary, saveToFirebase: true)
+                    self.saveDataAndNavigateToHome(loginDict: self.fbUserData as NSDictionary)
                 }else if loginType == .google {
-                    let userData = GIDSignIn.sharedInstance()?.currentUser.profile
-                    let loginData : NSDictionary = ["name"         : userData?.name ?? "",
-                                     "first_name"   : userData?.givenName ?? "",
-                                     "last_name"    : userData?.familyName ?? "",
-                                     "email"        : userData?.email ?? "",
-                                     "id"           : Auth.auth().currentUser?.uid ?? "",
-                                     "profile_pic"  : (userData?.imageURL(withDimension: 100))?.absoluteString ?? "",
-                                     "google_id"    : GIDSignIn.sharedInstance()?.clientID ?? "Na"]
-                    self.saveDataAndNavigateToHome(loginDict: loginData, saveToFirebase: true)
+                    let loginData = self.getGoogleLoginData()
+                    self.saveDataAndNavigateToHome(loginDict: loginData as NSDictionary)
                 }
             }
         })
@@ -170,15 +164,17 @@ class ViewController: UIViewController {
         })
     }
     
-    func saveDataAndNavigateToHome(loginDict : NSDictionary, saveToFirebase : Bool) {
+    func saveDataAndNavigateToHome(loginDict : NSDictionary) {
         HelperClass.saveDataToDefaults(dataObject: loginDict, key: kUserData)
         if userdata.profile_pic == nil {
             userdata.profile_pic = "http://graph.facebook.com/\(userdata.id)/picture?type=large"
             loginDict.setValue(userdata.profile_pic!, forKey: "profile_pic")
         }
-        if saveToFirebase {
-            self.saveDataToFireBase(loginDict: loginDict as! [String : Any])
-        }
+        var loginData = loginDict as! [String : Any]
+        let timeStamp = Int(Date().timeIntervalSince1970 * 1000)
+        loginData["last_login"] = timeStamp
+        loginData["my_bookmarks"] = userdata.my_bookmarks ?? [String]()
+        self.saveDataToFireBase(loginDict: loginData)
         UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "TabVc")
         progressView.hideActivity()
     }
@@ -197,10 +193,12 @@ extension ViewController : GIDSignInDelegate {
                                                        accessToken: authentication.accessToken)
         
         progressView.showActivity()
-        self.checkPreviousLogin(key: "email", value: user.profile.email ?? "na") { (userDict, success) in
+        self.checkPreviousLogin(key: "email", value: "harsh@particle41.com") { (userDict, success) in
             if success {
-                if let user = userDict {
-                    self.saveDataAndNavigateToHome(loginDict: user as NSDictionary, saveToFirebase: false)
+                if var userData = userDict {
+                    let googleData = self.getGoogleLoginData()
+                    userData = googleData.merging(userData, uniquingKeysWith: { (_, last) in last })
+                    self.saveDataAndNavigateToHome(loginDict: userData as NSDictionary)
                 }else {
                     self.authenticateFireBase(cred: credential, loginType: .google)
                 }
@@ -210,5 +208,19 @@ extension ViewController : GIDSignInDelegate {
     
     func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!) {
         print(error.localizedDescription)
+    }
+    
+    func getGoogleLoginData() -> [String : Any] {
+        let userData = GIDSignIn.sharedInstance()?.currentUser.profile
+        var loginData : [String : Any] = ["name"         : userData?.name ?? "",
+                                          "first_name"   : userData?.givenName ?? "",
+                                          "last_name"    : userData?.familyName ?? "",
+                                          "email"        : userData?.email ?? "",
+                                          "profile_pic"  : (userData?.imageURL(withDimension: 100))?.absoluteString ?? "",
+                                          "google_id"    : GIDSignIn.sharedInstance()?.clientID ?? "Na"]
+        if let user = Auth.auth().currentUser {
+            loginData["id"] = user.uid
+        }
+        return loginData
     }
 }
