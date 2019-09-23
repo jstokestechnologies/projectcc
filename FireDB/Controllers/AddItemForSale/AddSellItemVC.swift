@@ -437,16 +437,16 @@ class AddSellItemVC: UIViewController {
     }
     
     func showCompleteProfileAlert() {
-        let alert = UIAlertController.init(title: "", message: "Please update your profile to continue.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction.init(title: "Update", style: .default, handler: { (alrt) in
+//        let alert = UIAlertController.init(title: "", message: "Please update your profile to continue.", preferredStyle: .alert)
+//        alert.addAction(UIAlertAction.init(title: "Update", style: .default, handler: { (alrt) in
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "EditProfileVC") as! EditProfileVC
             vc.delegate = self
             self.navigationController?.show(vc, sender: self)
-        }))
-        alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (alrt) in
-            
-        }))
-        self.present(alert, animated: true, completion: nil)
+//        }))
+//        alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (alrt) in
+//
+//        }))
+//        self.present(alert, animated: true, completion: nil)
     }
     
     func saveItemImages(_ timestamp : Int64) -> [String] {
