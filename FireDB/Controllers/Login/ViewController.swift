@@ -164,11 +164,11 @@ class ViewController: UIViewController {
     
     func saveDataAndNavigateToHome(loginDict : NSDictionary) {
         HelperClass.saveDataToDefaults(dataObject: loginDict, key: kUserData)
+        var loginData = loginDict as! [String : Any]
         if userdata.profile_pic == nil {
             userdata.profile_pic = "http://graph.facebook.com/\(userdata.id)/picture?type=large"
-            loginDict.setValue(userdata.profile_pic!, forKey: "profile_pic")
+            loginData["profile_pic"] = userdata.profile_pic!
         }
-        var loginData = loginDict as! [String : Any]
         let timeStamp = Int(Date().timeIntervalSince1970 * 1000)
         loginData["last_login"] = timeStamp
         loginData["my_bookmarks"] = userdata.my_bookmarks ?? [String]()
