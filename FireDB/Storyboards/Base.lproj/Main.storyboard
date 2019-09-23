@@ -2149,6 +2149,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="btnSaveProfile" destination="kff-1u-NHp" id="aIP-ia-0Wc"/>
                         <outlet property="imgProfile" destination="RIR-4b-TYh" id="Zfv-Ek-gU4"/>
                         <outlet property="txtApatmentNo" destination="xQf-vv-kE3" id="tZt-hI-RXC"/>
                         <outlet property="txtCity" destination="D6F-Zn-moA" id="AkT-Z1-Erl"/>
