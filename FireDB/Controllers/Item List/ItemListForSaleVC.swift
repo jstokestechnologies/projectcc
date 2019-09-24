@@ -296,6 +296,7 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
         cell.lblItemBrand.text = item.brand?["name"]
 //        cell.lblDesciption.text = item.description
         cell.lblItemPrice.text = "$\(item.price ?? "0.00")"
+        cell.lblSubDivision.text = item.subdivision ?? "N/A"
         
         cell.pageImgPages.numberOfPages = item.item_images?.count ?? 0
         cell.pageImgPages.isHidden = (item.item_images?.count ?? 0) <= 1
@@ -377,4 +378,13 @@ extension ItemListForSaleVC : UITabBarControllerDelegate {
     }
 }
 
-
+extension ItemListForSaleVC : UISearchBarDelegate {
+    func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
+        searchBar.resignFirstResponder()
+        return true
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+}

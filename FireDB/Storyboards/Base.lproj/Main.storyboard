@@ -713,17 +713,27 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="x38-Rs-po8"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Home" id="I80-rA-zlh">
-                        <barButtonItem key="leftBarButtonItem" style="plain" id="faw-56-V4O">
-                            <button key="customView" hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="aWI-xI-jND">
-                                <rect key="frame" x="16" y="4.6666666666666679" width="60" height="35"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Logout"/>
-                                <connections>
-                                    <action selector="btnLogoutAction:" destination="eI2-LX-5aT" eventType="touchUpInside" id="1RR-PI-elZ"/>
-                                </connections>
-                            </button>
-                        </barButtonItem>
+                    <navigationItem key="navigationItem" id="I80-rA-zlh">
+                        <view key="titleView" clipsSubviews="YES" contentMode="scaleToFill" id="hqv-KR-OEh">
+                            <rect key="frame" x="67.666666666666686" y="4.6666666666666679" width="240" height="35"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <searchBar contentMode="redraw" fixedFrame="YES" placeholder="Search" translatesAutoresizingMaskIntoConstraints="NO" id="jRV-48-SSV">
+                                    <rect key="frame" x="0.0" y="-9" width="240" height="56"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                    <connections>
+                                        <outlet property="delegate" destination="eI2-LX-5aT" id="ayW-0Z-RHe"/>
+                                    </connections>
+                                </searchBar>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                    <integer key="value" value="4"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </view>
                     </navigationItem>
                     <connections>
                         <outlet property="btnListedItems" destination="tEG-5m-wfz" id="lMp-TT-5PZ"/>
@@ -1477,7 +1487,7 @@
                                                         <constraint firstAttribute="height" constant="40" id="reW-ZE-e8T"/>
                                                     </constraints>
                                                     <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <inset key="imageEdgeInsets" minX="15" minY="9" maxX="5" maxY="8"/>
+                                                    <inset key="imageEdgeInsets" minX="12" minY="7" maxX="3" maxY="7"/>
                                                     <state key="normal" image="more"/>
                                                 </button>
                                             </subviews>
@@ -2925,7 +2935,7 @@
         <image name="heart" width="40" height="40"/>
         <image name="home" width="25" height="25"/>
         <image name="jmjcloud-logo.png" width="587" height="148"/>
-        <image name="more" width="128" height="128"/>
+        <image name="more" width="40" height="40"/>
         <image name="no-image.png" width="400" height="400"/>
         <image name="no_focus" width="40" height="40"/>
         <image name="photo-camera" width="30" height="30"/>
