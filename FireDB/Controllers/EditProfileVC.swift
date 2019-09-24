@@ -116,12 +116,12 @@ class EditProfileVC: UIViewController {
                 print("Document added with ID:\n\n\n\n\n ")
                 
                 HelperClass.saveDataToDefaults(dataObject: profile_data, key: kUserData)
+                progressView.hideActivity()
                 if self.delegate != nil {
                     self.navigationController?.popViewController(animated: true)
                     self.delegate?.userUpdatedProfile(success: true)
                 }
 //                HelperClass.showAlert(msg: "Profile updated successfully", isBack: true, vc: self)
-                progressView.hideActivity()
             }
         })
     }
