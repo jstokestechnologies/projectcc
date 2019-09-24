@@ -186,8 +186,12 @@ class AddSellItemVC: UIViewController {
     @IBAction func btnListAction(_ sender: UIButton) {
         self.view.endEditing(true)
         if self.validateTextFields() {
-            self.itemType = .listedItems
-            self.showSaveAlert(msg: "Are you sure you want to list this item for sale?")
+            if self.validateProfileData() {
+                self.itemType = .listedItems
+                self.showSaveAlert(msg: "Are you sure you want to list this item for sale?")
+            }else {
+                self.showCompleteProfileAlert()
+            }
         }
     }
     
@@ -359,6 +363,16 @@ class AddSellItemVC: UIViewController {
         return true
     }
     
+    func validateProfileData() -> Bool {
+        if userdata.name.count <= 0 || (userdata.street?.count ?? 0) <= 0 || (userdata.city?.count ?? 0) <= 0 || (userdata.state?.count ?? 0) <= 0 {
+            return false
+        }else if (userdata.zipcode?.count ?? 0) <= 0 || (userdata.phone_number?.count ?? 0) <= 0 || (userdata.mpc?.count ?? 0) <= 0 || (userdata.sub_division?.count ?? 0) < 0 {
+            return false
+        }else {
+            return true
+        }
+    }
+    
     func getItemDetails() -> Dictionary<String,Any> {
         let timestamp =  Int64(Date().timeIntervalSince1970 * 1000)
         let imgPath = self.saveItemImages(timestamp)
@@ -413,6 +427,9 @@ class AddSellItemVC: UIViewController {
                 if self.isEditingItem {
                     self.navigationController?.popViewController(animated: true)
                 }else {
+                    if let tabVc = UIApplication.shared.keyWindow?.rootViewController as? TabBarVC {
+                        tabVc.selectedIndex = 0
+                    }
                     self.navigationController?.dismiss(animated: true, completion: nil)
                 }
             }
@@ -420,6 +437,19 @@ class AddSellItemVC: UIViewController {
         DispatchQueue.main.async {
             self.present(alert, animated: true, completion: nil)
         }
+    }
+    
+    func showCompleteProfileAlert() {
+//        let alert = UIAlertController.init(title: "", message: "Please update your profile to continue.", preferredStyle: .alert)
+//        alert.addAction(UIAlertAction.init(title: "Update", style: .default, handler: { (alrt) in
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "EditProfileVC") as! EditProfileVC
+            vc.delegate = self
+            self.navigationController?.show(vc, sender: self)
+//        }))
+//        alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (alrt) in
+//
+//        }))
+//        self.present(alert, animated: true, completion: nil)
     }
     
     func saveItemImages(_ timestamp : Int64) -> [String] {
@@ -774,9 +804,21 @@ extension AddSellItemVC : SelectBrandProtocol {
         self.brand = brand
     }
 }
+
+extension AddSellItemVC : UpdateProfileDelegate {
+    func userUpdatedProfile(success: Bool) {
+        if success && self.validateProfileData() && self.validateTextFields() {
+            self.itemType = .listedItems
+            self.saveData()
+//            self.showSaveAlert(msg: "Are you sure you want to list this item for sale?")
+        }
+    }
+}
+
 //MARK: - 
 class SelectImageCollectionCell : UICollectionViewCell {
     @IBOutlet weak var viewBackground: UIView?
     @IBOutlet weak var imgItemPhoto: UIImageView!
     @IBOutlet weak var btnRemoveImage: UIButton!
 }
+

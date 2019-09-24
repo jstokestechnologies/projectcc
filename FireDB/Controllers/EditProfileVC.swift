@@ -10,6 +10,8 @@ import UIKit
 import Firebase
 import SDWebImage
 
+
+
 class EditProfileVC: UIViewController {
     
     @IBOutlet weak var imgProfile: UIImageView!
@@ -24,6 +26,9 @@ class EditProfileVC: UIViewController {
     @IBOutlet weak var txtMpc: UITextField!
     @IBOutlet weak var txtSubDivision: UITextField!
     
+    @IBOutlet weak var btnSaveProfile: UIButton!
+    
+    var delegate : UpdateProfileDelegate?
     
     lazy var storage = Storage.storage()
     let picker = UIImagePickerController()
@@ -33,6 +38,9 @@ class EditProfileVC: UIViewController {
         super.viewDidLoad()
         self.showProfileImage()
         self.showProfileData()
+        if self.delegate == nil {
+            self.btnSaveProfile.isHidden = true
+        }
         // Do any additional setup after loading the view.
     }
     
@@ -108,8 +116,12 @@ class EditProfileVC: UIViewController {
                 print("Document added with ID:\n\n\n\n\n ")
                 
                 HelperClass.saveDataToDefaults(dataObject: profile_data, key: kUserData)
-//                HelperClass.showAlert(msg: "Profile updated successfully", isBack: true, vc: self)
                 progressView.hideActivity()
+                if self.delegate != nil {
+                    self.navigationController?.popViewController(animated: true)
+                    self.delegate?.userUpdatedProfile(success: true)
+                }
+//                HelperClass.showAlert(msg: "Profile updated successfully", isBack: true, vc: self)
             }
         })
     }
@@ -276,6 +288,7 @@ extension EditProfileVC : UITextFieldDelegate {
                 return false
             }
         }
+        self.btnSaveProfile.isHidden = false
         return true
     }
     
@@ -292,6 +305,7 @@ extension EditProfileVC : UITextFieldDelegate {
 //MARK: -
 extension EditProfileVC : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        self.btnSaveProfile.isHidden = false
         if let img = info[.editedImage] as? UIImage {
             self.imgProfile?.image = img
         }else if let img = info[.originalImage] as? UIImage {
