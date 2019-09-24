@@ -25,6 +25,12 @@ class ItemListForSaleVC: UIViewController {
     var arrItems : [ItemsDetail]?
     lazy var storage = Storage.storage()
     var refreshControl = UIRefreshControl()
+    var pageNo = 1
+    var itemPerPage = 3
+    var isNextPage = true
+    var lastDoc : DocumentSnapshot?
+    var listner : ListenerRegistration?
+    var latestTime = 0
     
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
@@ -32,7 +38,7 @@ class ItemListForSaleVC: UIViewController {
         self.initialSetup()
         if self.tabBarController?.selectedIndex == 0 {
             progressView.showActivity()
-            self.fetchItemList()
+//            self.fetchItemList()
         }else {
             self.title = "Favorites"
         }
@@ -57,6 +63,8 @@ class ItemListForSaleVC: UIViewController {
     }
     
     func initialSetup() {
+        self.latestTime = Int(Date().timeIntervalSince1970 * 1000)
+            
         self.tabBarController?.delegate = self
         
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
@@ -105,31 +113,101 @@ class ItemListForSaleVC: UIViewController {
     }
     
     func fetchItemList() {
-        let itemRef = db.collection(kListedItems).whereField("isPosted", isEqualTo: true).whereField("isArchived", isEqualTo: false).order(by: "created", descending: true)
-        itemRef.getDocuments { (docs, err) in
+        var query = db.collection(kListedItems).whereField("isPosted", isEqualTo: true).whereField("isArchived", isEqualTo: false).order(by: "created", descending: true).whereField("created", isLessThanOrEqualTo: self.latestTime).limit(to: self.itemPerPage)
+        if self.pageNo > 1 && self.lastDoc != nil {
+            query = query.start(afterDocument: self.lastDoc!)
+        }
+        query.getDocuments { (docs, err) in
             if let documents = docs?.documents {
+                self.lastDoc = documents.last
                 let arr = documents.map({ (doc) -> [String : Any] in
                     var dict =  doc.data()
                     dict["id"] = doc.documentID
                     return dict
                 })
                 self.setTableFooter(count: arr.count)
-                do {
-                    let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
-                    let jsonDecoder = JSONDecoder()
-                    //                                    var userdata = UserData.sharedInstance
-                    self.arrItems = try jsonDecoder.decode([ItemsDetail].self, from: jsonData!)
-                    DispatchQueue.main.async {
-                        self.tblItemList.reloadData()
-                    }
-                }
-                catch {
-                    print(error.localizedDescription)
-                }
+                self.parseFireBaseData(arr: arr)
+                self.changePageNumber()
+            }else {
+                self.isNextPage = false
             }
             progressView.hideActivity()
             self.refreshControl.endRefreshing()
         }
+    }
+    
+    func addListnerOnNewEntry() {
+        listner = db.collection(kListedItems).addSnapshotListener { querySnapshot, error in
+            guard let snapshot = querySnapshot else {
+                print("Error fetching snapshots: \(error!)")
+                return
+            }
+            if self.tblItemList.tag == 0 {
+                self.tblItemList.tag = 10000
+                return
+            }
+            snapshot.documentChanges.forEach { diff in
+                if (diff.type == .added) {
+                    //                        print("New city: \(diff.document.data())")
+                    var dict =  diff.document.data()
+                    dict["id"] = diff.document.documentID
+                    let arr = [dict]
+                    do {
+                        let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
+                        let jsonDecoder = JSONDecoder()
+                        let arrItemData = try jsonDecoder.decode([ItemsDetail].self, from: jsonData!)
+                        if self.arrItems != nil {
+                            DispatchQueue.main.async {
+                                self.arrItems?.insert(contentsOf: arrItemData, at: 0)
+                                self.setTableFooter(count: self.arrItems?.count ?? 0)
+                                let indexPath = IndexPath.init(row: 0, section: 0)
+                                if self.tblItemList.visibleCells.count > 0 {
+                                    self.tblItemList.beginUpdates()
+                                    self.tblItemList.insertRows(at: [indexPath], with: .automatic)
+                                    self.tblItemList.endUpdates()
+                                }
+                            }
+                        }
+                    }
+                    catch {
+                        print(error.localizedDescription)
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    func parseFireBaseData(arr : [[String : Any]] ) {
+        do {
+            let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
+            let jsonDecoder = JSONDecoder()
+            //                                    var userdata = UserData.sharedInstance
+            let arrItemData = try jsonDecoder.decode([ItemsDetail].self, from: jsonData!)
+            if self.arrItems == nil || self.pageNo <= 1 {
+                self.listner?.remove()
+                self.listner = nil
+                self.addListnerOnNewEntry()
+                self.arrItems = arrItemData
+            }else {
+                self.arrItems?.append(contentsOf: arrItemData)
+            }
+            DispatchQueue.main.async {
+                self.tblItemList.reloadData()
+            }
+        }
+        catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func changePageNumber() {
+        if (self.arrItems?.count ?? 0) < (self.pageNo*self.itemPerPage) {
+            self.isNextPage = false
+        }else {
+            self.isNextPage = true
+        }
+        self.pageNo += 1
     }
     
     func saveBookmarkedItemId(itemId : String) {
@@ -211,6 +289,10 @@ class ItemListForSaleVC: UIViewController {
             self.arrItems = [ItemsDetail]()
             self.fetchBookmarkedItems()
         }else {
+            self.lastDoc = nil
+            self.pageNo = 1
+            self.isNextPage = false
+            self.latestTime = Int(Date().timeIntervalSince1970 * 1000)
             self.fetchItemList()
         }
     }
@@ -282,7 +364,7 @@ class ItemListForSaleVC: UIViewController {
 
 }
 //MARK: -
-extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
+extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource, UITableViewDataSourcePrefetching {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.arrItems?.count ?? 0
     }
@@ -328,17 +410,23 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
         return UITableView.automaticDimension
     }
     
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        DispatchQueue.main.async {
-            if let cellView = scrollView.superview?.superview {
-                if cellView.isKind(of: ItemListCell.classForCoder()) && scrollView.isKind(of: UICollectionView.classForCoder()) {
-                    let cell = cellView as! ItemListCell
-                    let index = cell.collectionImages.indexPathsForVisibleItems
-                    cell.pageImgPages.currentPage = index[0].row
-                }
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        print(indexPaths)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if self.tabBarController?.selectedIndex == 0 {
+            let scrollViewHeight = scrollView.frame.size.height
+            let scrollContentSizeHeight = scrollView.contentSize.height
+            let scrollOffset = scrollView.contentOffset.y
+            if ((scrollOffset + scrollViewHeight) >= (scrollContentSizeHeight - 400)) && self.isNextPage
+            {
+                self.fetchItemList()
+                self.isNextPage = false
             }
         }
     }
+    
 }
 
 //MARK: -
