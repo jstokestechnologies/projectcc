@@ -427,6 +427,9 @@ class AddSellItemVC: UIViewController {
                 if self.isEditingItem {
                     self.navigationController?.popViewController(animated: true)
                 }else {
+                    if let tabVc = UIApplication.shared.keyWindow?.rootViewController as? TabBarVC {
+                        tabVc.selectedIndex = 0
+                    }
                     self.navigationController?.dismiss(animated: true, completion: nil)
                 }
             }
@@ -806,7 +809,8 @@ extension AddSellItemVC : UpdateProfileDelegate {
     func userUpdatedProfile(success: Bool) {
         if success && self.validateProfileData() && self.validateTextFields() {
             self.itemType = .listedItems
-            self.showSaveAlert(msg: "Are you sure you want to list this item for sale?")
+            self.saveData()
+//            self.showSaveAlert(msg: "Are you sure you want to list this item for sale?")
         }
     }
 }
