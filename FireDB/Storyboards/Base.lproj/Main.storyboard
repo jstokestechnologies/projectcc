@@ -613,6 +613,43 @@
                                     <outlet property="delegate" destination="eI2-LX-5aT" id="gXB-0q-mDp"/>
                                 </connections>
                             </tableView>
+                            <button hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6P2-D0-bXX">
+                                <rect key="frame" x="117.66666666666669" y="25" width="140" height="34"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="34" id="czx-ja-9CY"/>
+                                    <constraint firstAttribute="width" constant="140" id="gbb-kZ-c21"/>
+                                </constraints>
+                                <state key="normal" title="New Items Added">
+                                    <color key="titleColor" red="0.2262085378" green="0.33271574970000001" blue="0.62237799169999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="17"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                        <real key="value" value="0.5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                        <color key="value" red="0.2262085378" green="0.33271574970000001" blue="0.62237799169999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="shadowRadius">
+                                        <real key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="shadowOpacity">
+                                        <real key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="size" keyPath="shadowOffset">
+                                        <size key="value" width="0.0" height="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="shadowColor">
+                                        <color key="value" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="btnNewPostsAction:" destination="eI2-LX-5aT" eventType="touchUpInside" id="CIa-mC-5IM"/>
+                                </connections>
+                            </button>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rEp-Go-CZ2">
                                 <rect key="frame" x="0.0" y="641" width="375" height="0.0"/>
                                 <subviews>
@@ -704,11 +741,13 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="x38-Rs-po8" firstAttribute="bottom" secondItem="rEp-Go-CZ2" secondAttribute="bottom" id="1oA-qW-TJt"/>
+                            <constraint firstItem="6P2-D0-bXX" firstAttribute="centerX" secondItem="QAU-wc-5KS" secondAttribute="centerX" id="5bj-1V-0Im"/>
                             <constraint firstItem="x38-Rs-po8" firstAttribute="trailing" secondItem="UdM-jE-l3A" secondAttribute="trailing" id="6Gh-Vg-LYN"/>
                             <constraint firstItem="UdM-jE-l3A" firstAttribute="leading" secondItem="x38-Rs-po8" secondAttribute="leading" id="P6q-mh-Wdo"/>
                             <constraint firstItem="rEp-Go-CZ2" firstAttribute="trailing" secondItem="x38-Rs-po8" secondAttribute="trailing" id="QNs-cH-TiH"/>
                             <constraint firstItem="rEp-Go-CZ2" firstAttribute="leading" secondItem="x38-Rs-po8" secondAttribute="leading" id="XqP-ae-OBU"/>
                             <constraint firstItem="rEp-Go-CZ2" firstAttribute="top" secondItem="UdM-jE-l3A" secondAttribute="bottom" id="Zc1-uC-8MR"/>
+                            <constraint firstItem="6P2-D0-bXX" firstAttribute="top" secondItem="x38-Rs-po8" secondAttribute="top" constant="25" id="cBz-6R-le5"/>
                             <constraint firstItem="UdM-jE-l3A" firstAttribute="top" secondItem="x38-Rs-po8" secondAttribute="top" id="jYJ-51-alk"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="x38-Rs-po8"/>
@@ -727,6 +766,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="btnListedItems" destination="tEG-5m-wfz" id="lMp-TT-5PZ"/>
+                        <outlet property="btnNewPosts" destination="6P2-D0-bXX" id="EC5-BE-MRH"/>
                         <outlet property="btnSavedItems" destination="xfY-No-giB" id="XKg-XZ-4z6"/>
                         <outlet property="tblItemList" destination="UdM-jE-l3A" id="8j1-TV-f5T"/>
                     </connections>

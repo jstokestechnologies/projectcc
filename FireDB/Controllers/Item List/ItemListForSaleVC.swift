@@ -19,14 +19,15 @@ class ItemListForSaleVC: UIViewController {
     
     @IBOutlet weak var btnListedItems: UIButton!
     @IBOutlet weak var btnSavedItems: UIButton!
-    
+    @IBOutlet weak var btnNewPosts: UIButton!
     
     //MARK: - Variables
     var arrItems : [ItemsDetail]?
+    var arrNewItems : [ItemsDetail]?
     lazy var storage = Storage.storage()
     var refreshControl = UIRefreshControl()
     var pageNo = 1
-    var itemPerPage = 3
+    var itemPerPage = 10
     var isNextPage = true
     var lastDoc : DocumentSnapshot?
     var listner : ListenerRegistration?
@@ -58,14 +59,18 @@ class ItemListForSaleVC: UIViewController {
             self.arrItems = [ItemsDetail]()
             self.fetchBookmarkedItems()
         }else {
+            if self.arrItems?.count ?? 0 > 1 {
+                self.tblItemList.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true)
+            }
             self.fetchItemList()
         }
     }
     
     func initialSetup() {
         self.latestTime = Int(Date().timeIntervalSince1970 * 1000)
-            
-        self.tabBarController?.delegate = self
+        if self.tabBarController?.selectedIndex == 0 {
+            self.tabBarController?.delegate = self
+        }
         
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl.addTarget(self, action: #selector(pullToRefresh(_:)), for: UIControl.Event.valueChanged)
@@ -125,7 +130,7 @@ class ItemListForSaleVC: UIViewController {
                     dict["id"] = doc.documentID
                     return dict
                 })
-                self.setTableFooter(count: arr.count)
+                self.setTableFooter(count: arr.count + (self.arrItems?.count ?? 0))
                 self.parseFireBaseData(arr: arr)
                 self.changePageNumber()
             }else {
@@ -148,7 +153,6 @@ class ItemListForSaleVC: UIViewController {
             }
             snapshot.documentChanges.forEach { diff in
                 if (diff.type == .added) {
-                    //                        print("New city: \(diff.document.data())")
                     var dict =  diff.document.data()
                     dict["id"] = diff.document.documentID
                     let arr = [dict]
@@ -156,18 +160,12 @@ class ItemListForSaleVC: UIViewController {
                         let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
                         let jsonDecoder = JSONDecoder()
                         let arrItemData = try jsonDecoder.decode([ItemsDetail].self, from: jsonData!)
-                        if self.arrItems != nil {
-                            DispatchQueue.main.async {
-                                self.arrItems?.insert(contentsOf: arrItemData, at: 0)
-                                self.setTableFooter(count: self.arrItems?.count ?? 0)
-                                let indexPath = IndexPath.init(row: 0, section: 0)
-                                if self.tblItemList.visibleCells.count > 0 {
-                                    self.tblItemList.beginUpdates()
-                                    self.tblItemList.insertRows(at: [indexPath], with: .automatic)
-                                    self.tblItemList.endUpdates()
-                                }
-                            }
+                        if self.arrNewItems != nil {
+                            self.arrNewItems?.insert(contentsOf: arrItemData, at: 0)
+                        }else {
+                            self.arrNewItems = arrItemData
                         }
+                        self.btnNewPosts.isHidden = false
                     }
                     catch {
                         print(error.localizedDescription)
@@ -185,9 +183,9 @@ class ItemListForSaleVC: UIViewController {
             //                                    var userdata = UserData.sharedInstance
             let arrItemData = try jsonDecoder.decode([ItemsDetail].self, from: jsonData!)
             if self.arrItems == nil || self.pageNo <= 1 {
-                self.listner?.remove()
-                self.listner = nil
-                self.addListnerOnNewEntry()
+                if self.listner == nil {
+                    self.addListnerOnNewEntry()
+                }
                 self.arrItems = arrItemData
             }else {
                 self.arrItems?.append(contentsOf: arrItemData)
@@ -280,6 +278,26 @@ class ItemListForSaleVC: UIViewController {
             UIView.transition(with: sender as UIView, duration: 0.5, options: .transitionCrossDissolve, animations: {
                 sender.setImage(UIImage(named: imgName), for: .normal)
             }, completion: nil)
+        }
+    }
+    
+    @IBAction func btnNewPostsAction(_ sender: UIButton) {
+        self.btnNewPosts.isHidden = true
+        DispatchQueue.main.async {
+            if self.arrItems != nil && self.arrNewItems != nil {
+                if self.arrNewItems?.count ?? 0 > 0 {
+                    self.arrItems?.insert(contentsOf: self.arrNewItems!, at: 0)
+                }
+            }else {
+                if self.arrNewItems?.count ?? 0 > 0 {
+                    self.arrItems = self.arrNewItems!
+                }
+            }
+            self.arrNewItems = nil
+            self.tblItemList.reloadData()
+            if self.arrItems?.count ?? 0 > 1 {
+                self.tblItemList.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true)
+            }
         }
     }
     
@@ -419,10 +437,21 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource, UITabl
             let scrollViewHeight = scrollView.frame.size.height
             let scrollContentSizeHeight = scrollView.contentSize.height
             let scrollOffset = scrollView.contentOffset.y
-            if ((scrollOffset + scrollViewHeight) >= (scrollContentSizeHeight - 400)) && self.isNextPage
+            if ((scrollOffset + scrollViewHeight) >= (scrollContentSizeHeight - 600)) && self.isNextPage
             {
                 self.fetchItemList()
                 self.isNextPage = false
+            }else if scrollOffset <= 0 && self.arrNewItems?.count ?? 0 > 0 && self.btnNewPosts.isHidden == false {
+                self.btnNewPosts.isHidden = true
+                DispatchQueue.main.async {
+                    if self.arrItems != nil && self.arrNewItems != nil {
+                        self.arrItems?.insert(contentsOf: self.arrNewItems!, at: 0)
+                    }else {
+                        self.arrItems = self.arrNewItems!
+                    }
+                    self.arrNewItems = nil
+                    self.tblItemList.reloadData()
+                }
             }
         }
     }
@@ -458,11 +487,14 @@ extension ItemListForSaleVC : UICollectionViewDelegate, UICollectionViewDataSour
 
 extension ItemListForSaleVC : UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-//        if viewController == self.navigationController && self.tabBarController?.selectedIndex == 0  {
-//            self.tblItemList.scrollRectToVisible(CGRect.init(x: 0, y: 0, width: 50, height: 50), animated: true)
-//            self.fetchItemList()
-//        }
+        DispatchQueue.main.async {
+//            if viewController == self.navigationController && self.tabBarController?.selectedIndex == 0 {
+//                self.tblItemList.scrollRectToVisible(CGRect.init(x: 0, y: 0, width: 50, height: 50), animated: true)
+//            }
+        }
     }
+    
+    
 }
 
 
