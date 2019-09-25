@@ -29,8 +29,12 @@ class ItemListCell : UITableViewCell {
     @IBOutlet weak var lblItemCondition: UILabel!
     @IBOutlet weak var lblItemPrice: UILabel!
     @IBOutlet weak var lblDesciption: UILabel!
+    @IBOutlet weak var lblSubDivision: UILabel!
+    
     @IBOutlet weak var collectionImages: UICollectionView!
+    
     @IBOutlet weak var pageImgPages: UIPageControl!
+    
     @IBOutlet weak var btnMore: UIButton!
     @IBOutlet weak var btnBuy: UIButton!
     @IBOutlet weak var btnDetails: UIButton!
