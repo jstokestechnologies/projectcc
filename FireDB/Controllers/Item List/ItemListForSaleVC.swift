@@ -19,12 +19,19 @@ class ItemListForSaleVC: UIViewController {
     
     @IBOutlet weak var btnListedItems: UIButton!
     @IBOutlet weak var btnSavedItems: UIButton!
-    
+    @IBOutlet weak var btnNewPosts: UIButton!
     
     //MARK: - Variables
     var arrItems : [ItemsDetail]?
+    var arrNewItems : [ItemsDetail]?
     lazy var storage = Storage.storage()
     var refreshControl = UIRefreshControl()
+    var pageNo = 1
+    var itemPerPage = 10
+    var isNextPage = true
+    var lastDoc : DocumentSnapshot?
+    var listner : ListenerRegistration?
+    var latestTime = 0
     
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
@@ -52,12 +59,16 @@ class ItemListForSaleVC: UIViewController {
             self.arrItems = [ItemsDetail]()
             self.fetchBookmarkedItems()
         }else {
-            self.fetchItemList()
+            self.addNewItemToList(scrollToTop: true)
+//            self.fetchItemList()
         }
     }
     
     func initialSetup() {
-        self.tabBarController?.delegate = self
+        self.latestTime = Int(Date().timeIntervalSince1970 * 1000)
+        if self.tabBarController?.selectedIndex == 0 {
+            self.tabBarController?.delegate = self
+        }
         
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl.addTarget(self, action: #selector(pullToRefresh(_:)), for: UIControl.Event.valueChanged)
@@ -105,31 +116,94 @@ class ItemListForSaleVC: UIViewController {
     }
     
     func fetchItemList() {
-        let itemRef = db.collection(kListedItems).whereField("isPosted", isEqualTo: true).whereField("isArchived", isEqualTo: false).order(by: "created", descending: true)
-        itemRef.getDocuments { (docs, err) in
+        var query = db.collection(kListedItems).whereField("isPosted", isEqualTo: true).whereField("isArchived", isEqualTo: false).order(by: "created", descending: true).whereField("created", isLessThanOrEqualTo: self.latestTime).limit(to: self.itemPerPage)
+        if self.pageNo > 1 && self.lastDoc != nil {
+            query = query.start(afterDocument: self.lastDoc!)
+        }
+        query.getDocuments { (docs, err) in
             if let documents = docs?.documents {
+                self.lastDoc = documents.last
                 let arr = documents.map({ (doc) -> [String : Any] in
                     var dict =  doc.data()
                     dict["id"] = doc.documentID
                     return dict
                 })
-                self.setTableFooter(count: arr.count)
-                do {
-                    let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
-                    let jsonDecoder = JSONDecoder()
-                    //                                    var userdata = UserData.sharedInstance
-                    self.arrItems = try jsonDecoder.decode([ItemsDetail].self, from: jsonData!)
-                    DispatchQueue.main.async {
-                        self.tblItemList.reloadData()
-                    }
-                }
-                catch {
-                    print(error.localizedDescription)
-                }
+                self.setTableFooter(count: arr.count + (self.arrItems?.count ?? 0))
+                self.parseFireBaseData(arr: arr)
+                self.changePageNumber()
+            }else {
+                self.isNextPage = false
             }
             progressView.hideActivity()
             self.refreshControl.endRefreshing()
         }
+    }
+    
+    func addListnerOnNewEntry() {
+        listner = db.collection(kListedItems).addSnapshotListener { querySnapshot, error in
+            guard let snapshot = querySnapshot else {
+                print("Error fetching snapshots: \(error!)")
+                return
+            }
+            if self.tblItemList.tag == 0 {
+                self.tblItemList.tag = 10000
+                return
+            }
+            snapshot.documentChanges.forEach { diff in
+                if (diff.type == .added) {
+                    var dict =  diff.document.data()
+                    dict["id"] = diff.document.documentID
+                    let arr = [dict]
+                    do {
+                        let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
+                        let jsonDecoder = JSONDecoder()
+                        let arrItemData = try jsonDecoder.decode([ItemsDetail].self, from: jsonData!)
+                        if self.arrNewItems != nil {
+                            self.arrNewItems?.insert(contentsOf: arrItemData, at: 0)
+                        }else {
+                            self.arrNewItems = arrItemData
+                        }
+                        self.btnNewPosts.isHidden = false
+                    }
+                    catch {
+                        print(error.localizedDescription)
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    func parseFireBaseData(arr : [[String : Any]] ) {
+        do {
+            let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
+            let jsonDecoder = JSONDecoder()
+            //                                    var userdata = UserData.sharedInstance
+            let arrItemData = try jsonDecoder.decode([ItemsDetail].self, from: jsonData!)
+            if self.arrItems == nil || self.pageNo <= 1 {
+                if self.listner == nil {
+                    self.addListnerOnNewEntry()
+                }
+                self.arrItems = arrItemData
+            }else {
+                self.arrItems?.append(contentsOf: arrItemData)
+            }
+            DispatchQueue.main.async {
+                self.tblItemList.reloadData()
+            }
+        }
+        catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func changePageNumber() {
+        if (self.arrItems?.count ?? 0) < (self.pageNo*self.itemPerPage) {
+            self.isNextPage = false
+        }else {
+            self.isNextPage = true
+        }
+        self.pageNo += 1
     }
     
     func saveBookmarkedItemId(itemId : String) {
@@ -205,12 +279,20 @@ class ItemListForSaleVC: UIViewController {
         }
     }
     
+    @IBAction func btnNewPostsAction(_ sender: UIButton) {
+        self.addNewItemToList(scrollToTop: true)
+    }
+    
     @IBAction func pullToRefresh(_ sender : Any) {
         if self.tabBarController?.selectedIndex == 3 {
             progressView.showActivity()
             self.arrItems = [ItemsDetail]()
             self.fetchBookmarkedItems()
         }else {
+            self.lastDoc = nil
+            self.pageNo = 1
+            self.isNextPage = false
+            self.latestTime = Int(Date().timeIntervalSince1970 * 1000)
             self.fetchItemList()
         }
     }
@@ -269,6 +351,24 @@ class ItemListForSaleVC: UIViewController {
         }
     }
     
+    func addNewItemToList(scrollToTop : Bool) {
+        self.btnNewPosts.isHidden = true
+        DispatchQueue.main.async {
+            if self.arrNewItems != nil && self.arrNewItems?.count ?? 0 > 0 {
+                if self.arrItems != nil {
+                    self.arrItems?.insert(contentsOf: self.arrNewItems!, at: 0)
+                }else {
+                    self.arrItems = self.arrNewItems!
+                }
+                self.tblItemList.reloadData()
+            }
+            self.arrNewItems = nil
+            if self.arrItems?.count ?? 0 > 1 && scrollToTop {
+                self.tblItemList.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true)
+            }
+        }
+    }
+    
     /*
     // MARK - Navigation
 
@@ -282,7 +382,7 @@ class ItemListForSaleVC: UIViewController {
 
 }
 //MARK: -
-extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
+extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource, UITableViewDataSourcePrefetching {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.arrItems?.count ?? 0
     }
@@ -328,17 +428,25 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource {
         return UITableView.automaticDimension
     }
     
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        DispatchQueue.main.async {
-            if let cellView = scrollView.superview?.superview {
-                if cellView.isKind(of: ItemListCell.classForCoder()) && scrollView.isKind(of: UICollectionView.classForCoder()) {
-                    let cell = cellView as! ItemListCell
-                    let index = cell.collectionImages.indexPathsForVisibleItems
-                    cell.pageImgPages.currentPage = index[0].row
-                }
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        print(indexPaths)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if self.tabBarController?.selectedIndex == 0 {
+            let scrollViewHeight = scrollView.frame.size.height
+            let scrollContentSizeHeight = scrollView.contentSize.height
+            let scrollOffset = scrollView.contentOffset.y
+            if ((scrollOffset + scrollViewHeight) >= (scrollContentSizeHeight - 600)) && self.isNextPage
+            {
+                self.fetchItemList()
+                self.isNextPage = false
+            }else if scrollOffset <= 0 && self.arrNewItems?.count ?? 0 > 0 && self.btnNewPosts.isHidden == false {
+                self.addNewItemToList(scrollToTop: false)
             }
         }
     }
+    
 }
 
 //MARK: -
@@ -370,11 +478,14 @@ extension ItemListForSaleVC : UICollectionViewDelegate, UICollectionViewDataSour
 
 extension ItemListForSaleVC : UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-//        if viewController == self.navigationController && self.tabBarController?.selectedIndex == 0  {
-//            self.tblItemList.scrollRectToVisible(CGRect.init(x: 0, y: 0, width: 50, height: 50), animated: true)
-//            self.fetchItemList()
-//        }
+        DispatchQueue.main.async {
+//            if viewController == self.navigationController && self.tabBarController?.selectedIndex == 0 {
+//                self.tblItemList.scrollRectToVisible(CGRect.init(x: 0, y: 0, width: 50, height: 50), animated: true)
+//            }
+        }
     }
+    
+    
 }
 
 
