@@ -60,6 +60,7 @@ class ItemsDetail : Codable {
     var watchers    : String?
     var seller_name : String?
     var id          : String?
+    var subdivision : String?
 }
 
 class ItemImages : NSObject {

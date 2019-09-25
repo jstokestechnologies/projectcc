@@ -380,7 +380,7 @@ class AddSellItemVC: UIViewController {
 //        if let savedImgs = self.itemData?.item_images, isEditingItem {
 //            imgPath.append(contentsOf: savedImgs)
 //        }
-        
+        let address = userdata.street! + " " + (userdata.city)! + " " + (userdata.state)! + " " + userdata.zipcode!
         let itemDetails : [String : Any] = ["item_name"     : (self.txtItemName.text)!,
                                             "description"   : (self.txtItemDescription.text)!,
                                             "category"      : self.category,
@@ -396,9 +396,9 @@ class AddSellItemVC: UIViewController {
                                             "seller_name"   : userdata.name,
                                             "watchers"      : "",
                                             "used_category" : "",
-                                            "home_address"  : "",
-                                            "mpcName"       : "",
-                                            "subdivision"   : "",
+                                            "home_address"  : address,
+                                            "mpcName"       : userdata.mpc!,
+                                            "subdivision"   : userdata.sub_division!,
                                             "buyerRating"   : "0",
                                             "sellerRating"  : "0",
                                             "bankAccountUpdated" : "0",
@@ -406,7 +406,7 @@ class AddSellItemVC: UIViewController {
                                             "isArchived"     : false]
         return itemDetails
     }
-    
+    //+ userdata.city! + " " + userdata.state! + " " + userdata.zipcode
     func saveItemDetails(itemData : Dictionary<String,Any>, completionHandler:@escaping (Error?, Bool) -> ()) {
         var ref: DocumentReference? = nil
         ref = db.collection(kListedItems).addDocument(data: itemData) { err in
