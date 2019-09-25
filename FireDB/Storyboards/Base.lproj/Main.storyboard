@@ -620,9 +620,11 @@
                                     <constraint firstAttribute="height" constant="34" id="czx-ja-9CY"/>
                                     <constraint firstAttribute="width" constant="140" id="gbb-kZ-c21"/>
                                 </constraints>
-                                <state key="normal" title="New Items Added">
-                                    <color key="titleColor" red="0.2262085378" green="0.33271574970000001" blue="0.62237799169999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <color key="tintColor" red="0.2262085378" green="0.33271574970000001" blue="0.62237799169999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <inset key="titleEdgeInsets" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
+                                <state key="normal" title="New Items" image="up-arrow.png"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                                         <real key="value" value="17"/>
@@ -2972,6 +2974,7 @@
         <image name="photo_lib" width="40" height="40"/>
         <image name="retake" width="40" height="40"/>
         <image name="right_arrow" width="21.333333969116211" height="21.333333969116211"/>
+        <image name="up-arrow.png" width="16.5" height="16.5"/>
         <image name="upload" width="40" height="40"/>
     </resources>
     <inferredMetricsTieBreakers>
