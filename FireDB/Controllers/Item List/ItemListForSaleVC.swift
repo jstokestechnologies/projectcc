@@ -39,7 +39,7 @@ class ItemListForSaleVC: UIViewController {
         self.initialSetup()
         if self.tabBarController?.selectedIndex == 0 {
             progressView.showActivity()
-//            self.fetchItemList()
+            self.fetchItemList()
         }else {
             self.title = "Favorites"
         }
@@ -59,10 +59,8 @@ class ItemListForSaleVC: UIViewController {
             self.arrItems = [ItemsDetail]()
             self.fetchBookmarkedItems()
         }else {
-            if self.arrItems?.count ?? 0 > 1 {
-                self.tblItemList.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true)
-            }
-            self.fetchItemList()
+            self.addNewItemToList(scrollToTop: true)
+//            self.fetchItemList()
         }
     }
     
@@ -282,23 +280,7 @@ class ItemListForSaleVC: UIViewController {
     }
     
     @IBAction func btnNewPostsAction(_ sender: UIButton) {
-        self.btnNewPosts.isHidden = true
-        DispatchQueue.main.async {
-            if self.arrItems != nil && self.arrNewItems != nil {
-                if self.arrNewItems?.count ?? 0 > 0 {
-                    self.arrItems?.insert(contentsOf: self.arrNewItems!, at: 0)
-                }
-            }else {
-                if self.arrNewItems?.count ?? 0 > 0 {
-                    self.arrItems = self.arrNewItems!
-                }
-            }
-            self.arrNewItems = nil
-            self.tblItemList.reloadData()
-            if self.arrItems?.count ?? 0 > 1 {
-                self.tblItemList.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true)
-            }
-        }
+        self.addNewItemToList(scrollToTop: true)
     }
     
     @IBAction func pullToRefresh(_ sender : Any) {
@@ -366,6 +348,24 @@ class ItemListForSaleVC: UIViewController {
             self.tblItemList.tableFooterView = lbl
         }else {
             self.tblItemList.tableFooterView = UIView.init(frame: CGRect.zero)
+        }
+    }
+    
+    func addNewItemToList(scrollToTop : Bool) {
+        self.btnNewPosts.isHidden = true
+        DispatchQueue.main.async {
+            if self.arrNewItems != nil && self.arrNewItems?.count ?? 0 > 0 {
+                if self.arrItems != nil {
+                    self.arrItems?.insert(contentsOf: self.arrNewItems!, at: 0)
+                }else {
+                    self.arrItems = self.arrNewItems!
+                }
+                self.tblItemList.reloadData()
+            }
+            self.arrNewItems = nil
+            if self.arrItems?.count ?? 0 > 1 && scrollToTop {
+                self.tblItemList.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true)
+            }
         }
     }
     
@@ -442,16 +442,7 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource, UITabl
                 self.fetchItemList()
                 self.isNextPage = false
             }else if scrollOffset <= 0 && self.arrNewItems?.count ?? 0 > 0 && self.btnNewPosts.isHidden == false {
-                self.btnNewPosts.isHidden = true
-                DispatchQueue.main.async {
-                    if self.arrItems != nil && self.arrNewItems != nil {
-                        self.arrItems?.insert(contentsOf: self.arrNewItems!, at: 0)
-                    }else {
-                        self.arrItems = self.arrNewItems!
-                    }
-                    self.arrNewItems = nil
-                    self.tblItemList.reloadData()
-                }
+                self.addNewItemToList(scrollToTop: false)
             }
         }
     }
