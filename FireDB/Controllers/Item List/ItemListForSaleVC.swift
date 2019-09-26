@@ -21,6 +21,8 @@ class ItemListForSaleVC: UIViewController {
     @IBOutlet weak var btnSavedItems: UIButton!
     @IBOutlet weak var btnNewPosts: UIButton!
     
+    @IBOutlet weak var viewSearch: UIView!
+    
     //MARK: - Variables
     var arrItems : [ItemsDetail]?
     var arrNewItems : [ItemsDetail]?
@@ -42,6 +44,7 @@ class ItemListForSaleVC: UIViewController {
             self.fetchItemList()
         }else {
             self.title = "Favorites"
+            self.viewSearch.isHidden = true
         }
         // Do any additional setup after loading the view.
         tblItemList.register(UINib(nibName: "ItemCardTableCell", bundle: nil), forCellReuseIdentifier: "Cell")
@@ -287,7 +290,14 @@ class ItemListForSaleVC: UIViewController {
         let vc = secondStoryBoard.instantiateViewController(withIdentifier: "SearchNavVC")
         vc.modalPresentationStyle = .fullScreen
         vc.modalTransitionStyle = .crossDissolve
-        self.present(vc, animated: true, completion: nil)
+        
+        let transition: CATransition = CATransition()
+        transition.duration = 0.4
+        transition.type = CATransitionType.fade
+        transition.subtype = CATransitionSubtype.fromTop
+        self.view.window?.layer.add(transition, forKey: nil)
+        
+        self.present(vc, animated: false, completion: nil)
     }
     
     @IBAction func pullToRefresh(_ sender : Any) {
@@ -487,9 +497,9 @@ extension ItemListForSaleVC : UICollectionViewDelegate, UICollectionViewDataSour
 extension ItemListForSaleVC : UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         DispatchQueue.main.async {
-//            if viewController == self.navigationController && self.tabBarController?.selectedIndex == 0 {
-//                self.tblItemList.scrollRectToVisible(CGRect.init(x: 0, y: 0, width: 50, height: 50), animated: true)
-//            }
+            if viewController == self.navigationController && self.tabBarController?.selectedIndex == 0 {
+                self.addNewItemToList(scrollToTop: true)
+            }
         }
     }
     
