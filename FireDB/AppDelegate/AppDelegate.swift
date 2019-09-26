@@ -44,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let userDict = HelperClass.fetchDataFromDefaults(with: kUserData)
             HelperClass.setUserDataModel(userDict: userDict)
             
-            self.window?.rootViewController = UIStoryboard.init(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "TabVc")
+            self.window?.rootViewController = mainStoryBoard.instantiateViewController(withIdentifier: "TabVc")
         }
         
 //        SDImageCache.shared.clearMemory()

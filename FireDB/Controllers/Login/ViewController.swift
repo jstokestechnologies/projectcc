@@ -173,7 +173,7 @@ class ViewController: UIViewController {
         loginData["last_login"] = timeStamp
         loginData["my_bookmarks"] = userdata.my_bookmarks ?? [String]()
         self.saveDataToFireBase(loginDict: loginData)
-        UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "TabVc")
+        UIApplication.shared.keyWindow?.rootViewController = mainStoryBoard.instantiateViewController(withIdentifier: "TabVc")
         progressView.hideActivity()
     }
 }

@@ -237,7 +237,7 @@ class ItemListForSaleVC: UIViewController {
             UserDefaults.standard.set(false, forKey: kIsLoggedIn)
             UserDefaults.standard.synchronize()
             userdata = UserData()
-            UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "LoginNavVC")
+            UIApplication.shared.keyWindow?.rootViewController = mainStoryBoard.instantiateViewController(withIdentifier: "LoginNavVC")
         }))
         alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
             
@@ -246,20 +246,20 @@ class ItemListForSaleVC: UIViewController {
     }
     
     @IBAction func btnAddItemForSaleAction(_ sender: Any) {
-        let vc = (self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC"))!
+        let vc = mainStoryBoard.instantiateViewController(withIdentifier: "AddSellItemVC")
         let navVC = UINavigationController.init(rootViewController: vc)
         navVC.navigationBar.tintColor = .darkGray
         self.present(navVC, animated: true, completion: nil)
     }
     
     @IBAction func btnShowMyListedItemsAction(_ sender: Any) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
+        let vc = mainStoryBoard.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
         vc.listType = .listedItems
         self.navigationController?.show(vc, sender: self)
     }
     
     @IBAction func btnShowMySavedItemsAction(_ sender: Any) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
+        let vc = mainStoryBoard.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
         vc.listType = .savedItems
         self.navigationController?.show(vc, sender: self)
     }
