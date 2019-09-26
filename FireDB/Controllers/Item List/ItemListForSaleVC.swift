@@ -283,6 +283,13 @@ class ItemListForSaleVC: UIViewController {
         self.addNewItemToList(scrollToTop: true)
     }
     
+    @IBAction func btnSearchAction(_ sender: UIButton) {
+        let vc = secondStoryBoard.instantiateViewController(withIdentifier: "SearchNavVC")
+        vc.modalPresentationStyle = .fullScreen
+        vc.modalTransitionStyle = .crossDissolve
+        self.present(vc, animated: true, completion: nil)
+    }
+    
     @IBAction func pullToRefresh(_ sender : Any) {
         if self.tabBarController?.selectedIndex == 3 {
             progressView.showActivity()
@@ -489,13 +496,3 @@ extension ItemListForSaleVC : UITabBarControllerDelegate {
     
 }
 
-extension ItemListForSaleVC : UISearchBarDelegate {
-    func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
-        searchBar.resignFirstResponder()
-        return true
-    }
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-    }
-}
