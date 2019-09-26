@@ -16,7 +16,7 @@ class SearchVC: UIViewController {
     @IBOutlet weak var tblSearch: UITableView!
     
     // MARK: - Variables
-    var arrSearchKeyboard = [String]()
+    var arrSearchKeyword = [String]()
     
     // MARK: - Viewcontroller Lifecycle
     override func viewDidLoad() {
@@ -34,16 +34,16 @@ class SearchVC: UIViewController {
     // MARK: - FireStore Methods
     func saveNewSearch(text : String) {
         progressView.showActivity()
-        let timestamp = Int(Date().timeIntervalSince1970 * 1000)
-        let searchDict = ["text" : text, "time" : timestamp] as [String : Any]
+//        let timestamp = Int(Date().timeIntervalSince1970 * 1000)
+        let searchDict = ["searches" : [text]]
         
 //        var ref: DocumentReference? = nil
-        _ = db.collection("search").addDocument(data: searchDict) { err in
+        db.collection("search").document(userdata.id).setData(searchDict) { err in
             if let err = err {
                 print("Error adding document: \(err)")
             } else {
                 print("Document added with ID:\n\n\n\n\n ")
-                self.arrSearchKeyboard.append(text)
+                self.arrSearchKeyword.append(text)
                 self.tblSearch.reloadData()
 //                self.setSelectedBrand(brand: searchDict, key: ref?.documentID ?? text)
             }
@@ -53,15 +53,16 @@ class SearchVC: UIViewController {
     
     func fetchPreviousSearches() {
         progressView.showActivity()
-        let itemRef = db.collection("search").order(by: "time", descending: true).limit(to: 5)
-        itemRef.getDocuments { (docs, err) in
-            if let documents = docs?.documents {
-                let arr = documents.map({ (doc) -> String in
-                    var dict = doc.data()
-                    dict["id"] = doc.documentID
-                    return dict["text"] as? String ?? ""
-                })
-                self.arrSearchKeyboard = arr
+        let itemRef = db.collection("search").document(userdata.id)
+        itemRef.getDocument { (doc, err) in
+            if let document = doc {
+//                let arr = documents.map({ (doc) -> String in
+//                    var dict = doc.data()
+//                    dict["id"] = doc.documentID
+//                    return dict["text"] as? String ?? ""
+//                })
+                let searchData = document.data()
+                self.arrSearchKeyword = searchData?["searches"] as? [String] ?? [String]()
                 self.tblSearch.reloadData()
             }
             progressView.hideActivity()
@@ -88,13 +89,13 @@ class SearchVC: UIViewController {
 // MARK: -
 extension SearchVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.arrSearchKeyboard.count
+        return self.arrSearchKeyword.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         
-        cell.textLabel?.text = self.arrSearchKeyboard[indexPath.row]
+        cell.textLabel?.text = self.arrSearchKeyword[indexPath.row]
         
         return cell
     }
