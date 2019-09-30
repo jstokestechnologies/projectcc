@@ -69,6 +69,7 @@ class SearchVC: UIViewController {
     
     // MARK: - IBAction Method
     @IBAction func btnCloseAction(_ sender: UIButton) {
+        self.view.endEditing(true)
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
 
