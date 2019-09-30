@@ -25,4 +25,6 @@ pod 'Crashlytics', '~> 3.13.4'
 pod 'SkyFloatingLabelTextField', '~> 3.0'
 pod 'IQKeyboardManagerSwift'
 
+pod 'InstantSearchClient'
+
 end
