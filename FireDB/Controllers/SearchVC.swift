@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import InstantSearchClient
 
 class SearchVC: UIViewController {
     // MARK: - IBOutlet
@@ -17,11 +18,15 @@ class SearchVC: UIViewController {
     
     // MARK: - Variables
     var arrSearchKeyword = [String]()
+    var arrPreviousSearches = [String]()
+    var index : Index!
     
     // MARK: - Viewcontroller Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.fetchPreviousSearches()
+        let client = Client(appID: "ANE3X9XHC5", apiKey: "b83732850d7d21a7f7a8833c667f205b")
+        index = client.index(withName: "listed_items")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -33,11 +38,8 @@ class SearchVC: UIViewController {
     
     // MARK: - FireStore Methods
     func saveNewSearch(text : String) {
-        progressView.showActivity()
-//        let timestamp = Int(Date().timeIntervalSince1970 * 1000)
         let searchDict = ["searches" : [text]]
         
-//        var ref: DocumentReference? = nil
         db.collection("search").document(userdata.id).setData(searchDict) { err in
             if let err = err {
                 print("Error adding document: \(err)")
@@ -45,9 +47,7 @@ class SearchVC: UIViewController {
                 print("Document added with ID:\n\n\n\n\n ")
                 self.arrSearchKeyword.append(text)
                 self.tblSearch.reloadData()
-//                self.setSelectedBrand(brand: searchDict, key: ref?.documentID ?? text)
             }
-            progressView.hideActivity()
         }
     }
     
@@ -56,13 +56,11 @@ class SearchVC: UIViewController {
         let itemRef = db.collection("search").document(userdata.id)
         itemRef.getDocument { (doc, err) in
             if let document = doc {
-//                let arr = documents.map({ (doc) -> String in
-//                    var dict = doc.data()
-//                    dict["id"] = doc.documentID
-//                    return dict["text"] as? String ?? ""
-//                })
                 let searchData = document.data()
-                self.arrSearchKeyword = searchData?["searches"] as? [String] ?? [String]()
+                self.arrPreviousSearches = searchData?["searches"] as? [String] ?? [String]()
+                if self.arrSearchKeyword.count <= 0 {
+                    self.arrSearchKeyword.append(contentsOf: self.arrPreviousSearches)
+                }
                 self.tblSearch.reloadData()
             }
             progressView.hideActivity()
@@ -104,14 +102,76 @@ extension SearchVC : UITableViewDelegate, UITableViewDataSource {
 // MARK: -
 extension SearchVC : UISearchBarDelegate {
     func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
-        if self.searchBar.text?.count ?? 0 > 0 {
-            self.saveNewSearch(text: self.searchBar.text!)
-        }
+//            self.saveNewSearch(text: self.searchBar.text!)
         searchBar.resignFirstResponder()
+        return true
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        self.arrSearchKeyword.removeAll()
+        self.tblSearch.reloadData()
+        var searchText  = ""
+        if range.length == 0 && range.location >= 0 {
+            searchText = (self.searchBar.text)! + text
+        }else if range.length > 0 && text == "" {
+            if range.location > 0 {
+                searchText = String((self.searchBar.text!).dropLast(range.length))
+            }else if (range.location - range.length) < 0 {
+                self.arrSearchKeyword.append(contentsOf: self.arrPreviousSearches)
+            }
+        }
+        if searchText.count > 0 {
+            self.searchItemWith(text: searchText)
+        }else {
+            self.tblSearch.reloadData()
+        }
         return true
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
+    }
+    
+    func searchItemWith(text : String) {
+        index.search(Query(query: text), completionHandler: { (content, error) -> Void in
+            if content != nil {
+                if let arrResult = content?["hits"] as? Array<NSDictionary> {
+                    for item in arrResult {
+                        if let highlightedResult = item["_highlightResult"] as? NSDictionary {
+                            guard let searchText = highlightedResult.value(forKeyPath: "item_name.value") as? String else {
+                                continue
+                            }
+                            self.arrSearchKeyword.append(searchText.html2String)
+                        }
+                    }
+                }
+                self.tblSearch.reloadData()
+            }else {
+                print("Result: \(error?.localizedDescription ?? "Error")")
+            }
+        })
+    }
+}
+
+extension String {
+    var html2AttributedString: NSAttributedString? {
+        return Data(utf8).html2AttributedString
+    }
+    var html2String: String {
+        return html2AttributedString?.string ?? ""
+    }
+}
+
+extension Data {
+    var html2AttributedString: NSAttributedString? {
+        do {
+            return try NSAttributedString(data: self, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil)
+        } catch {
+            print("error:", error)
+            return  nil
+        }
+    }
+    var html2String: String {
+        return html2AttributedString?.string ?? ""
     }
 }
