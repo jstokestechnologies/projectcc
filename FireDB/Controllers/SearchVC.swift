@@ -93,7 +93,24 @@ extension SearchVC : UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        tableView.deselectRow(at: indexPath, animated: true)
+        let item = self.arrSearchKeyword[indexPath.row]
+        if let type = item.value(forKey: "type") as? Int {
+            let vc = secondStoryBoard.instantiateViewController(withIdentifier: "SearchResultVC") as! SearchResultVC
+            vc.refId = item.value(forKey: "objectID") as? String ?? "N/A"
+            switch type {
+            case 1 :
+                vc.isSubcategory = true
+                vc.keyName = "sub_category"
+            case 2 :
+                vc.keyName = "category.id"
+            case 3 :
+                vc.keyName = "brand.id"
+            default :
+                break
+            }
+            self.navigationController?.show(vc, sender: self)
+        }
     }
 }
 
@@ -144,6 +161,7 @@ extension SearchVC : UISearchBarDelegate {
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.searchTask?.cancel()
         self.arrSearchKeyword.removeAll()
         self.arrSearchKeyword.append(contentsOf: self.arrPreviousSearches)
         self.tblSearch.reloadData()
