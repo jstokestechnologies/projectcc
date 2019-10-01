@@ -70,7 +70,7 @@ class ShowLoginDataVC: UIViewController {
             } catch let signOutError as NSError {
                 print ("Error signing out: %@", signOutError)
             }
-            UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "LoginNavVC")
+            UIApplication.shared.keyWindow?.rootViewController = mainStoryBoard.instantiateViewController(withIdentifier: "LoginNavVC")
         }))
         alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
             
@@ -79,13 +79,13 @@ class ShowLoginDataVC: UIViewController {
     }
     
     func showMyItemsList(isSavedItem : Bool) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
+        let vc = mainStoryBoard.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
         vc.listType = isSavedItem ? .savedItems : .listedItems
         self.navigationController?.show(vc, sender: self)
     }
     
     func showDeletedItemsList() {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "SoldItemsListVC") as! SoldItemsListVC
+        let vc = mainStoryBoard.instantiateViewController(withIdentifier: "SoldItemsListVC") as! SoldItemsListVC
         self.navigationController?.show(vc, sender: self)
     }
     
@@ -120,8 +120,8 @@ extension ShowLoginDataVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case 0:
-            let vc = self.storyboard?.instantiateViewController(withIdentifier: "EditProfileVC")
-            self.navigationController?.show(vc!, sender: self)
+            let vc = mainStoryBoard.instantiateViewController(withIdentifier: "EditProfileVC")
+            self.navigationController?.show(vc, sender: self)
         case 1:
             self.showMyItemsList(isSavedItem: false)
         case 2:

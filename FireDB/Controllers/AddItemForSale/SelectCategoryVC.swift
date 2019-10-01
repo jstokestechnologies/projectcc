@@ -130,7 +130,7 @@ extension SelectCategoryVC : UITableViewDelegate, UITableViewDataSource {
         var category = self.arrCategory[indexPath.row]
         category.removeValue(forKey: "id")
         if (category["is_subcategory"] as? Bool ?? false) {
-            let vc = self.storyboard?.instantiateViewController(withIdentifier: "SelectCategoryVC") as! SelectCategoryVC
+            let vc = mainStoryBoard.instantiateViewController(withIdentifier: "SelectCategoryVC") as! SelectCategoryVC
             category.removeValue(forKey: "is_subcategory")
             vc.collectionName = "subcategories"
             if self.parentCatIDs != nil {

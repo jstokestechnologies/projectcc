@@ -82,7 +82,7 @@ class SystemCropVC: UIViewController, UIScrollViewDelegate {
         
 //        let image = self.imgToCrop.resizeImage(targetSize: self.imgView.bounds.size)
          let img = self.imgToCrop.cropToBounds(width: width, height: height, origin: CGPoint.init(x: cropX, y: cropY)) //{
-            let vc = self.storyboard?.instantiateViewController(withIdentifier: "CropImageVC") as! CropImageVC
+            let vc = mainStoryBoard.instantiateViewController(withIdentifier: "CropImageVC") as! CropImageVC
             vc.imageToCrop = img
             if let navVC = self.presentingViewController as? UINavigationController, self.isFirstVC {
                 self.dismiss(animated: false) {

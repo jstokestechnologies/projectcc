@@ -128,7 +128,7 @@ extension CustomCameraVC  {
     }
     
     func showImageCropView(withImage img: UIImage) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "CropImageVC") as! CropImageVC
+        let vc = mainStoryBoard.instantiateViewController(withIdentifier: "CropImageVC") as! CropImageVC
         vc.imageToCrop = img
         if self.isFirstVC {
             self.navigationController?.show(vc, sender: nil)
@@ -138,7 +138,7 @@ extension CustomCameraVC  {
     }
     
     func showSystemImageCropView(withImage img : UIImage) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "SystemCropVC") as! SystemCropVC
+        let vc = mainStoryBoard.instantiateViewController(withIdentifier: "SystemCropVC") as! SystemCropVC
         vc.imgToCrop = img
         vc.isFirstVC = self.isFirstVC
 //        if self.isFirstVC {

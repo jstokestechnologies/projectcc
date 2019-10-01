@@ -47,11 +47,11 @@ class TabBarVC: UITabBarController {
     @IBAction func btnSellAction(_ sender : UIButton) {
         if let topVC = (self.selectedViewController as? UINavigationController)?.topViewController {
             
-            let vc = self.storyboard?.instantiateViewController(withIdentifier: "CustomCameraVC") as! CustomCameraVC
+            let vc = mainStoryBoard.instantiateViewController(withIdentifier: "CustomCameraVC") as! CustomCameraVC
             vc.isFirstVC = true
             
-            let navVC = self.storyboard?.instantiateViewController(withIdentifier: "navSell") as! UINavigationController
-//            let addVc = self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC")
+            let navVC = mainStoryBoard.instantiateViewController(withIdentifier: "navSell") as! UINavigationController
+//            let addVc = mainStoryBoard.instantiateViewController(withIdentifier: "AddSellItemVC")
             navVC.setViewControllers([vc], animated: false)
             navVC.modalPresentationStyle = .fullScreen
             navVC.navigationBar.isHidden = true

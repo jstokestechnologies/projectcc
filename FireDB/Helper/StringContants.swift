@@ -7,11 +7,15 @@
 //
 
 import Foundation
+import UIKit
 
 let kUserData               = "user_login_data"
 let kUserId                 = "user_id"
 let kIsLoggedIn             = "is_logged_in"
 
+
+let secondStoryBoard        = UIStoryboard.init(name: "Second", bundle: Bundle.main)
+let mainStoryBoard          = UIStoryboard.init(name: "Main", bundle: Bundle.main)
 
 //Firebase Collections
 let kUsersCollection        = "Users"

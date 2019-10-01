@@ -134,7 +134,7 @@ class MyListedItemsVC: UIViewController {
     
     func showEditController(forItem index : Int) {
         if let item = self.arrItems?[index], item.id != nil {
-            let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC") as! AddSellItemVC
+            let vc = mainStoryBoard.instantiateViewController(withIdentifier: "AddSellItemVC") as! AddSellItemVC
             vc.itemData = item
             vc.isEditingItem = true
             vc.itemId = item.id!

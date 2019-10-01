@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FireDB/Controllers/AddItemForSale/SystemCropVC.swift"
-            timestampString = "590419839.3256069"
+            timestampString = "591198805.975704"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "65"
@@ -41,13 +41,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FireDB/Controllers/AddItemForSale/AddSellItemVC.swift"
-            timestampString = "590934060.009166"
+            filePath = "FireDB/Controllers/SearchVC.swift"
+            timestampString = "591624304.533451"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "189"
-            endingLineNumber = "189"
-            landmarkName = "btnListAction(_:)"
+            startingLineNumber = "178"
+            endingLineNumber = "178"
+            landmarkName = "searchBar(_:textDidChange:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
