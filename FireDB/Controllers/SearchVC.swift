@@ -40,34 +40,39 @@ class SearchVC: UIViewController {
     }
     
     // MARK: - FireStore Methods
-    func saveNewSearch(text : String) {
-        let searchDict = ["searches" : [text]]
+    func saveNewSearch(item : NSDictionary) {
+        var itemData = item as! [String : Any]
+        let key = itemData["objectID"] as? String ?? "N/A"
+        let time = Int(Date().timeIntervalSince1970 * 1000)
+        itemData["time"] = time
+        itemData.removeValue(forKey: "_highlightResult")
+        let searchDict = [key : itemData]
         
-//        db.collection("search").document(userdata.id).setData(searchDict) { err in
-//            if let err = err {
-//                print("Error adding document: \(err)")
-//            } else {
-//                print("Document added with ID:\n\n\n\n\n ")
-//                self.arrSearchKeyword.append(text)
-//                self.tblSearch.reloadData()
-//            }
-//        }
+        db.collection("search").document(userdata.id).setData(searchDict) { err in
+            if let err = err {
+                print("Error adding document: \(err)")
+            } else {
+                print("Document added with ID:\n\n\n\n\n ")
+            }
+        }
     }
     
     func fetchPreviousSearches() {
-//        progressView.showActivity()
         let itemRef = db.collection("search").document(userdata.id)
-//        itemRef.getDocument { (doc, err) in
-//            if let document = doc {
-//                let searchData = document.data()
-////                self.arrPreviousSearches = searchData?["searches"] as? [String] ?? [String]()
-//                if self.arrSearchKeyword.count <= 0 {
-//                    self.arrSearchKeyword.append(contentsOf: self.arrPreviousSearches)
-//                }
-//                self.tblSearch.reloadData()
-//            }
-//            progressView.hideActivity()
-//        }
+        itemRef.getDocument { (doc, err) in
+            if let document = doc {
+                guard let searchData = document.data() else { return }
+                let arr = Array(searchData.values)
+                if let dictArr = arr as? Array<NSDictionary> {
+                    self.arrPreviousSearches = dictArr
+                    if self.arrSearchKeyword.count <= 0 {
+                        self.arrSearchKeyword.append(contentsOf: self.arrPreviousSearches)
+                    }
+                    self.tblSearch.reloadData()
+                }
+            }
+            progressView.hideActivity()
+        }
     }
     
     // MARK: - IBAction Method
@@ -111,6 +116,7 @@ extension SearchVC : UITableViewDelegate, UITableViewDataSource {
             }
             self.navigationController?.show(vc, sender: self)
         }
+        self.saveNewSearch(item: item)
     }
 }
 
@@ -165,6 +171,15 @@ extension SearchVC : UISearchBarDelegate {
         self.arrSearchKeyword.removeAll()
         self.arrSearchKeyword.append(contentsOf: self.arrPreviousSearches)
         self.tblSearch.reloadData()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText == "" {
+            self.searchTask?.cancel()
+            self.arrSearchKeyword.removeAll()
+            self.arrSearchKeyword.append(contentsOf: self.arrPreviousSearches)
+            self.tblSearch.reloadData()
+        }
     }
 }
 

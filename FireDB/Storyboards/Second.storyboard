@@ -73,7 +73,7 @@
                         <nil key="title"/>
                         <barButtonItem key="leftBarButtonItem" style="plain" id="HhR-ze-IpO">
                             <view key="customView" clipsSubviews="YES" contentMode="scaleToFill" id="lf4-g6-8g2">
-                                <rect key="frame" x="16" y="4.6666666666666679" width="270" height="35"/>
+                                <rect key="frame" x="16" y="5" width="270" height="35"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <searchBar contentMode="redraw" fixedFrame="YES" placeholder="Search" translatesAutoresizingMaskIntoConstraints="NO" id="ycJ-ec-d27">
