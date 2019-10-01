@@ -756,22 +756,29 @@
                     </view>
                     <navigationItem key="navigationItem" id="I80-rA-zlh">
                         <view key="titleView" clipsSubviews="YES" contentMode="scaleToFill" id="hqv-KR-OEh">
-                            <rect key="frame" x="15" y="5" width="345" height="35"/>
+                            <rect key="frame" x="16" y="4.6666666666666679" width="343" height="35"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <searchBar contentMode="redraw" fixedFrame="YES" placeholder="Search" translatesAutoresizingMaskIntoConstraints="NO" id="jRV-48-SSV">
-                                    <rect key="frame" x="0.0" y="-9" width="345" height="56"/>
+                                <searchBar userInteractionEnabled="NO" contentMode="redraw" fixedFrame="YES" placeholder="Search" translatesAutoresizingMaskIntoConstraints="NO" id="jRV-48-SSV">
+                                    <rect key="frame" x="0.0" y="-9" width="343" height="56"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                     <textInputTraits key="textInputTraits"/>
                                     <connections>
                                         <outlet property="delegate" destination="eI2-LX-5aT" id="ayW-0Z-RHe"/>
                                     </connections>
                                 </searchBar>
+                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qJ9-x2-23a">
+                                    <rect key="frame" x="0.0" y="0.0" width="343" height="35"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <connections>
+                                        <action selector="btnSearchAction:" destination="eI2-LX-5aT" eventType="touchUpInside" id="PO6-8q-dmv"/>
+                                    </connections>
+                                </button>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                    <integer key="value" value="4"/>
+                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                    <real key="value" value="4"/>
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                         </view>
@@ -781,6 +788,7 @@
                         <outlet property="btnNewPosts" destination="6P2-D0-bXX" id="EC5-BE-MRH"/>
                         <outlet property="btnSavedItems" destination="xfY-No-giB" id="XKg-XZ-4z6"/>
                         <outlet property="tblItemList" destination="UdM-jE-l3A" id="8j1-TV-f5T"/>
+                        <outlet property="viewSearch" destination="hqv-KR-OEh" id="9cT-YZ-dfM"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tA2-XT-9Wx" userLabel="First Responder" sceneMemberID="firstResponder"/>

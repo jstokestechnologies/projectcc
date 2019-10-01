@@ -21,6 +21,8 @@ class ItemListForSaleVC: UIViewController {
     @IBOutlet weak var btnSavedItems: UIButton!
     @IBOutlet weak var btnNewPosts: UIButton!
     
+    @IBOutlet weak var viewSearch: UIView!
+    
     //MARK: - Variables
     var arrItems : [ItemsDetail]?
     var arrNewItems : [ItemsDetail]?
@@ -42,6 +44,7 @@ class ItemListForSaleVC: UIViewController {
             self.fetchItemList()
         }else {
             self.title = "Favorites"
+            self.viewSearch.isHidden = true
         }
         // Do any additional setup after loading the view.
         tblItemList.register(UINib(nibName: "ItemCardTableCell", bundle: nil), forCellReuseIdentifier: "Cell")
@@ -237,7 +240,7 @@ class ItemListForSaleVC: UIViewController {
             UserDefaults.standard.set(false, forKey: kIsLoggedIn)
             UserDefaults.standard.synchronize()
             userdata = UserData()
-            UIApplication.shared.keyWindow?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "LoginNavVC")
+            UIApplication.shared.keyWindow?.rootViewController = mainStoryBoard.instantiateViewController(withIdentifier: "LoginNavVC")
         }))
         alert.addAction(UIAlertAction.init(title: "No", style: .cancel, handler: { (alert) in
             
@@ -246,20 +249,20 @@ class ItemListForSaleVC: UIViewController {
     }
     
     @IBAction func btnAddItemForSaleAction(_ sender: Any) {
-        let vc = (self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC"))!
+        let vc = mainStoryBoard.instantiateViewController(withIdentifier: "AddSellItemVC")
         let navVC = UINavigationController.init(rootViewController: vc)
         navVC.navigationBar.tintColor = .darkGray
         self.present(navVC, animated: true, completion: nil)
     }
     
     @IBAction func btnShowMyListedItemsAction(_ sender: Any) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
+        let vc = mainStoryBoard.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
         vc.listType = .listedItems
         self.navigationController?.show(vc, sender: self)
     }
     
     @IBAction func btnShowMySavedItemsAction(_ sender: Any) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
+        let vc = mainStoryBoard.instantiateViewController(withIdentifier: "MyListedItemsVC") as! MyListedItemsVC
         vc.listType = .savedItems
         self.navigationController?.show(vc, sender: self)
     }
@@ -281,6 +284,20 @@ class ItemListForSaleVC: UIViewController {
     
     @IBAction func btnNewPostsAction(_ sender: UIButton) {
         self.addNewItemToList(scrollToTop: true)
+    }
+    
+    @IBAction func btnSearchAction(_ sender: UIButton) {
+        let vc = secondStoryBoard.instantiateViewController(withIdentifier: "SearchNavVC")
+        vc.modalPresentationStyle = .fullScreen
+        vc.modalTransitionStyle = .crossDissolve
+        
+        let transition: CATransition = CATransition()
+        transition.duration = 0.4
+        transition.type = CATransitionType.fade
+        transition.subtype = CATransitionSubtype.fromTop
+        self.view.window?.layer.add(transition, forKey: nil)
+        
+        self.present(vc, animated: false, completion: nil)
     }
     
     @IBAction func pullToRefresh(_ sender : Any) {
@@ -480,22 +497,12 @@ extension ItemListForSaleVC : UICollectionViewDelegate, UICollectionViewDataSour
 extension ItemListForSaleVC : UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         DispatchQueue.main.async {
-//            if viewController == self.navigationController && self.tabBarController?.selectedIndex == 0 {
-//                self.tblItemList.scrollRectToVisible(CGRect.init(x: 0, y: 0, width: 50, height: 50), animated: true)
-//            }
+            if viewController == self.navigationController && self.tabBarController?.selectedIndex == 0 {
+                self.addNewItemToList(scrollToTop: true)
+            }
         }
     }
     
     
 }
 
-extension ItemListForSaleVC : UISearchBarDelegate {
-    func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
-        searchBar.resignFirstResponder()
-        return true
-    }
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-    }
-}

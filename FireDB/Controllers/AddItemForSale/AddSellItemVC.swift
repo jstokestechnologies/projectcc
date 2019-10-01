@@ -442,7 +442,7 @@ class AddSellItemVC: UIViewController {
     func showCompleteProfileAlert() {
 //        let alert = UIAlertController.init(title: "", message: "Please update your profile to continue.", preferredStyle: .alert)
 //        alert.addAction(UIAlertAction.init(title: "Update", style: .default, handler: { (alrt) in
-            let vc = self.storyboard?.instantiateViewController(withIdentifier: "EditProfileVC") as! EditProfileVC
+            let vc = mainStoryBoard.instantiateViewController(withIdentifier: "EditProfileVC") as! EditProfileVC
             vc.delegate = self
             self.navigationController?.show(vc, sender: self)
 //        }))
@@ -631,7 +631,7 @@ extension AddSellItemVC : UICollectionViewDelegate, UICollectionViewDataSource {
             self.collectionCondition.reloadData()
         }else {
             if totalImages == indexPath.row && totalImages < self.maxImages {
-                let vc = self.storyboard?.instantiateViewController(withIdentifier: "CustomCameraVC") as! CustomCameraVC
+                let vc = mainStoryBoard.instantiateViewController(withIdentifier: "CustomCameraVC") as! CustomCameraVC
                 vc.isFirstVC = false
                 vc.modalPresentationStyle = .custom
                 self.present(vc, animated: true, completion: nil)

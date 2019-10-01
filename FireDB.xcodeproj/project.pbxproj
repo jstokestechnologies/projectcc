@@ -12,6 +12,8 @@
 		842C007023192A570061CE46 /* SoldItemsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842C006F23192A570061CE46 /* SoldItemsListVC.swift */; };
 		842FFED6230D1BB0000DADF2 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FFED5230D1BB0000DADF2 /* Helper.swift */; };
 		842FFED8230D1BBF000DADF2 /* StringContants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FFED7230D1BBF000DADF2 /* StringContants.swift */; };
+		843D37E7233C8B6900BFBEB5 /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843D37E6233C8B6900BFBEB5 /* SearchVC.swift */; };
+		843D37E9233C8DD100BFBEB5 /* Second.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 843D37E8233C8DD100BFBEB5 /* Second.storyboard */; };
 		8451D5E222F94A42005169D5 /* particle41-squarelogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E022F94A42005169D5 /* particle41-squarelogo.png */; };
 		8451D5E322F94A42005169D5 /* jmjcloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E122F94A42005169D5 /* jmjcloud-logo.png */; };
 		8451D5E722F9511A005169D5 /* email_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E622F9511A005169D5 /* email_logo.png */; };
@@ -43,6 +45,7 @@
 		84B1ACC0230D0813002E6B30 /* ProgressHud.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84B1ACBF230D0813002E6B30 /* ProgressHud.xib */; };
 		84B1ACC2230D09E2002E6B30 /* ProgressHud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B1ACC1230D09E2002E6B30 /* ProgressHud.swift */; };
 		84B61DA72330B45500CEA14B /* SystemCropVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B61DA62330B45500CEA14B /* SystemCropVC.swift */; };
+		84C2ADD32343341600EE6F30 /* SearchResultVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C2ADD22343341600EE6F30 /* SearchResultVC.swift */; };
 		84DDCBA4232BCBCD00613C2F /* EditProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DDCBA3232BCBCD00613C2F /* EditProfileVC.swift */; };
 		84EBFCAA2338EA9E00A16419 /* UpdateProfileProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EBFCA92338EA9E00A16419 /* UpdateProfileProtocol.swift */; };
 		84F9F6C822FAB35A00E754A7 /* border_dot.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F9F6C722FAB35A00E754A7 /* border_dot.png */; };
@@ -73,6 +76,8 @@
 		842C006F23192A570061CE46 /* SoldItemsListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoldItemsListVC.swift; sourceTree = "<group>"; };
 		842FFED5230D1BB0000DADF2 /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		842FFED7230D1BBF000DADF2 /* StringContants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringContants.swift; sourceTree = "<group>"; };
+		843D37E6233C8B6900BFBEB5 /* SearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; };
+		843D37E8233C8DD100BFBEB5 /* Second.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Second.storyboard; sourceTree = "<group>"; };
 		8451D5E022F94A42005169D5 /* particle41-squarelogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "particle41-squarelogo.png"; sourceTree = "<group>"; };
 		8451D5E122F94A42005169D5 /* jmjcloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "jmjcloud-logo.png"; sourceTree = "<group>"; };
 		8451D5E622F9511A005169D5 /* email_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = email_logo.png; sourceTree = "<group>"; };
@@ -110,6 +115,7 @@
 		84B1ACBF230D0813002E6B30 /* ProgressHud.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProgressHud.xib; sourceTree = "<group>"; };
 		84B1ACC1230D09E2002E6B30 /* ProgressHud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHud.swift; sourceTree = "<group>"; };
 		84B61DA62330B45500CEA14B /* SystemCropVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemCropVC.swift; sourceTree = "<group>"; };
+		84C2ADD22343341600EE6F30 /* SearchResultVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultVC.swift; sourceTree = "<group>"; };
 		84DDCBA3232BCBCD00613C2F /* EditProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileVC.swift; sourceTree = "<group>"; };
 		84EBFCA92338EA9E00A16419 /* UpdateProfileProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProfileProtocol.swift; sourceTree = "<group>"; };
 		84F9F6C722FAB35A00E754A7 /* border_dot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = border_dot.png; sourceTree = "<group>"; };
@@ -153,6 +159,8 @@
 				849E18CC230ECDDF00C94431 /* TabBarVC.swift */,
 				84DDCBA3232BCBCD00613C2F /* EditProfileVC.swift */,
 				842C006F23192A570061CE46 /* SoldItemsListVC.swift */,
+				843D37E6233C8B6900BFBEB5 /* SearchVC.swift */,
+				84C2ADD22343341600EE6F30 /* SearchResultVC.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -178,6 +186,7 @@
 			children = (
 				848A43DF22F04380002D9444 /* Main.storyboard */,
 				848A43E422F04383002D9444 /* LaunchScreen.storyboard */,
+				843D37E8233C8DD100BFBEB5 /* Second.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -477,6 +486,7 @@
 				84A827D0233BA907009C1FED /* up-arrow.png in Resources */,
 				8493467822F88641006C72E7 /* 124010.png in Resources */,
 				8451D5E722F9511A005169D5 /* email_logo.png in Resources */,
+				843D37E9233C8DD100BFBEB5 /* Second.storyboard in Resources */,
 				84B1ACC0230D0813002E6B30 /* ProgressHud.xib in Resources */,
 				8451D5E322F94A42005169D5 /* jmjcloud-logo.png in Resources */,
 				848A43E622F04383002D9444 /* LaunchScreen.storyboard in Resources */,
@@ -588,6 +598,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				843D37E7233C8B6900BFBEB5 /* SearchVC.swift in Sources */,
 				84891B332327ACDE00448539 /* CropImageVC.swift in Sources */,
 				845801DC22FD992800AE6FEE /* SelectBrandProtocol.swift in Sources */,
 				84891B312327AA0000448539 /* LyEditImageView.swift in Sources */,
@@ -611,6 +622,7 @@
 				849464DD22FC3CD000ED0213 /* UserModel.swift in Sources */,
 				845801DA22FD978A00AE6FEE /* SelectBrandVC.swift in Sources */,
 				84F9F6CA22FAB67C00E754A7 /* AddSellItemVC.swift in Sources */,
+				84C2ADD32343341600EE6F30 /* SearchResultVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

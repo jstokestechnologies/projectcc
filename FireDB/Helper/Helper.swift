@@ -15,6 +15,32 @@ class HelperClass : NSObject {
     
     typealias ABCompletionBlock = (_ result: NSDictionary, _ message: String, _ success: Bool) -> Void
     
+    class func writeArrayToJsonFile(data : [NSDictionary]) {
+        let documentsDirectoryPathString = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
+        let documentsDirectoryPath = NSURL(string: documentsDirectoryPathString)!
+        print(documentsDirectoryPathString)
+        guard let jsonFilePath = documentsDirectoryPath.appendingPathComponent("item_data.json") else { return }
+        
+        // creating JSON out of the above array
+        var jsonData: Data!
+        do {
+            jsonData = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions())
+            let jsonString = String(data: jsonData, encoding: String.Encoding.utf8)
+            print(jsonString ?? "N/A")
+        } catch let error as NSError {
+            print("Array to JSON conversion failed: \(error.localizedDescription)")
+        }
+        
+        // Write that JSON to the file created earlier
+        do {
+            let file = try FileHandle(forWritingTo: jsonFilePath)
+            file.write(jsonData)
+            print("JSON data was written to teh file successfully!")
+        } catch let error as NSError {
+            print("Couldn't write to file: \(error.localizedDescription)")
+        }
+    }
+    
     class func saveDataToDefaults(dataObject: NSDictionary, key : String) {
         do {
             let currentDefaults = UserDefaults.standard

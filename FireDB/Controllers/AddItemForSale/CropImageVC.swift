@@ -39,7 +39,7 @@ class CropImageVC: UIViewController {
     
     @IBAction func btnSellAction(_ sender : UIButton) {
         if (self.navigationController != nil) {
-            let addVc = self.storyboard?.instantiateViewController(withIdentifier: "AddSellItemVC") as! AddSellItemVC
+            let addVc = mainStoryBoard.instantiateViewController(withIdentifier: "AddSellItemVC") as! AddSellItemVC
             let itemImage = ItemImages()
             itemImage.image = self.imageToCrop
             itemImage.action = .new
