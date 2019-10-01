@@ -17,15 +17,18 @@ class SearchVC: UIViewController {
     @IBOutlet weak var tblSearch: UITableView!
     
     // MARK: - Variables
-    var arrSearchKeyword = [String]()
-    var arrPreviousSearches = [String]()
+    var arrSearchKeyword = Array<NSDictionary>()
+    var arrPreviousSearches = Array<NSDictionary>()
     var index : Index!
+    
+    var searchTask : Operation?
+    
     
     // MARK: - Viewcontroller Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.fetchPreviousSearches()
-        let client = Client(appID: "NWF6K1LP13", apiKey: "b85399e0fd48c7aa2bf192d373eb71a5")
+        let client = Client(appID: "ANE3X9XHC5", apiKey: "b83732850d7d21a7f7a8833c667f205b")
         index = client.index(withName: "listed_items")
     }
     
@@ -40,31 +43,31 @@ class SearchVC: UIViewController {
     func saveNewSearch(text : String) {
         let searchDict = ["searches" : [text]]
         
-        db.collection("search").document(userdata.id).setData(searchDict) { err in
-            if let err = err {
-                print("Error adding document: \(err)")
-            } else {
-                print("Document added with ID:\n\n\n\n\n ")
-                self.arrSearchKeyword.append(text)
-                self.tblSearch.reloadData()
-            }
-        }
+//        db.collection("search").document(userdata.id).setData(searchDict) { err in
+//            if let err = err {
+//                print("Error adding document: \(err)")
+//            } else {
+//                print("Document added with ID:\n\n\n\n\n ")
+//                self.arrSearchKeyword.append(text)
+//                self.tblSearch.reloadData()
+//            }
+//        }
     }
     
     func fetchPreviousSearches() {
-        progressView.showActivity()
+//        progressView.showActivity()
         let itemRef = db.collection("search").document(userdata.id)
-        itemRef.getDocument { (doc, err) in
-            if let document = doc {
-                let searchData = document.data()
-                self.arrPreviousSearches = searchData?["searches"] as? [String] ?? [String]()
-                if self.arrSearchKeyword.count <= 0 {
-                    self.arrSearchKeyword.append(contentsOf: self.arrPreviousSearches)
-                }
-                self.tblSearch.reloadData()
-            }
-            progressView.hideActivity()
-        }
+//        itemRef.getDocument { (doc, err) in
+//            if let document = doc {
+//                let searchData = document.data()
+////                self.arrPreviousSearches = searchData?["searches"] as? [String] ?? [String]()
+//                if self.arrSearchKeyword.count <= 0 {
+//                    self.arrSearchKeyword.append(contentsOf: self.arrPreviousSearches)
+//                }
+//                self.tblSearch.reloadData()
+//            }
+//            progressView.hideActivity()
+//        }
     }
     
     // MARK: - IBAction Method
@@ -72,17 +75,7 @@ class SearchVC: UIViewController {
         self.view.endEditing(true)
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
-
-    /*
-    // MARK - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+    
 }
 
 // MARK: -
@@ -94,21 +87,25 @@ extension SearchVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         
-        cell.textLabel?.text = self.arrSearchKeyword[indexPath.row]
+        cell.textLabel?.text = self.arrSearchKeyword[indexPath.row].value(forKey: "name") as? String ?? "N/A"
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
     }
 }
 
 // MARK: -
 extension SearchVC : UISearchBarDelegate {
     func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
-//            self.saveNewSearch(text: self.searchBar.text!)
         searchBar.resignFirstResponder()
         return true
     }
     
     func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        self.searchTask?.cancel()
         self.arrSearchKeyword.removeAll()
         self.tblSearch.reloadData()
         var searchText  = ""
@@ -134,23 +131,22 @@ extension SearchVC : UISearchBarDelegate {
     }
     
     func searchItemWith(text : String) {
-        index.search(Query(query: text), completionHandler: { (content, error) -> Void in
+        searchTask = index.search(Query(query: text), completionHandler: { (content, error) -> Void in
             if content != nil {
                 if let arrResult = content?["hits"] as? Array<NSDictionary> {
-                    for item in arrResult {
-                        if let highlightedResult = item["_highlightResult"] as? NSDictionary {
-                            guard let searchText = highlightedResult.value(forKeyPath: "item_name.value") as? String else {
-                                continue
-                            }
-                            self.arrSearchKeyword.append(searchText.html2String)
-                        }
-                    }
+                    self.arrSearchKeyword.append(contentsOf: arrResult)
                 }
                 self.tblSearch.reloadData()
             }else {
                 print("Result: \(error?.localizedDescription ?? "Error")")
             }
         })
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.arrSearchKeyword.removeAll()
+        self.arrSearchKeyword.append(contentsOf: self.arrPreviousSearches)
+        self.tblSearch.reloadData()
     }
 }
 
