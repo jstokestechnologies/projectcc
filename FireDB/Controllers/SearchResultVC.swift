@@ -22,7 +22,7 @@ class SearchResultVC: UIViewController {
     var refId = ""
     var keyName = ""
     var isSubcategory = false
-    
+    var titles = ""
     
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
@@ -48,7 +48,7 @@ class SearchResultVC: UIViewController {
     }
     
     func initialSetup() {
-        self.title = "Search Result"
+        self.title = titles
     }
     
     //MARK: - Firebase Methods

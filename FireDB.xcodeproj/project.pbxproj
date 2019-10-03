@@ -76,7 +76,7 @@
 		842C006F23192A570061CE46 /* SoldItemsListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoldItemsListVC.swift; sourceTree = "<group>"; };
 		842FFED5230D1BB0000DADF2 /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		842FFED7230D1BBF000DADF2 /* StringContants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringContants.swift; sourceTree = "<group>"; };
-		843D37E6233C8B6900BFBEB5 /* SearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; };
+		843D37E6233C8B6900BFBEB5 /* SearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		843D37E8233C8DD100BFBEB5 /* Second.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Second.storyboard; sourceTree = "<group>"; };
 		8451D5E022F94A42005169D5 /* particle41-squarelogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "particle41-squarelogo.png"; sourceTree = "<group>"; };
 		8451D5E122F94A42005169D5 /* jmjcloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "jmjcloud-logo.png"; sourceTree = "<group>"; };
