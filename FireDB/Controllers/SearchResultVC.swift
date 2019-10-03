@@ -24,6 +24,11 @@ class SearchResultVC: UIViewController {
     var isSubcategory = false
     var titles = ""
     
+    var pageNo = 1
+    var itemPerPage = 10
+    var isNextPage = true
+    var lastDoc : DocumentSnapshot?
+    
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,12 +73,17 @@ class SearchResultVC: UIViewController {
     func fetchItemList() {
         var query : Query? = db.collection(kListedItems)
         if self.isSubcategory {
-            query = query?.whereField(self.keyName, arrayContains: self.refId)
+            query = query?.whereField(self.keyName, arrayContains: self.refId).limit(to: self.itemPerPage)
         }else {
-            query = query?.whereField(self.keyName, isEqualTo: self.refId)
+            query = query?.whereField(self.keyName, isEqualTo: self.refId).limit(to: self.itemPerPage)
         }
+        if self.pageNo > 1 && self.lastDoc != nil {
+            query = query?.start(afterDocument: self.lastDoc!)
+        }
+        
         query?.getDocuments { (docs, err) in
             if let documents = docs?.documents {
+                self.lastDoc = documents.last
                 let arr = documents.map({ (doc) -> [String : Any] in
                     var dict =  doc.data()
                     dict["id"] = doc.documentID
@@ -112,7 +122,12 @@ class SearchResultVC: UIViewController {
             let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
             let jsonDecoder = JSONDecoder()
             let arrItemData = try jsonDecoder.decode([ItemsDetail].self, from: jsonData!)
-            self.arrItems = arrItemData
+            if self.arrItems == nil || self.pageNo <= 1 {
+                self.arrItems = arrItemData
+            }else {
+                self.arrItems?.append(contentsOf: arrItemData)
+            }
+            self.changePageNumber()
             DispatchQueue.main.async {
                 self.setNoDataLabel()
                 self.tblItemList.reloadData()
@@ -157,6 +172,15 @@ class SearchResultVC: UIViewController {
         }else {
             self.tblItemList.tableFooterView = UIView.init(frame: CGRect.zero)
         }
+    }
+    
+    func changePageNumber() {
+        if (self.arrItems?.count ?? 0) < (self.pageNo*self.itemPerPage) {
+            self.isNextPage = false
+        }else {
+            self.isNextPage = true
+        }
+        self.pageNo += 1
     }
     
     /*
@@ -222,6 +246,19 @@ extension SearchResultVC : UITableViewDelegate, UITableViewDataSource, UITableVi
     
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         print(indexPaths)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        if self.tabBarController?.selectedIndex == 0 {
+            let scrollViewHeight = scrollView.frame.size.height
+            let scrollContentSizeHeight = scrollView.contentSize.height
+            let scrollOffset = scrollView.contentOffset.y
+            if ((scrollOffset + scrollViewHeight) >= (scrollContentSizeHeight - 500)) && self.isNextPage
+            {
+                self.fetchItemList()
+                self.isNextPage = false
+            }
+//        }
     }
     
 }
