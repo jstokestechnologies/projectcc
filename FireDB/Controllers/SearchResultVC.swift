@@ -16,6 +16,7 @@ class SearchResultVC: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet weak var tblItemList: UITableView!
     
+    
     //MARK: - Variables
     var arrItems : [ItemsDetail]?
     lazy var storage = Storage.storage()
@@ -28,6 +29,7 @@ class SearchResultVC: UIViewController {
     var itemPerPage = 10
     var isNextPage = true
     var lastDoc : DocumentSnapshot?
+    var arrItemIds = [String]()
     
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
@@ -36,7 +38,11 @@ class SearchResultVC: UIViewController {
         if self.keyName.count > 0 {
             self.fetchItemList()
         }else {
-            self.fetchSearchedItem()
+            if self.arrItemIds.count > 0 {
+                self.fetchItemsWithSimilarName()
+            }else {
+                self.fetchSearchedItem()
+            }
         }
         // Do any additional setup after loading the view.
         tblItemList.register(UINib(nibName: "ItemCardTableCell", bundle: nil), forCellReuseIdentifier: "Cell")
@@ -95,6 +101,37 @@ class SearchResultVC: UIViewController {
         }
     }
     
+    func fetchItemsWithSimilarName() {
+        self.arrItems?.removeAll()
+        if userdata.my_bookmarks?.count ?? 0 > 0 {
+            let reqParam = ["documents" : self.arrItemIds.compactMap({"projects/projectcc-a98a4/databases/(default)/documents/listed_items/\($0)"}),
+                            "newTransaction"  : NSDictionary()] as [String : Any]
+            HelperClass.requestForAllApiWithBody(param: reqParam as NSDictionary, serverUrl: "https://firestore.googleapis.com/v1beta1/projects/projectcc-a98a4/databases/(default)/documents:batchGet", vc: self) { (itemData, msg, status) in
+                if var arrItems = itemData["array"] as? Array<Any> , arrItems.count > 1 {
+                    arrItems.remove(at: 0)
+                    let arr = arrItems.map({(($0 as? NSDictionary)?.object(forKey: "found") as? NSDictionary)?.object(forKey: "fields") })
+                    
+                    for i in 0..<arr.count {
+                        var itemId = (((arrItems[i]) as? NSDictionary)?.object(forKey: "found") as? NSDictionary)?.value(forKey: "name") as? String
+                        itemId = itemId?.components(separatedBy: "/").last
+                        
+                        let item = arr[i]
+                        if let itemDict = item as? NSDictionary {
+                            self.addNewItemToListWithData(itemDict: itemDict, itemId: itemId)
+                        }
+                    }
+                    self.tblItemList.reloadData()
+                }
+                self.setNoDataLabel()
+                progressView.hideActivity()
+            }
+        }else {
+            self.setNoDataLabel()
+            progressView.hideActivity()
+            self.tblItemList.reloadData();
+        }
+    }
+    
     func saveBookmarkedItemId(itemId : String) {
         db.collection("Users").document(userdata.id).setData(["my_bookmarks" : FieldValue.arrayUnion([itemId])], merge: true) { (err) in
             if (err != nil) {
@@ -117,6 +154,7 @@ class SearchResultVC: UIViewController {
         }
     }
     
+    //MARK: - Parse Data
     func parseFireBaseData(arr : [[String : Any]] ) {
         do {
             let jsonData  = try? JSONSerialization.data(withJSONObject: arr, options:.prettyPrinted)
@@ -135,6 +173,35 @@ class SearchResultVC: UIViewController {
         }
         catch {
             print(error.localizedDescription)
+        }
+    }
+    
+    func addNewItemToListWithData(itemDict : NSDictionary, itemId : String?) {
+        let itemObj = ItemsDetail()
+        itemObj.item_name = "\((itemDict.value(forKey: "item_name") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"
+        
+        itemObj.price = "\((itemDict.value(forKey: "price") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"
+        
+        let brand = ((itemDict.value(forKey: "brand") as? NSDictionary)?.object(forKey: "mapValue") as? NSDictionary)?.object(forKey: "fields") as? NSDictionary
+        itemObj.brand = ["id" :  "\((brand?.object(forKey: "id") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")",
+            "name" :  "\((brand?.object(forKey: "name") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")",
+            "user" :  "\((brand?.object(forKey: "user") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"]
+        
+        let imagesData = ((itemDict.value(forKey: "item_images") as? NSDictionary)?.object(forKey: "arrayValue") as? NSDictionary)?.object(forKey: "values") as? [NSDictionary]
+        let arrImages = imagesData?.compactMap({"\($0.value(forKey: "stringValue") ?? "")"})
+        
+        itemObj.item_images = arrImages
+        itemObj.images_added = itemObj.item_images?.count ?? 0
+        itemObj.id = itemId
+        
+        if self.arrItems == nil {
+            self.arrItems = [itemObj]
+        }else {
+            if (self.arrItems?.count ?? 0) > 0 && (self.refId == itemObj.id ?? "") {
+                self.arrItems?.insert(itemObj, at: 0)
+            }else {
+                self.arrItems?.append(itemObj)
+            }
         }
     }
     
@@ -249,7 +316,7 @@ extension SearchResultVC : UITableViewDelegate, UITableViewDataSource, UITableVi
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        if self.tabBarController?.selectedIndex == 0 {
+        if self.arrItemIds.count <= 0 {
             let scrollViewHeight = scrollView.frame.size.height
             let scrollContentSizeHeight = scrollView.contentSize.height
             let scrollOffset = scrollView.contentOffset.y
@@ -258,7 +325,7 @@ extension SearchResultVC : UITableViewDelegate, UITableViewDataSource, UITableVi
                 self.fetchItemList()
                 self.isNextPage = false
             }
-//        }
+        }
     }
     
 }

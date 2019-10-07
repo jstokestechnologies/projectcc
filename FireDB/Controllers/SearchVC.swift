@@ -13,6 +13,7 @@ import InstantSearchClient
 class SearchVC: UIViewController {
     // MARK: - IBOutlet
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var viewSearchBar: UIView!
     
     @IBOutlet weak var tblSearch: UITableView!
     
@@ -27,15 +28,23 @@ class SearchVC: UIViewController {
     // MARK: - Viewcontroller Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.initialSetup()
         self.fetchPreviousSearches()
-        let client = Client(appID: "NWF6K1LP13", apiKey: "b85399e0fd48c7aa2bf192d373eb71a5")
-        index = client.index(withName: "listed_items")
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         DispatchQueue.main.async {
             self.searchBar.becomeFirstResponder()
+        }
+    }
+    
+    func initialSetup() {
+        let client = Client(appID: "NWF6K1LP13", apiKey: "b85399e0fd48c7aa2bf192d373eb71a5")
+        index = client.index(withName: "listed_items")
+        
+        DispatchQueue.main.async {
+            self.viewSearchBar.frame.size.width = self.view.frame.width - 114
         }
     }
     
@@ -68,7 +77,9 @@ class SearchVC: UIViewController {
                         return Int(first["time"] as? Int ?? 0) > Int(second["time"] as? Int ?? 0)
                     })
                     self.arrPreviousSearches = dictArr
-//                    self.arrPreviousSearches.sort(by: {Int($0["time"]) > Int($0["time"])})
+                    if self.arrPreviousSearches.count > 5 {
+                        self.arrPreviousSearches = self.arrPreviousSearches.dropLast(self.arrPreviousSearches.count - 5)
+                    }
                     if self.arrSearchKeyword.count <= 0 {
                         self.arrSearchKeyword.append(contentsOf: self.arrPreviousSearches)
                     }
@@ -89,8 +100,7 @@ class SearchVC: UIViewController {
 // MARK: -
 extension SearchVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let count = self.arrSearchKeyword.count > 5 ? 5 : self.arrSearchKeyword.count
-        return count
+        return self.arrSearchKeyword.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -107,6 +117,7 @@ extension SearchVC : UITableViewDelegate, UITableViewDataSource {
         if let type = item.value(forKey: "type") as? Int {
             let vc = secondStoryBoard.instantiateViewController(withIdentifier: "SearchResultVC") as! SearchResultVC
             vc.refId = item.value(forKey: "objectID") as? String ?? "N/A"
+            vc.titles = item.value(forKey: "name") as? String ?? "Search"
             switch type {
             case 1 :
                 vc.isSubcategory = true
@@ -116,9 +127,15 @@ extension SearchVC : UITableViewDelegate, UITableViewDataSource {
             case 3 :
                 vc.keyName = "category.id"
             default :
-                break
+                if (self.searchBar.text ?? "").count > 0 {
+                    let searchedItemsWithName = self.arrSearchKeyword.filter({($0.value(forKey: "type") as? Int) == 4})
+                    let itemIds = searchedItemsWithName.compactMap({$0.value(forKey: "objectID") as? String ?? "N/A"})
+                    if itemIds.count > 0 {
+                        vc.arrItemIds = itemIds
+                        vc.titles = self.searchBar.text!
+                    }
+                }
             }
-            vc.titles = item.value(forKey: "name") as? String ?? "Search"
             self.navigationController?.show(vc, sender: self)
         }
         self.saveNewSearch(item: item)
@@ -159,8 +176,8 @@ extension SearchVC : UISearchBarDelegate {
     }
     
     func searchItemWith(text : String) {
-        index.setSettings(["page": 0,
-                           "hitsPerPage": 20])
+//        index.setSettings(["page": 0,
+//                           "hitsPerPage": 20])
         searchTask = index.search(Query(query: text), completionHandler: { (content, error) -> Void in
             if content != nil {
                 if let arrResult = content?["hits"] as? Array<NSDictionary> {
