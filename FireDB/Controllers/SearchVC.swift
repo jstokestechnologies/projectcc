@@ -112,12 +112,19 @@ extension SearchVC : UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        self.searchBar.resignFirstResponder()
         tableView.deselectRow(at: indexPath, animated: true)
         let item = self.arrSearchKeyword[indexPath.row]
-        if let type = item.value(forKey: "type") as? Int {
-            let vc = secondStoryBoard.instantiateViewController(withIdentifier: "SearchResultVC") as! SearchResultVC
-            vc.refId = item.value(forKey: "objectID") as? String ?? "N/A"
-            vc.titles = item.value(forKey: "name") as? String ?? "Search"
+        self.showSearchResult(isKeyword: false, item: item)
+        self.saveNewSearch(item: item)
+    }
+    
+    func showSearchResult(isKeyword : Bool, item : NSDictionary?) {
+        var isAddItemIds = false
+        let vc = secondStoryBoard.instantiateViewController(withIdentifier: "SearchResultVC") as! SearchResultVC
+        if let type = item?.value(forKey: "type") as? Int {
+            vc.refId = item?.value(forKey: "objectID") as? String ?? "N/A"
+            vc.titles = item?.value(forKey: "name") as? String ?? "Search"
             switch type {
             case 1 :
                 vc.isSubcategory = true
@@ -128,17 +135,24 @@ extension SearchVC : UITableViewDelegate, UITableViewDataSource {
                 vc.keyName = "category.id"
             default :
                 if (self.searchBar.text ?? "").count > 0 {
-                    let searchedItemsWithName = self.arrSearchKeyword.filter({($0.value(forKey: "type") as? Int) == 4})
-                    let itemIds = searchedItemsWithName.compactMap({$0.value(forKey: "objectID") as? String ?? "N/A"})
-                    if itemIds.count > 0 {
-                        vc.arrItemIds = itemIds
-                        vc.titles = self.searchBar.text!
-                    }
+                    isAddItemIds = true
                 }
             }
-            self.navigationController?.show(vc, sender: self)
         }
-        self.saveNewSearch(item: item)
+        if isAddItemIds || isKeyword {
+            let searchedItemsWithName = self.arrSearchKeyword.filter({($0.value(forKey: "type") as? Int) == 4})
+            let itemIds = searchedItemsWithName.compactMap({$0.value(forKey: "objectID") as? String ?? "N/A"})
+            if itemIds.count > 0 {
+                vc.titles = self.searchBar.text!
+            }
+            if isKeyword {
+                vc.searchKeyWord = self.searchBar.text!
+                vc.fetchType = -1
+            }else {
+                vc.arrItemIds = itemIds
+            }
+        }
+        self.navigationController?.show(vc, sender: self)
     }
 }
 
@@ -150,6 +164,7 @@ extension SearchVC : UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        guard text != "\n" else { return true }
         self.searchTask?.cancel()
         self.arrSearchKeyword.removeAll()
         self.tblSearch.reloadData()
@@ -172,13 +187,12 @@ extension SearchVC : UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
+        self.showSearchResult(isKeyword: true, item: nil)
+//        searchBar.resignFirstResponder()
     }
     
     func searchItemWith(text : String) {
-//        index.setSettings(["page": 0,
-//                           "hitsPerPage": 20])
-        searchTask = index.search(Query(query: text), completionHandler: { (content, error) -> Void in
+        self.searchTask = HelperClass.searchItemWith(text: text, index: index, page: 0) { (content, error) in
             if content != nil {
                 if let arrResult = content?["hits"] as? Array<NSDictionary> {
                     self.arrSearchKeyword.append(contentsOf: arrResult)
@@ -187,7 +201,7 @@ extension SearchVC : UISearchBarDelegate {
             }else {
                 print("Result: \(error?.localizedDescription ?? "Error")")
             }
-        })
+        }
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
