@@ -21,7 +21,7 @@
 		845801D822FD8C0D00AE6FEE /* SelectCategoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845801D722FD8C0D00AE6FEE /* SelectCategoryProtocol.swift */; };
 		845801DA22FD978A00AE6FEE /* SelectBrandVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845801D922FD978A00AE6FEE /* SelectBrandVC.swift */; };
 		845801DC22FD992800AE6FEE /* SelectBrandProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845801DB22FD992800AE6FEE /* SelectBrandProtocol.swift */; };
-		845801E522FDA56F00AE6FEE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 845801E422FDA56F00AE6FEE /* GoogleService-Info.plist */; };
+		845D40A7234E1417004C6A5C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 845D40A6234E1417004C6A5C /* GoogleService-Info.plist */; };
 		847D49BB23014B6D00FE900C /* ItemListForSaleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847D49BA23014B6D00FE900C /* ItemListForSaleVC.swift */; };
 		847D49C12301A05000FE900C /* no-image.png in Resources */ = {isa = PBXBuildFile; fileRef = 847D49C02301A05000FE900C /* no-image.png */; };
 		848293032320DE9C001DF6F5 /* ItemCardTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 848293022320DE9C001DF6F5 /* ItemCardTableCell.xib */; };
@@ -85,7 +85,7 @@
 		845801D722FD8C0D00AE6FEE /* SelectCategoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectCategoryProtocol.swift; sourceTree = "<group>"; };
 		845801D922FD978A00AE6FEE /* SelectBrandVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBrandVC.swift; sourceTree = "<group>"; };
 		845801DB22FD992800AE6FEE /* SelectBrandProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBrandProtocol.swift; sourceTree = "<group>"; };
-		845801E422FDA56F00AE6FEE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		845D40A6234E1417004C6A5C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		847D49BA23014B6D00FE900C /* ItemListForSaleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListForSaleVC.swift; sourceTree = "<group>"; };
 		847D49C02301A05000FE900C /* no-image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "no-image.png"; sourceTree = "<group>"; };
 		848293022320DE9C001DF6F5 /* ItemCardTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ItemCardTableCell.xib; sourceTree = "<group>"; };
@@ -205,7 +205,7 @@
 			isa = PBXGroup;
 			children = (
 				848A43E722F04383002D9444 /* Info.plist */,
-				845801E422FDA56F00AE6FEE /* GoogleService-Info.plist */,
+				845D40A6234E1417004C6A5C /* GoogleService-Info.plist */,
 			);
 			name = "Info-plist";
 			path = "Info-plist.temp_caseinsensitive_rename.";
@@ -485,6 +485,7 @@
 			files = (
 				84A827D0233BA907009C1FED /* up-arrow.png in Resources */,
 				8493467822F88641006C72E7 /* 124010.png in Resources */,
+				845D40A7234E1417004C6A5C /* GoogleService-Info.plist in Resources */,
 				8451D5E722F9511A005169D5 /* email_logo.png in Resources */,
 				843D37E9233C8DD100BFBEB5 /* Second.storyboard in Resources */,
 				84B1ACC0230D0813002E6B30 /* ProgressHud.xib in Resources */,
@@ -493,7 +494,6 @@
 				848A43E322F04383002D9444 /* Assets.xcassets in Resources */,
 				8451D5E222F94A42005169D5 /* particle41-squarelogo.png in Resources */,
 				848A43E122F04380002D9444 /* Main.storyboard in Resources */,
-				845801E522FDA56F00AE6FEE /* GoogleService-Info.plist in Resources */,
 				8486F8C822FB1227009BE82C /* minus.png in Resources */,
 				848293032320DE9C001DF6F5 /* ItemCardTableCell.xib in Resources */,
 				847D49C12301A05000FE900C /* no-image.png in Resources */,
@@ -809,7 +809,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.1.14;
-				PRODUCT_BUNDLE_IDENTIFIER = com.particle41.projectCC;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jmj.projectCC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -832,7 +832,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.1.14;
-				PRODUCT_BUNDLE_IDENTIFIER = com.particle41.projectCC;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jmj.projectCC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
