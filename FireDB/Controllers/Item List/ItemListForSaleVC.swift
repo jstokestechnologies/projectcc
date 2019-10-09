@@ -415,7 +415,7 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource, UITabl
         
         cell.lblItemName.text = item.item_name
         cell.lblItemBrand.text = item.brand?["name"]
-//        cell.lblDesciption.text = item.description
+        cell.lblDesciption.text = item.description
         cell.lblItemPrice.text = "$\(item.price ?? "0.00")"
         cell.lblSubDivision.text = item.subdivision ?? "N/A"
         
