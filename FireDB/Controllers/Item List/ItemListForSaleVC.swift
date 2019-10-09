@@ -73,6 +73,10 @@ class ItemListForSaleVC: UIViewController {
             self.tabBarController?.delegate = self
         }
         
+        DispatchQueue.main.async {
+            self.viewSearch.frame.size.width = self.view.frame.width - 40
+        }
+        
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl.addTarget(self, action: #selector(pullToRefresh(_:)), for: UIControl.Event.valueChanged)
         self.tblItemList.addSubview(refreshControl)
