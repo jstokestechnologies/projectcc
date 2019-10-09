@@ -13,6 +13,7 @@ import InstantSearchClient
 class SearchVC: UIViewController {
     // MARK: - IBOutlet
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var viewSearchBar: UIView!
     
     @IBOutlet weak var tblSearch: UITableView!
     
@@ -27,15 +28,23 @@ class SearchVC: UIViewController {
     // MARK: - Viewcontroller Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.initialSetup()
         self.fetchPreviousSearches()
-        let client = Client(appID: "ANE3X9XHC5", apiKey: "b83732850d7d21a7f7a8833c667f205b")
-        index = client.index(withName: "listed_items")
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         DispatchQueue.main.async {
             self.searchBar.becomeFirstResponder()
+        }
+    }
+    
+    func initialSetup() {
+        let client = Client(appID: "NWF6K1LP13", apiKey: "b85399e0fd48c7aa2bf192d373eb71a5")
+        index = client.index(withName: "listed_items")
+        
+        DispatchQueue.main.async {
+            self.viewSearchBar.frame.size.width = self.view.frame.width - 114
         }
     }
     
@@ -48,13 +57,13 @@ class SearchVC: UIViewController {
         itemData.removeValue(forKey: "_highlightResult")
         let searchDict = [key : itemData]
         
-        db.collection("search").document(userdata.id).setData(searchDict) { err in
+        db.collection("search").document(userdata.id).setData(searchDict, merge: true, completion: { err in
             if let err = err {
                 print("Error adding document: \(err)")
             } else {
                 print("Document added with ID:\n\n\n\n\n ")
             }
-        }
+        })
     }
     
     func fetchPreviousSearches() {
@@ -63,8 +72,14 @@ class SearchVC: UIViewController {
             if let document = doc {
                 guard let searchData = document.data() else { return }
                 let arr = Array(searchData.values)
-                if let dictArr = arr as? Array<NSDictionary> {
+                if var dictArr = arr as? Array<NSDictionary> {
+                    dictArr.sort(by: { (first, second) -> Bool in
+                        return Int(first["time"] as? Int ?? 0) > Int(second["time"] as? Int ?? 0)
+                    })
                     self.arrPreviousSearches = dictArr
+                    if self.arrPreviousSearches.count > 5 {
+                        self.arrPreviousSearches = self.arrPreviousSearches.dropLast(self.arrPreviousSearches.count - 5)
+                    }
                     if self.arrSearchKeyword.count <= 0 {
                         self.arrSearchKeyword.append(contentsOf: self.arrPreviousSearches)
                     }
@@ -80,7 +95,6 @@ class SearchVC: UIViewController {
         self.view.endEditing(true)
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
-    
 }
 
 // MARK: -
@@ -98,25 +112,47 @@ extension SearchVC : UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        self.searchBar.resignFirstResponder()
         tableView.deselectRow(at: indexPath, animated: true)
         let item = self.arrSearchKeyword[indexPath.row]
-        if let type = item.value(forKey: "type") as? Int {
-            let vc = secondStoryBoard.instantiateViewController(withIdentifier: "SearchResultVC") as! SearchResultVC
-            vc.refId = item.value(forKey: "objectID") as? String ?? "N/A"
+        self.showSearchResult(isKeyword: false, item: item)
+        self.saveNewSearch(item: item)
+    }
+    
+    func showSearchResult(isKeyword : Bool, item : NSDictionary?) {
+        var isAddItemIds = false
+        let vc = secondStoryBoard.instantiateViewController(withIdentifier: "SearchResultVC") as! SearchResultVC
+        if let type = item?.value(forKey: "type") as? Int {
+            vc.refId = item?.value(forKey: "objectID") as? String ?? "N/A"
+            vc.titles = item?.value(forKey: "name") as? String ?? "Search"
             switch type {
             case 1 :
                 vc.isSubcategory = true
                 vc.keyName = "sub_category"
             case 2 :
-                vc.keyName = "category.id"
-            case 3 :
                 vc.keyName = "brand.id"
+            case 3 :
+                vc.keyName = "category.id"
             default :
-                break
+                if (self.searchBar.text ?? "").count > 0 {
+                    isAddItemIds = true
+                }
             }
-            self.navigationController?.show(vc, sender: self)
         }
-        self.saveNewSearch(item: item)
+        if isAddItemIds || isKeyword {
+            let searchedItemsWithName = self.arrSearchKeyword.filter({($0.value(forKey: "type") as? Int) == 4})
+            let itemIds = searchedItemsWithName.compactMap({$0.value(forKey: "objectID") as? String ?? "N/A"})
+            if itemIds.count > 0 {
+                vc.titles = self.searchBar.text!
+            }
+            if isKeyword {
+                vc.searchKeyWord = self.searchBar.text!
+                vc.fetchType = -1
+            }else {
+                vc.arrItemIds = itemIds
+            }
+        }
+        self.navigationController?.show(vc, sender: self)
     }
 }
 
@@ -128,6 +164,7 @@ extension SearchVC : UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        guard text != "\n" else { return true }
         self.searchTask?.cancel()
         self.arrSearchKeyword.removeAll()
         self.tblSearch.reloadData()
@@ -150,11 +187,12 @@ extension SearchVC : UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
+        self.showSearchResult(isKeyword: true, item: nil)
+//        searchBar.resignFirstResponder()
     }
     
     func searchItemWith(text : String) {
-        searchTask = index.search(Query(query: text), completionHandler: { (content, error) -> Void in
+        self.searchTask = HelperClass.searchItemWith(text: text, index: index, page: 0) { (content, error) in
             if content != nil {
                 if let arrResult = content?["hits"] as? Array<NSDictionary> {
                     self.arrSearchKeyword.append(contentsOf: arrResult)
@@ -163,7 +201,7 @@ extension SearchVC : UISearchBarDelegate {
             }else {
                 print("Result: \(error?.localizedDescription ?? "Error")")
             }
-        })
+        }
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {

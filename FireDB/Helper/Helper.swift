@@ -8,12 +8,15 @@
 
 import Foundation
 import UIKit
+import InstantSearchClient
 
 var progressView = ProgressHud()
 
 class HelperClass : NSObject {
     
     typealias ABCompletionBlock = (_ result: NSDictionary, _ message: String, _ success: Bool) -> Void
+    
+    typealias AlgoliaComplition = (_ content: [String : Any]?, _ error: Error?) -> Void
     
     class func writeArrayToJsonFile(data : [NSDictionary]) {
         let documentsDirectoryPathString = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
@@ -163,8 +166,23 @@ class HelperClass : NSObject {
         })
         postDataTask.resume()
     }
-
+    
+    //MARK: - Algolia Search
+     class func searchItemWith(text : String, index : Index!, page : Int, completion : @escaping AlgoliaComplition) -> Operation? {
+        index.setSettings(["page": page,
+                           "hitsPerPage": 20])
+        let searchTask = index.search(Query(query: text), completionHandler: { (content, error) -> Void in
+            if content != nil {
+                completion(content, error)
+            }else {
+                completion(content, error)
+                print("Result: \(error?.localizedDescription ?? "Error")")
+            }
+        })
+        return searchTask
+    }
 }
+
 
 @IBDesignable extension UIView {
     
