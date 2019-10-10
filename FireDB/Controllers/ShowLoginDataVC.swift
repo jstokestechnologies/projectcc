@@ -41,7 +41,7 @@ class ShowLoginDataVC: UIViewController {
         self.lblName.text = userdata.name
         self.lblEmail.text = userdata.email
         if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-            self.lblVersion.text = appVersion
+            self.lblVersion.text = "version-\(appVersion)"
         }else {
             self.lblVersion.text = ""
         }
