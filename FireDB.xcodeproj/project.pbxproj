@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		34DE87A20455B1DC6323C8EA /* Pods_FireDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DDBE3F41CDCB03F6128F25D /* Pods_FireDB.framework */; };
 		840C9C502302CF8B004A63AD /* MyListedItemsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */; };
+		840ED100234F2EE7000E0B9E /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840ED0FF234F2EE7000E0B9E /* DateExtension.swift */; };
 		842C007023192A570061CE46 /* SoldItemsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842C006F23192A570061CE46 /* SoldItemsListVC.swift */; };
 		842FFED6230D1BB0000DADF2 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FFED5230D1BB0000DADF2 /* Helper.swift */; };
 		842FFED8230D1BBF000DADF2 /* StringContants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FFED7230D1BBF000DADF2 /* StringContants.swift */; };
@@ -73,6 +74,7 @@
 		123B6045BA866FD499EBBCF7 /* Pods-FireDB.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FireDB.release.xcconfig"; path = "Target Support Files/Pods-FireDB/Pods-FireDB.release.xcconfig"; sourceTree = "<group>"; };
 		3DDBE3F41CDCB03F6128F25D /* Pods_FireDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FireDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyListedItemsVC.swift; sourceTree = "<group>"; };
+		840ED0FF234F2EE7000E0B9E /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		842C006F23192A570061CE46 /* SoldItemsListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoldItemsListVC.swift; sourceTree = "<group>"; };
 		842FFED5230D1BB0000DADF2 /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		842FFED7230D1BBF000DADF2 /* StringContants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringContants.swift; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				849464DC22FC3CD000ED0213 /* UserModel.swift */,
+				840ED0FF234F2EE7000E0B9E /* DateExtension.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -603,6 +606,7 @@
 				845801DC22FD992800AE6FEE /* SelectBrandProtocol.swift in Sources */,
 				84891B312327AA0000448539 /* LyEditImageView.swift in Sources */,
 				842FFED6230D1BB0000DADF2 /* Helper.swift in Sources */,
+				840ED100234F2EE7000E0B9E /* DateExtension.swift in Sources */,
 				84DDCBA4232BCBCD00613C2F /* EditProfileVC.swift in Sources */,
 				848A440A22F04839002D9444 /* ShowLoginDataVC.swift in Sources */,
 				848A43DE22F04380002D9444 /* ViewController.swift in Sources */,

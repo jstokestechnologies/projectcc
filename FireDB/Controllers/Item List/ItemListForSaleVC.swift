@@ -20,6 +20,8 @@ class ItemListForSaleVC: UIViewController {
     @IBOutlet weak var btnListedItems: UIButton!
     @IBOutlet weak var btnSavedItems: UIButton!
     @IBOutlet weak var btnNewPosts: UIButton!
+    @IBOutlet weak var btnFilter: UIView!
+    @IBOutlet weak var btnSort: UIView!
     
     @IBOutlet weak var viewSearch: UIView!
     
@@ -68,6 +70,8 @@ class ItemListForSaleVC: UIViewController {
     }
     
     func initialSetup() {
+        self.btnFilter.semanticContentAttribute = .forceRightToLeft
+        
         self.latestTime = Int(Date().timeIntervalSince1970 * 1000)
         if self.tabBarController?.selectedIndex == 0 {
             self.tabBarController?.delegate = self
@@ -343,6 +347,8 @@ class ItemListForSaleVC: UIViewController {
         itemObj.item_name = "\((itemDict.value(forKey: "item_name") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"
         
         itemObj.price = "\((itemDict.value(forKey: "price") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"
+        itemObj.created = Int("\((itemDict.value(forKey: "created") as? NSDictionary)?.value(forKey: "integerValue") ?? "0")")
+        itemObj.subdivision = "\((itemDict.value(forKey: "subdivision") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"
         
         let brand = ((itemDict.value(forKey: "brand") as? NSDictionary)?.object(forKey: "mapValue") as? NSDictionary)?.object(forKey: "fields") as? NSDictionary
         itemObj.brand = ["id" :  "\((brand?.object(forKey: "id") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")",
@@ -419,6 +425,9 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource, UITabl
         cell.lblItemPrice.text = "$\(item.price ?? "0.00")"
         cell.lblSubDivision.text = item.subdivision ?? "N/A"
         
+        let postedDate = Date(timeIntervalSince1970: TimeInterval(item.created ?? 0)/1000)
+        cell.lblTimeStamp.text = postedDate.timeAgoSinceDate()
+        
         cell.pageImgPages.numberOfPages = item.item_images?.count ?? 0
         cell.pageImgPages.isHidden = (item.item_images?.count ?? 0) <= 1
         
@@ -493,7 +502,7 @@ extension ItemListForSaleVC : UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.view.frame.size.width, height: collectionView.frame.size.height)
+        return CGSize(width: self.view.frame.size.width, height: self.view.frame.size.width)
     }
     
 }
