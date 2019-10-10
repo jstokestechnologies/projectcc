@@ -17,6 +17,7 @@ class ShowLoginDataVC: UIViewController {
     @IBOutlet weak var btnShowSavedItems: UIButton!
     @IBOutlet weak var lblName: UILabel!
     @IBOutlet weak var lblEmail: UILabel!
+    @IBOutlet weak var lblVersion: UILabel!
     @IBOutlet weak var imgProfile: UIImageView!
     
     var loginDict = Dictionary<String,Any>()
@@ -39,7 +40,11 @@ class ShowLoginDataVC: UIViewController {
     func showUserData() {
         self.lblName.text = userdata.name
         self.lblEmail.text = userdata.email
-        
+        if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+            self.lblVersion.text = appVersion
+        }else {
+            self.lblVersion.text = ""
+        }
         if let img = userdata.profile_pic {
             let url = URL.init(string: img)
             if url != nil && url?.pathExtension != "" {
