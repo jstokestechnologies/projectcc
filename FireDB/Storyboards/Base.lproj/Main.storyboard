@@ -237,7 +237,9 @@
                                     </constraints>
                                 </view>
                                 <view key="tableFooterView" clipsSubviews="YES" contentMode="scaleToFill" id="ath-3W-emo">
-                                    <rect key="frame" x="0.0" y="230" width="375" height="0.66666666666665719"/>
+
+                                    <rect key="frame" x="0.0" y="230" width="375" height="50"/>
+
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I2n-X6-55N">
@@ -296,6 +298,22 @@
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
                                         </button>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3BZ-1Y-iKU">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="version-1.1.15" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kvv-oU-0hg">
+                                                    <rect key="frame" x="15" y="16" width="92.666666666666671" height="18"/>
+                                                    <fontDescription key="fontDescription" type="italicSystem" pointSize="15"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                            <constraints>
+                                                <constraint firstItem="kvv-oU-0hg" firstAttribute="centerY" secondItem="3BZ-1Y-iKU" secondAttribute="centerY" id="Y79-QX-AHT"/>
+                                                <constraint firstItem="kvv-oU-0hg" firstAttribute="leading" secondItem="3BZ-1Y-iKU" secondAttribute="leading" constant="15" id="nIK-oC-fcD"/>
+                                            </constraints>
+                                        </view>
                                     </subviews>
                                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
@@ -304,13 +322,17 @@
                                         <constraint firstAttribute="trailing" secondItem="309-hI-Nor" secondAttribute="trailing" constant="20" id="3TT-Ra-gGL"/>
                                         <constraint firstItem="pq3-7f-kem" firstAttribute="top" secondItem="I2n-X6-55N" secondAttribute="bottom" id="FO9-ce-J9c"/>
                                         <constraint firstItem="MWi-n2-aLc" firstAttribute="top" secondItem="I2n-X6-55N" secondAttribute="bottom" constant="20" id="JyL-h2-cI4"/>
+                                        <constraint firstAttribute="bottom" secondItem="3BZ-1Y-iKU" secondAttribute="bottom" id="QVV-0a-mQ4"/>
                                         <constraint firstItem="pq3-7f-kem" firstAttribute="centerX" secondItem="ath-3W-emo" secondAttribute="centerX" id="WLZ-dk-BfQ"/>
                                         <constraint firstItem="MWi-n2-aLc" firstAttribute="leading" secondItem="ath-3W-emo" secondAttribute="leading" constant="20" id="WWV-Su-fMj"/>
+                                        <constraint firstItem="3BZ-1Y-iKU" firstAttribute="top" secondItem="ath-3W-emo" secondAttribute="top" id="XTq-2Q-rlZ"/>
                                         <constraint firstItem="309-hI-Nor" firstAttribute="height" secondItem="I2n-X6-55N" secondAttribute="height" id="eac-mb-tMY"/>
                                         <constraint firstItem="MWi-n2-aLc" firstAttribute="height" secondItem="I2n-X6-55N" secondAttribute="height" id="kDC-yS-4Ra"/>
+                                        <constraint firstAttribute="trailing" secondItem="3BZ-1Y-iKU" secondAttribute="trailing" id="ra6-bp-eh8"/>
                                         <constraint firstAttribute="trailing" secondItem="I2n-X6-55N" secondAttribute="trailing" constant="20" id="tEc-CF-3od"/>
                                         <constraint firstItem="309-hI-Nor" firstAttribute="width" secondItem="ath-3W-emo" secondAttribute="width" multiplier="0.5" constant="-30" id="tFd-ZN-b0i"/>
                                         <constraint firstItem="I2n-X6-55N" firstAttribute="leading" secondItem="ath-3W-emo" secondAttribute="leading" constant="20" id="v7h-1e-Vy4"/>
+                                        <constraint firstItem="3BZ-1Y-iKU" firstAttribute="leading" secondItem="ath-3W-emo" secondAttribute="leading" id="y5E-Pl-2I8"/>
                                         <constraint firstItem="I2n-X6-55N" firstAttribute="top" secondItem="ath-3W-emo" secondAttribute="top" constant="20" id="yxy-RS-JuC"/>
                                     </constraints>
                                 </view>
@@ -355,6 +377,7 @@
                         <outlet property="imgProfile" destination="wVw-eN-dzC" id="x1R-cQ-rzc"/>
                         <outlet property="lblEmail" destination="Apy-tc-dFt" id="9I1-Ep-wFL"/>
                         <outlet property="lblName" destination="6vk-OB-N9U" id="1ta-sK-CY7"/>
+                        <outlet property="lblVersion" destination="kvv-oU-0hg" id="iZx-HM-pCg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Cr4-P2-c6e" userLabel="First Responder" sceneMemberID="firstResponder"/>
