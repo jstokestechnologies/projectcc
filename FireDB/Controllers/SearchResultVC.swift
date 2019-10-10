@@ -137,9 +137,14 @@ class SearchResultVC: UIViewController {
                     self.isNextPage = enablePaging
                     self.tblItemList.reloadData()
                 }
-                if self.searchKeyWord.count > 0 && self.arrItems?.count ?? 0 < 5{
-                    self.isNextPage = false
-                    self.fetchItemListWithKeyword()
+                if self.searchKeyWord.count > 0 {
+                    self.arrItems?.sort(by: { (first, second) -> Bool in
+                        return (first.created ?? 0) > (second.created ?? 0)
+                    })
+                    if self.arrItems?.count ?? 0 < 5 {
+                        self.isNextPage = false
+                        self.fetchItemListWithKeyword()
+                    }
                 }
                 self.setNoDataLabel()
                 progressView.hideActivity()
@@ -401,6 +406,9 @@ extension SearchResultVC : UITableViewDelegate, UITableViewDataSource, UITableVi
         
         cell.pageImgPages.numberOfPages = item.item_images?.count ?? 0
         cell.pageImgPages.isHidden = (item.item_images?.count ?? 0) <= 1
+        
+        let postedDate = Date(timeIntervalSince1970: TimeInterval(item.created ?? 0)/1000)
+        cell.lblTimeStamp.text = postedDate.timeAgoSinceDate()
         
         cell.collectionImages.register(ItemImagesCollectionCell.classForCoder(), forCellWithReuseIdentifier: "CellItemImage")
         cell.collectionImages.dataSource = self
