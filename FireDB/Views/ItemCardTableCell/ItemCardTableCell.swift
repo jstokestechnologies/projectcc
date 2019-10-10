@@ -30,6 +30,7 @@ class ItemListCell : UITableViewCell {
     @IBOutlet weak var lblItemPrice: UILabel!
     @IBOutlet weak var lblDesciption: UILabel!
     @IBOutlet weak var lblSubDivision: UILabel!
+    @IBOutlet weak var lblTimeStamp: UILabel!
     
     @IBOutlet weak var collectionImages: UICollectionView!
     
