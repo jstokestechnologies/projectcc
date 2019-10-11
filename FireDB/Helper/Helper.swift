@@ -168,10 +168,13 @@ class HelperClass : NSObject {
     }
     
     //MARK: - Algolia Search
-     class func searchItemWith(text : String, index : Index!, page : Int, completion : @escaping AlgoliaComplition) -> Operation? {
-        index.setSettings(["page": page,
-                           "hitsPerPage": 20])
-        let searchTask = index.search(Query(query: text), completionHandler: { (content, error) -> Void in
+    class func searchItemWith(text : String, index : Index!, itemPerPage : Int, pageNo : Int, completion : @escaping AlgoliaComplition) -> Operation? {
+        
+        let query = Query.init(query: text)
+        query.hitsPerPage = itemPerPage.magnitude
+        query.page = pageNo.magnitude
+        
+        let searchTask = index.search(query, completionHandler: { (content, error) -> Void in
             if content != nil {
                 completion(content, error)
             }else {
