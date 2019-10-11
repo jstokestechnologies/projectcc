@@ -30,6 +30,7 @@ class SearchVC: UIViewController {
         super.viewDidLoad()
         self.initialSetup()
         self.fetchPreviousSearches()
+        self.tblSearch.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -41,7 +42,7 @@ class SearchVC: UIViewController {
     
     func initialSetup() {
         let client = Client(appID: "NWF6K1LP13", apiKey: "b85399e0fd48c7aa2bf192d373eb71a5")
-        index = client.index(withName: "listed_items")
+        index = client.index(withName: "all_items")
         
         DispatchQueue.main.async {
             self.viewSearchBar.frame.size.width = self.view.frame.width - 114
@@ -76,14 +77,14 @@ class SearchVC: UIViewController {
                     dictArr.sort(by: { (first, second) -> Bool in
                         return Int(first["time"] as? Int ?? 0) > Int(second["time"] as? Int ?? 0)
                     })
-                    self.arrPreviousSearches = dictArr
+//                    self.arrPreviousSearches = dictArr
                     if self.arrPreviousSearches.count > 5 {
                         self.arrPreviousSearches = self.arrPreviousSearches.dropLast(self.arrPreviousSearches.count - 5)
                     }
                     if self.arrSearchKeyword.count <= 0 {
                         self.arrSearchKeyword.append(contentsOf: self.arrPreviousSearches)
                     }
-                    self.tblSearch.reloadData()
+//                    self.tblSearch.reloadData()
                 }
             }
             progressView.hideActivity()
@@ -106,17 +107,50 @@ extension SearchVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         
-        cell.textLabel?.text = self.arrSearchKeyword[indexPath.row].value(forKey: "name") as? String ?? "N/A"
-        
+        let strTitle = self.showSearchData(item: self.arrSearchKeyword[indexPath.row])
+        cell.textLabel?.attributedText = strTitle.attributedStringWithHtml()
+//        cell.textLabel?.font = UIFont.systemFont(ofSize: 17.0)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        self.searchBar.resignFirstResponder()
         tableView.deselectRow(at: indexPath, animated: true)
         let item = self.arrSearchKeyword[indexPath.row]
         self.showSearchResult(isKeyword: false, item: item)
-        self.saveNewSearch(item: item)
+//        self.saveNewSearch(item: item)
+    }
+    
+    func showSearchData(item : NSDictionary) -> String {
+        if let highlighted = item.object(forKey: "_highlightResult") as? NSDictionary {
+            var strTitle = ""
+            
+            if let searchedBrand = highlighted.value(forKeyPath: "item_name.matchedWords") as? NSArray, searchedBrand.count > 0  {
+                if let searchedText = highlighted.value(forKeyPath: "item_name.value") as? String {
+                    strTitle = searchedText
+                }
+            }
+            if strTitle == "" {
+                strTitle = item.value(forKey: "name") as? String ?? ""
+            }
+            
+            if let searchedBrand = highlighted.value(forKeyPath: "brand.name.matchedWords") as? NSArray, searchedBrand.count > 0  {
+                if let searchedText = highlighted.value(forKeyPath: "brand.name.value") as? String {
+                    strTitle = strTitle + " - " + searchedText
+                }
+            }else if let searchedBrand = highlighted.value(forKeyPath: "category.name.matchedWords") as? NSArray, searchedBrand.count > 0  {
+                if let searchedText = highlighted.value(forKeyPath: "category.name.value") as? String {
+                    strTitle = strTitle + " - " + searchedText
+                }
+            }else if let searchedBrand = highlighted.value(forKeyPath: "description.matchedWords") as? NSArray, searchedBrand.count > 0  {
+                if let searchedText = highlighted.value(forKeyPath: "description.value") as? String {
+                    strTitle = strTitle + " - " + searchedText
+                }
+            }
+            strTitle = "<font size=4>" + strTitle + "</font>"
+            return strTitle.replacingOccurrences(of: "em>", with: "b>", options: String.CompareOptions.caseInsensitive, range: nil)
+        }else {
+            return item.value(forKey: "name") as? String ?? "N/A"
+        }
     }
     
     func showSearchResult(isKeyword : Bool, item : NSDictionary?) {
@@ -142,9 +176,9 @@ extension SearchVC : UITableViewDelegate, UITableViewDataSource {
         if isAddItemIds || isKeyword {
             let searchedItemsWithName = self.arrSearchKeyword.filter({($0.value(forKey: "type") as? Int) == 4})
             let itemIds = searchedItemsWithName.compactMap({$0.value(forKey: "objectID") as? String ?? "N/A"})
-            if itemIds.count > 0 {
+//            if itemIds.count > 0 {
                 vc.titles = self.searchBar.text!
-            }
+//            }
             if isKeyword {
                 vc.searchKeyWord = self.searchBar.text!
                 vc.fetchType = -1
@@ -192,7 +226,7 @@ extension SearchVC : UISearchBarDelegate {
     }
     
     func searchItemWith(text : String) {
-        self.searchTask = HelperClass.searchItemWith(text: text, index: index, page: 0) { (content, error) in
+        self.searchTask = HelperClass.searchItemWith(text: text, index: index, itemPerPage : 20, pageNo: 0) { (content, error) in
             if content != nil {
                 if let arrResult = content?["hits"] as? Array<NSDictionary> {
                     self.arrSearchKeyword.append(contentsOf: arrResult)
@@ -241,5 +275,17 @@ extension Data {
     }
     var html2String: String {
         return html2AttributedString?.string ?? ""
+    }
+}
+
+extension String {
+    func attributedStringWithHtml () -> NSAttributedString? {
+        let htmlData = NSString(string: self).data(using: String.Encoding.unicode.rawValue)
+        let options = [NSAttributedString.DocumentReadingOptionKey.documentType:
+                NSAttributedString.DocumentType.html]
+        let attributedString = try? NSMutableAttributedString(data: htmlData ?? Data(),
+                                                                  options: options,
+                                                                  documentAttributes: nil)
+        return attributedString
     }
 }

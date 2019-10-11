@@ -29,13 +29,13 @@ class SearchResultVC: UIViewController {
     var fetchType = 0
     
     var pageNo = 1
-    var itemPerPage = 3
-    var isNextPage = true
+    var itemPerPage = 20
+    var isNextPage = false
     var lastDoc : DocumentSnapshot?
     var arrItemIds = [String]()
     
     var searchKeyWord = ""
-    var algoliaSearchPage = 1
+    var algoliaSearchPage = 0
     var index : Index!
     var searchTask : Operation?
     var dictIds = [NSDictionary]()
@@ -48,7 +48,7 @@ class SearchResultVC: UIViewController {
             self.fetchItemList()
         }else if self.searchKeyWord.count > 0 {
             progressView.showActivity()
-            self.fetchItemListWithKeyword()
+            self.searchItemWith(text: self.searchKeyWord)
         }else {
             if self.arrItemIds.count > 0 {
                 self.fetchItemsWithSimilarName(arrIds: self.arrItemIds, enablePaging: false)
@@ -73,7 +73,7 @@ class SearchResultVC: UIViewController {
     func initialSetup() {
         self.title = titles
         let client = Client(appID: "NWF6K1LP13", apiKey: "b85399e0fd48c7aa2bf192d373eb71a5")
-        index = client.index(withName: "listed_items")
+        index = client.index(withName: "all_items")
     }
     
     //MARK: - Firebase Methods
@@ -116,7 +116,7 @@ class SearchResultVC: UIViewController {
     }
     
     func fetchItemsWithSimilarName(arrIds : [String], enablePaging : Bool) {
-        self.arrItems?.removeAll()
+//        self.arrItems?.removeAll()
         if userdata.my_bookmarks?.count ?? 0 > 0 {
             let reqParam = ["documents" : arrIds.compactMap({"projects/projectcc-a98a4/databases/(default)/documents/listed_items/\($0)"}),
                             "newTransaction"  : NSDictionary()] as [String : Any]
@@ -134,17 +134,10 @@ class SearchResultVC: UIViewController {
                             self.addNewItemToListWithData(itemDict: itemDict, itemId: itemId)
                         }
                     }
-                    self.isNextPage = enablePaging
-                    self.tblItemList.reloadData()
-                }
-                if self.searchKeyWord.count > 0 {
                     self.arrItems?.sort(by: { (first, second) -> Bool in
                         return (first.created ?? 0) > (second.created ?? 0)
                     })
-                    if self.arrItems?.count ?? 0 < 5 {
-                        self.isNextPage = false
-                        self.fetchItemListWithKeyword()
-                    }
+                    self.tblItemList.reloadData()
                 }
                 self.setNoDataLabel()
                 progressView.hideActivity()
@@ -154,36 +147,6 @@ class SearchResultVC: UIViewController {
             progressView.hideActivity()
             self.tblItemList.reloadData();
         }
-    }
-    
-    func fetchItemListWithKeyword() {
-        var query : FirebaseFirestore.Query? = db.collection(kListedItems)
-        if fetchType == -1 {
-            self.searchItemWith(text: self.searchKeyWord)
-//            self.fetchItemsWithSimilarName(arrIds: self.arrItemIds, enablePaging: true)
-//            fetchType = 2
-            return
-        }else if fetchType < self.dictIds.count {
-            let data = self.dictIds[fetchType]
-            let key = data.value(forKey: "key") as? String ?? "N/A"
-            let id = data.value(forKey: "id") as? String ?? "N/A"
-            let type =  data.value(forKey: "type") as? Int ?? 0
-            if type == 1 {
-                query = query?.whereField(key, arrayContains: id).order(by: "created").limit(to: self.itemPerPage)
-            }else if type != 0 {
-                query = query?.whereField(key, isEqualTo: id).order(by: "created").limit(to: self.itemPerPage)
-            }else {
-                return
-            }
-        }else {
-            return
-        }
-        
-        if self.pageNo > 1 && self.lastDoc != nil {
-            query = query?.start(afterDocument: self.lastDoc!)
-        }
-        
-        self.fetchItemsWithQuery(query: query)
     }
     
     func fetchItemsWithQuery(query : FirebaseFirestore.Query?) {
@@ -197,11 +160,6 @@ class SearchResultVC: UIViewController {
                 })
                 arr.removeAll(where: {self.arrItemIds.contains("\($0["id"] ?? "")")})
                 self.parseFireBaseData(arr: arr)
-                if arr.count < self.itemPerPage {
-                    self.pageNo = 1
-                    self.fetchType += 1
-                    self.fetchItemListWithKeyword()
-                }
             }
             progressView.hideActivity()
         }
@@ -331,43 +289,17 @@ class SearchResultVC: UIViewController {
     }
     
     func searchItemWith(text : String) {
-        self.searchTask = HelperClass.searchItemWith(text: text, index: index, page: 0) { (content, error) in
+        self.searchTask = HelperClass.searchItemWith(text: text, index: index, itemPerPage : self.itemPerPage, pageNo: self.algoliaSearchPage) { (content, error) in
             if content != nil {
                 if let arrResult = content?["hits"] as? Array<NSDictionary> {
-                    let searchedItemsWithName = arrResult.filter({($0.value(forKey: "type") as? Int) == 4})
-                    let ids = searchedItemsWithName.compactMap({$0.value(forKey: "objectID") as? String ?? "N/A"})
-                    
-                    var result = arrResult.filter({($0.value(forKey: "type") as? Int) == 3})
-                    if result.count > 0 {
-                        for cat in result {
-                            self.dictIds.append(["type" : 3,
-                            "id" : cat.value(forKey: "objectID") as? String ?? "N/A",
-                            "key" : "category.id"])
-                        }
-                    }
-                    result.removeAll()
-                    result = arrResult.filter({($0.value(forKey: "type") as? Int) == 2})
-                    if result.count > 0 {
-                        for cat in result {
-                            self.dictIds.append(["type" : 2,
-                            "id" : cat.value(forKey: "objectID") as? String ?? "N/A",
-                            "key" : "brand.id"])
-                        }
-                    }
-                    result.removeAll()
-                    result = arrResult.filter({($0.value(forKey: "type") as? Int) == 1})
-                    if result.count > 0 {
-                        for cat in result {
-                            self.dictIds.append(["type" : 1,
-                            "id" : cat.value(forKey: "objectID") as? String ?? "N/A",
-                            "key" : "sub_category"])
-                        }
-                    }
+                    let ids = arrResult.compactMap({$0.value(forKey: "objectID") as? String ?? "N/A"})
                     self.arrItemIds.append(contentsOf: ids)
                     self.fetchItemsWithSimilarName(arrIds: ids, enablePaging: true)
+                    if arrResult.count == self.itemPerPage {
+                        self.isNextPage = true
+                        self.algoliaSearchPage += 1
+                    }
                 }
-//                self.tblSearch.reloadData()
-                self.fetchType += 1
             }else {
                 print("Result: \(error?.localizedDescription ?? "Error")")
             }
@@ -449,11 +381,7 @@ extension SearchResultVC : UITableViewDelegate, UITableViewDataSource, UITableVi
             let scrollOffset = scrollView.contentOffset.y
             if ((scrollOffset + scrollViewHeight) >= (scrollContentSizeHeight - 500)) && self.isNextPage
             {
-                if searchKeyWord.count > 0 {
-                    self.fetchItemListWithKeyword()
-                }else {
-                    self.fetchItemList()
-                }
+                self.searchItemWith(text: self.searchKeyWord)
                 self.isNextPage = false
             }
         }
