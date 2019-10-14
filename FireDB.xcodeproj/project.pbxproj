@@ -15,6 +15,8 @@
 		842FFED8230D1BBF000DADF2 /* StringContants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FFED7230D1BBF000DADF2 /* StringContants.swift */; };
 		843D37E7233C8B6900BFBEB5 /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843D37E6233C8B6900BFBEB5 /* SearchVC.swift */; };
 		843D37E9233C8DD100BFBEB5 /* Second.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 843D37E8233C8DD100BFBEB5 /* Second.storyboard */; };
+		844EF2A4235486D200FF1E89 /* SearchItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844EF2A3235486D200FF1E89 /* SearchItem.swift */; };
+		844EF2A623548D6A00FF1E89 /* SearchItemProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844EF2A523548D6A00FF1E89 /* SearchItemProtocol.swift */; };
 		8451D5E222F94A42005169D5 /* particle41-squarelogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E022F94A42005169D5 /* particle41-squarelogo.png */; };
 		8451D5E322F94A42005169D5 /* jmjcloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E122F94A42005169D5 /* jmjcloud-logo.png */; };
 		8451D5E722F9511A005169D5 /* email_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E622F9511A005169D5 /* email_logo.png */; };
@@ -80,6 +82,8 @@
 		842FFED7230D1BBF000DADF2 /* StringContants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringContants.swift; sourceTree = "<group>"; };
 		843D37E6233C8B6900BFBEB5 /* SearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		843D37E8233C8DD100BFBEB5 /* Second.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Second.storyboard; sourceTree = "<group>"; };
+		844EF2A3235486D200FF1E89 /* SearchItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchItem.swift; sourceTree = "<group>"; };
+		844EF2A523548D6A00FF1E89 /* SearchItemProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchItemProtocol.swift; sourceTree = "<group>"; };
 		8451D5E022F94A42005169D5 /* particle41-squarelogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "particle41-squarelogo.png"; sourceTree = "<group>"; };
 		8451D5E122F94A42005169D5 /* jmjcloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "jmjcloud-logo.png"; sourceTree = "<group>"; };
 		8451D5E622F9511A005169D5 /* email_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = email_logo.png; sourceTree = "<group>"; };
@@ -200,6 +204,7 @@
 				845801D722FD8C0D00AE6FEE /* SelectCategoryProtocol.swift */,
 				845801DB22FD992800AE6FEE /* SelectBrandProtocol.swift */,
 				84EBFCA92338EA9E00A16419 /* UpdateProfileProtocol.swift */,
+				844EF2A523548D6A00FF1E89 /* SearchItemProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -267,6 +272,7 @@
 			children = (
 				847D49BA23014B6D00FE900C /* ItemListForSaleVC.swift */,
 				840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */,
+				844EF2A3235486D200FF1E89 /* SearchItem.swift */,
 			);
 			path = "Item List";
 			sourceTree = "<group>";
@@ -603,6 +609,7 @@
 			files = (
 				843D37E7233C8B6900BFBEB5 /* SearchVC.swift in Sources */,
 				84891B332327ACDE00448539 /* CropImageVC.swift in Sources */,
+				844EF2A623548D6A00FF1E89 /* SearchItemProtocol.swift in Sources */,
 				845801DC22FD992800AE6FEE /* SelectBrandProtocol.swift in Sources */,
 				84891B312327AA0000448539 /* LyEditImageView.swift in Sources */,
 				842FFED6230D1BB0000DADF2 /* Helper.swift in Sources */,
@@ -613,6 +620,7 @@
 				84B61DA72330B45500CEA14B /* SystemCropVC.swift in Sources */,
 				848293052320DEBF001DF6F5 /* ItemCardTableCell.swift in Sources */,
 				845801D622FD48FE00AE6FEE /* SelectCategoryVC.swift in Sources */,
+				844EF2A4235486D200FF1E89 /* SearchItem.swift in Sources */,
 				840C9C502302CF8B004A63AD /* MyListedItemsVC.swift in Sources */,
 				842FFED8230D1BBF000DADF2 /* StringContants.swift in Sources */,
 				849E18CD230ECDDF00C94431 /* TabBarVC.swift in Sources */,
