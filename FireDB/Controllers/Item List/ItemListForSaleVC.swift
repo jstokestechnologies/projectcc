@@ -24,6 +24,7 @@ class ItemListForSaleVC: UIViewController {
     @IBOutlet weak var btnSort: UIView!
     
     @IBOutlet weak var viewSearch: UIView!
+    @IBOutlet weak var searchBar: UISearchBar!
     
     //MARK: - Variables
     var arrItems : [ItemsDetail]?
@@ -31,11 +32,15 @@ class ItemListForSaleVC: UIViewController {
     lazy var storage = Storage.storage()
     var refreshControl = UIRefreshControl()
     var pageNo = 1
-    var itemPerPage = 10
+    var itemPerPage = 3
     var isNextPage = true
     var lastDoc : DocumentSnapshot?
     var listner : ListenerRegistration?
     var latestTime = 0
+    
+    // Search
+    var isSearching = false
+    var searchItem = SearchItem()
     
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
@@ -90,6 +95,8 @@ class ItemListForSaleVC: UIViewController {
         if userdata.my_bookmarks == nil {
             userdata.my_bookmarks = [String]()
         }
+        self.searchItem.delegate = self
+        self.searchItem.itemPerPage = self.itemPerPage
     }
     
     //MARK: - Firebase Methods
@@ -470,8 +477,12 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource, UITabl
             let scrollOffset = scrollView.contentOffset.y
             if ((scrollOffset + scrollViewHeight) >= (scrollContentSizeHeight - 600)) && self.isNextPage
             {
-                self.fetchItemList()
                 self.isNextPage = false
+                if self.isSearching {
+                    self.searchItem.initialSetup()
+                }else {
+                    self.fetchItemList()
+                }
             }else if scrollOffset <= 0 && self.arrNewItems?.count ?? 0 > 0 && self.btnNewPosts.isHidden == false {
                 self.addNewItemToList(scrollToTop: false)
             }
@@ -517,5 +528,47 @@ extension ItemListForSaleVC : UITabBarControllerDelegate {
     }
     
     
+}
+
+extension ItemListForSaleVC : UISearchBarDelegate, SearchItemDelegate {
+    func searchedItem(pageNo: Int, nextPage : Bool, items: [ItemsDetail]) {
+        self.arrNewItems?.removeAll()
+        self.btnNewPosts.isHidden = true
+        self.pageNo = pageNo
+        self.lastDoc = nil
+        self.isNextPage = nextPage
+        if self.arrItems == nil && self.pageNo <= 1 {
+            self.arrItems = items
+            DispatchQueue.main.async {
+                self.tblItemList.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: false)
+            }
+        }else {
+            self.arrItems?.append(contentsOf: items)
+        }
+        self.tblItemList.reloadData()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.lastDoc = nil
+        self.pageNo = 1
+        self.isNextPage = true
+        searchBar.resignFirstResponder()
+        self.searchItem.`init`(with: self, and: searchBar.text!)
+        self.isSearching = true
+        
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText == "" {
+            self.searchItem.searchTask?.cancel()
+            self.arrItems?.removeAll()
+            self.tblItemList.reloadData()
+            self.pullToRefresh(searchBar)
+            self.isSearching = false
+            DispatchQueue.main.async {
+                self.searchBar.resignFirstResponder()
+            }
+        }
+    }
 }
 
