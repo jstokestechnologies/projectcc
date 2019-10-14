@@ -30,13 +30,12 @@ class SearchItem {
     var isNextPage = false
     var arrItemIds = [String]()
     
-    func `init`(with parent : UIViewController, and keyword : String) {
+     init(with parent : UIViewController, and keyword : String) {
         progressView.showActivity()
         pageNo = 0
         isNextPage = false
         self.searchKeyWord = keyword
         self.parent = parent
-        self.initialSetup()
     }
     
     required init() {

@@ -95,8 +95,6 @@ class ItemListForSaleVC: UIViewController {
         if userdata.my_bookmarks == nil {
             userdata.my_bookmarks = [String]()
         }
-        self.searchItem.delegate = self
-        self.searchItem.itemPerPage = self.itemPerPage
     }
     
     //MARK: - Firebase Methods
@@ -537,7 +535,7 @@ extension ItemListForSaleVC : UISearchBarDelegate, SearchItemDelegate {
         self.pageNo = pageNo
         self.lastDoc = nil
         self.isNextPage = nextPage
-        if self.arrItems == nil && self.pageNo <= 1 {
+        if self.arrItems == nil || self.pageNo == 0 || (self.pageNo == 1 && nextPage == true) {
             self.arrItems = items
             DispatchQueue.main.async {
                 self.tblItemList.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: false)
@@ -553,9 +551,15 @@ extension ItemListForSaleVC : UISearchBarDelegate, SearchItemDelegate {
         self.pageNo = 1
         self.isNextPage = true
         searchBar.resignFirstResponder()
-        self.searchItem.`init`(with: self, and: searchBar.text!)
+        self.searchWithKeyword(key: searchBar.text!)
+    }
+    
+    func searchWithKeyword(key : String) {
+        self.searchItem = .init(with: self, and: key)
         self.isSearching = true
-        
+        self.searchItem.delegate = self
+        self.searchItem.itemPerPage = self.itemPerPage
+        self.searchItem.initialSetup()
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
