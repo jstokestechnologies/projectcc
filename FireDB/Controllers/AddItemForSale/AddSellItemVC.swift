@@ -262,6 +262,7 @@ class AddSellItemVC: UIViewController {
                 if let cat = catIds.first, var cat_data = cat_dict[cat] {
                     cat_data["id"] = cat
                     self.category = cat_data
+                    self.category.removeValue(forKey: "is_subcategory")
                 }
                 if catIds.count > 1 {
                     let catId = catIds[1]
@@ -384,7 +385,7 @@ class AddSellItemVC: UIViewController {
         let itemDetails : [String : Any] = ["item_name"     : (self.txtItemName.text)!,
                                             "description"   : (self.txtItemDescription.text)!,
                                             "category"      : self.category,
-                                            "sub_category"  : Array(self.subCategory.keys),
+                                            "sub_category"  : [""],//Array(self.subCategory.keys),
                                             "brand"         : self.brand,
                                             "condition"     : "\(self.arrConditions[self.itemCondition]["title"] ?? "")",
                                             "price"         : (self.txtItemPrice.text)!,
