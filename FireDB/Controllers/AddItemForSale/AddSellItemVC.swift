@@ -284,7 +284,7 @@ class AddSellItemVC: UIViewController {
         if self.subCategory.values.count > 0 {
             arrSubCatName = self.subCategory.values.compactMap({"\($0["name"] ?? "-")"})
         }
-        self.lblCategory.text = strCatName + " -> " + arrSubCatName.joined(separator: ", ")
+        self.lblCategory.text = strCatName //+ " -> " + arrSubCatName.joined(separator: ", ")
     }
     
     func getPreviousSubcategory() {

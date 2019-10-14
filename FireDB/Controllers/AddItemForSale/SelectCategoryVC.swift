@@ -120,7 +120,7 @@ extension SelectCategoryVC : UITableViewDelegate, UITableViewDataSource {
         let dictCat = arrCategory[indexPath.row]
         let catName =  "\(dictCat["name"] ?? "-")"
         cell.textLabel?.text = catName
-        cell.accessoryType = self.parentCatIDs == nil ? .disclosureIndicator : .none
+        cell.accessoryType = /*self.parentCatIDs == nil ? .disclosureIndicator :*/ .none
         return cell
     }
     
@@ -129,19 +129,19 @@ extension SelectCategoryVC : UITableViewDelegate, UITableViewDataSource {
         let catKey = (self.arrCategory[indexPath.row])["id"] as? String ?? ""
         var category = self.arrCategory[indexPath.row]
         category.removeValue(forKey: "id")
-        if (category["is_subcategory"] as? Bool ?? false) {
-            let vc = mainStoryBoard.instantiateViewController(withIdentifier: "SelectCategoryVC") as! SelectCategoryVC
-            category.removeValue(forKey: "is_subcategory")
-            vc.collectionName = "subcategories"
-            if self.parentCatIDs != nil {
-                vc.parentCatIDs = self.parentCatIDs
-                vc.parentCatIDs?.append(catKey)
-            }else {
-                vc.parentCatIDs = [catKey]
-            }
-            vc.parentCategories[catKey] = category
-            self.navigationController?.show(vc, sender: self)
-        }else {
+//        if (category["is_subcategory"] as? Bool ?? false) {
+//            let vc = mainStoryBoard.instantiateViewController(withIdentifier: "SelectCategoryVC") as! SelectCategoryVC
+//            category.removeValue(forKey: "is_subcategory")
+//            vc.collectionName = "subcategories"
+//            if self.parentCatIDs != nil {
+//                vc.parentCatIDs = self.parentCatIDs
+//                vc.parentCatIDs?.append(catKey)
+//            }else {
+//                vc.parentCatIDs = [catKey]
+//            }
+//            vc.parentCategories[catKey] = category
+//            self.navigationController?.show(vc, sender: self)
+//        }else {
             if self.parentCatIDs != nil {
                 self.parentCatIDs?.append(catKey)
             }else {
@@ -169,7 +169,7 @@ extension SelectCategoryVC : UITableViewDelegate, UITableViewDataSource {
                     self.navigationController?.popViewController(animated: true)
                 }
             }
-        }
+//        }
     }
     
 }
