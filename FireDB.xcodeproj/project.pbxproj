@@ -10,6 +10,8 @@
 		34DE87A20455B1DC6323C8EA /* Pods_FireDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DDBE3F41CDCB03F6128F25D /* Pods_FireDB.framework */; };
 		840C9C502302CF8B004A63AD /* MyListedItemsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */; };
 		840D760A2358769B002D7FAA /* PaymentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840D76092358769B002D7FAA /* PaymentVC.swift */; };
+		840D761923588C46002D7FAA /* MyAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840D761823588C46002D7FAA /* MyAPIClient.swift */; };
+		840D761C23588C5E002D7FAA /* PaymentContextFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840D761A23588C5D002D7FAA /* PaymentContextFooterView.swift */; };
 		840ED100234F2EE7000E0B9E /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840ED0FF234F2EE7000E0B9E /* DateExtension.swift */; };
 		842C007023192A570061CE46 /* SoldItemsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842C006F23192A570061CE46 /* SoldItemsListVC.swift */; };
 		842FFED6230D1BB0000DADF2 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FFED5230D1BB0000DADF2 /* Helper.swift */; };
@@ -78,6 +80,8 @@
 		3DDBE3F41CDCB03F6128F25D /* Pods_FireDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FireDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyListedItemsVC.swift; sourceTree = "<group>"; };
 		840D76092358769B002D7FAA /* PaymentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentVC.swift; sourceTree = "<group>"; };
+		840D761823588C46002D7FAA /* MyAPIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyAPIClient.swift; sourceTree = "<group>"; };
+		840D761A23588C5D002D7FAA /* PaymentContextFooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentContextFooterView.swift; sourceTree = "<group>"; };
 		840ED0FF234F2EE7000E0B9E /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		842C006F23192A570061CE46 /* SoldItemsListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoldItemsListVC.swift; sourceTree = "<group>"; };
 		842FFED5230D1BB0000DADF2 /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
@@ -157,9 +161,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		840D760B23588BD4002D7FAA /* Stripe_Payment */ = {
+			isa = PBXGroup;
+			children = (
+				840D761823588C46002D7FAA /* MyAPIClient.swift */,
+				840D761A23588C5D002D7FAA /* PaymentContextFooterView.swift */,
+			);
+			path = Stripe_Payment;
+			sourceTree = "<group>";
+		};
 		845801DD22FDA42B00AE6FEE /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				840D760B23588BD4002D7FAA /* Stripe_Payment */,
 				847D49B923014B3E00FE900C /* Item List */,
 				845801EB22FDA74900AE6FEE /* Login */,
 				845801EA22FDA70100AE6FEE /* AddItemForSale */,
@@ -626,8 +640,10 @@
 				844EF2A4235486D200FF1E89 /* SearchItem.swift in Sources */,
 				840C9C502302CF8B004A63AD /* MyListedItemsVC.swift in Sources */,
 				842FFED8230D1BBF000DADF2 /* StringContants.swift in Sources */,
+				840D761923588C46002D7FAA /* MyAPIClient.swift in Sources */,
 				849E18CD230ECDDF00C94431 /* TabBarVC.swift in Sources */,
 				84B1ACC2230D09E2002E6B30 /* ProgressHud.swift in Sources */,
+				840D761C23588C5E002D7FAA /* PaymentContextFooterView.swift in Sources */,
 				842C007023192A570061CE46 /* SoldItemsListVC.swift in Sources */,
 				847D49BB23014B6D00FE900C /* ItemListForSaleVC.swift in Sources */,
 				84EBFCAA2338EA9E00A16419 /* UpdateProfileProtocol.swift in Sources */,

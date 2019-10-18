@@ -327,6 +327,11 @@ class ItemListForSaleVC: UIViewController {
         }
     }
     
+    @IBAction func btnBuyAction(_sender : UIButton) {
+        let vc = secondStoryBoard.instantiateViewController(withIdentifier: "PaymentVC") as! PaymentVC
+        self.navigationController?.show(vc, sender: nil)
+    }
+    
     //MARK: - Custom methods
     func saveBookmarksToUserDefaults() {
         let userDict = HelperClass.fetchDataFromDefaults(with: kUserData).mutableCopy() as! NSMutableDictionary
@@ -449,6 +454,9 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource, UITabl
         }else {
             cell.btnBookmark.setImage(UIImage.init(named: "bookmark_outline"), for: .normal)
         }
+        
+        cell.btnBuy?.addTarget(self, action: #selector(self.btnBuyAction(_sender:)), for: .touchUpInside)
+        
         return cell
     }
     

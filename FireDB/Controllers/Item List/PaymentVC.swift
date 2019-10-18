@@ -10,60 +10,65 @@ import UIKit
 import Stripe
 
 class PaymentVC: UIViewController {
-    let customerContext = STPCustomerContext(keyProvider: MyAPIClient.sharedClient)
     
-    init() {
-        self.paymentContext = STPPaymentContext(customerContext: customerContext)
-        super.init(nibName: nil, bundle: nil)
-        self.paymentContext.delegate = self
-        self.paymentContext.hostViewController = self
-        self.paymentContext.paymentAmount = 5000 // This is in cents, i.e. $50 USD
-    }
+    var stripePublishableKey = ""
+    var backendBaseURL: String? = nil
+    var appleMerchantID: String? = ""
+    
+    
+    
+    var paymentContext: STPPaymentContext?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        self.stripePublishableKey = "pk_test_4dJsL1teFhhtbNF8QaoyGlCp00VXw1CfBH"
+        self.backendBaseURL = "https://us-central1-projectcc-a98a4.cloudfunctions.net/createEphemeralKeys"
         // Do any additional setup after loading the view.
+        MyAPIClient.sharedClient.baseURLString = self.backendBaseURL
+        
+        let config = STPPaymentConfiguration.shared()
+        config.publishableKey = self.stripePublishableKey
+        config.appleMerchantIdentifier = self.appleMerchantID
+        config.companyName = "Particle 41"
+        //               config.requiredBillingAddressFields = settings.requiredBillingAddressFields
+        //               config.requiredShippingAddressFields = settings.requiredShippingAddressFields
+        //               config.shippingType = settings.shippingType
+        //               config.additionalPaymentOptions = settings.additionalPaymentOptions
+        
+        let customerContext = STPCustomerContext(keyProvider: MyAPIClient.sharedClient)
+        let paymentContext = STPPaymentContext(customerContext: customerContext,
+                                               configuration: config,
+                                               theme: .default())
+//        let userInformation = STPUserInformation()
+        paymentContext.paymentAmount = 350
+        paymentContext.paymentCurrency = "USD"
+        paymentContext.delegate = self
+        paymentContext.hostViewController = self
+//        let addCardFooter = PaymentContextFooterView(text: "You can add custom footer views to the add card screen.")
+//        addCardFooter.theme = .default()
+//        paymentContext.addCardViewControllerFooterView = addCardFooter
+        
+        self.paymentContext = paymentContext
+        
+        
     }
     
-
+    @IBAction func choosePaymentButtonTapped(_ sender : UIButton) {
+        self.paymentContext?.pushPaymentOptionsViewController()
+    }
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destination.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }
 
-extension PaymentVC {
-    func createCustomerKey(withAPIVersion apiVersion: String, completion: @escaping STPJSONResponseCompletionBlock) {
-        if let url = (URL.init(string: "www.google.com"))?.appendingPathComponent("ephemeral_keys") {
-            
-            let request = URLRequest(url: url)
-            let config = URLSessionConfiguration.default
-            let session =  URLSession(configuration: config)
-            
-            let task = session.dataTask(with: request, completionHandler: { (data, response, error) in
-                if let data = data, error == nil {
-                    do {
-                        let jsonData = try JSONSerialization.jsonObject(with: data, options: .mutableContainers)
-                        completion(jsonData as? [String : AnyObject], nil)
-                    }catch {
-                        print(error.localizedDescription)
-                        completion(nil, error)
-                    }
-                }else {
-                    completion(nil, error)
-                }
-            });
-            task.resume()
-        }
-    }
-}
 
 extension PaymentVC : STPPaymentContextDelegate {
     func paymentContext(_ paymentContext: STPPaymentContext, didFailToLoadWithError error: Error) {
@@ -72,6 +77,9 @@ extension PaymentVC : STPPaymentContextDelegate {
     
     func paymentContextDidChange(_ paymentContext: STPPaymentContext) {
         print(paymentContext.paymentAmount)
+        if !paymentContext.loading {
+            self.paymentContext?.pushPaymentOptionsViewController()
+        }
     }
     
     func paymentContext(_ paymentContext: STPPaymentContext, didCreatePaymentResult paymentResult: STPPaymentResult, completion: @escaping STPErrorBlock) {
