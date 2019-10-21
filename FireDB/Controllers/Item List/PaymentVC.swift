@@ -15,47 +15,42 @@ class PaymentVC: UIViewController {
     var backendBaseURL: String? = nil
     var appleMerchantID: String? = ""
     
-    
+    var isPageLoaded = 1
     
     var paymentContext: STPPaymentContext?
+    var amount = 0
     
+    var parentVC : ViewController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.stripePublishableKey = "pk_test_4dJsL1teFhhtbNF8QaoyGlCp00VXw1CfBH"
-        self.backendBaseURL = "https://us-central1-projectcc-a98a4.cloudfunctions.net/createEphemeralKeys"
+        progressView.showActivity()
+        self.stripePublishableKey = kStripePublicKey
+        self.backendBaseURL = kBaseURL 
         // Do any additional setup after loading the view.
         MyAPIClient.sharedClient.baseURLString = self.backendBaseURL
         
         let config = STPPaymentConfiguration.shared()
-        config.publishableKey = self.stripePublishableKey
-        config.appleMerchantIdentifier = self.appleMerchantID
+        config.publishableKey = kStripePublicKey//self.stripePublishableKey\
         config.companyName = "Particle 41"
-        //               config.requiredBillingAddressFields = settings.requiredBillingAddressFields
-        //               config.requiredShippingAddressFields = settings.requiredShippingAddressFields
-        //               config.shippingType = settings.shippingType
-        //               config.additionalPaymentOptions = settings.additionalPaymentOptions
+        config.additionalPaymentOptions = .all
         
         let customerContext = STPCustomerContext(keyProvider: MyAPIClient.sharedClient)
         let paymentContext = STPPaymentContext(customerContext: customerContext,
                                                configuration: config,
                                                theme: .default())
-//        let userInformation = STPUserInformation()
-        paymentContext.paymentAmount = 350
+        paymentContext.paymentAmount = self.amount
         paymentContext.paymentCurrency = "USD"
         paymentContext.delegate = self
         paymentContext.hostViewController = self
-//        let addCardFooter = PaymentContextFooterView(text: "You can add custom footer views to the add card screen.")
-//        addCardFooter.theme = .default()
-//        paymentContext.addCardViewControllerFooterView = addCardFooter
-        
+
         self.paymentContext = paymentContext
-        
         
     }
     
     @IBAction func choosePaymentButtonTapped(_ sender : UIButton) {
         self.paymentContext?.pushPaymentOptionsViewController()
+//        isPageLoaded = true
     }
     /*
      // MARK: - Navigation
@@ -73,22 +68,85 @@ class PaymentVC: UIViewController {
 extension PaymentVC : STPPaymentContextDelegate {
     func paymentContext(_ paymentContext: STPPaymentContext, didFailToLoadWithError error: Error) {
         print(error.localizedDescription)
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+        self.navigationController?.popViewController(animated: true)
+        progressView.hideActivity()
+        }
     }
     
     func paymentContextDidChange(_ paymentContext: STPPaymentContext) {
         print(paymentContext.paymentAmount)
+        self.paymentContext = paymentContext
+        
         if !paymentContext.loading {
-            self.paymentContext?.pushPaymentOptionsViewController()
+            if isPageLoaded == 1 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+                    progressView.hideActivity()
+                    self.paymentContext?.pushPaymentOptionsViewController()
+                }
+                isPageLoaded = 2
+            }else if isPageLoaded == 2 {
+                progressView.showActivity()
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+                    self.paymentContext?.requestPayment()
+                }
+            }
         }
     }
     
     func paymentContext(_ paymentContext: STPPaymentContext, didCreatePaymentResult paymentResult: STPPaymentResult, completion: @escaping STPErrorBlock) {
         print(paymentResult.paymentMethod.allResponseFields)
+        MyAPIClient.sharedClient.createPaymentIntent(shippingMethod: nil, amount : self.amount, completion: { result in
+            switch (result) {
+            case .success(let clientSecret):
+                print(clientSecret)
+                // Hold onto clientSecret for Step 4
+                
+                let paymentIntentParams = STPPaymentIntentParams(clientSecret: clientSecret)
+                paymentIntentParams.paymentMethodId = paymentResult.paymentMethod.stripeId
+                let paymentManager = STPPaymentHandler.shared()
+                paymentManager.confirmPayment(paymentIntentParams, with: paymentContext, completion: { (status, paymentIntent, error) in
+                    switch (status) {
+                    case .failed:
+                        print("failed payment")
+                    // Handle error
+                    case .canceled:
+                        print("canceled payment")
+                    // Handle cancel
+                    case .succeeded:
+                        print("success payment")
+                    // Payment Intent is confirmed
+                    default:
+                        print("unknown error")
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+                        DispatchQueue.main.async {
+                            progressView.hideActivity()
+                            HelperClass.showAlert(msg: "Payment authorization successfull. Payment will be deducted once item will be shipped.", isBack: true, vc: self)
+                        }
+                    }
+                })
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+                DispatchQueue.main.async {
+                    progressView.hideActivity()
+                }
+            }
+        })
     }
     
     func paymentContext(_ paymentContext: STPPaymentContext, didFinishWith status: STPPaymentStatus, error: Error?) {
-        if error == nil {
-            print(status)
+        switch status {
+        case .error:
+            print(error?.localizedDescription ?? "error")
+        case .success:
+            print("payement success")
+        case .userCancellation:
+            print("payement canceled")
+            return // Do nothing
+        default:
+            print("unknown error")
         }
     }
 }

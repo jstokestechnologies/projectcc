@@ -327,8 +327,10 @@ class ItemListForSaleVC: UIViewController {
         }
     }
     
-    @IBAction func btnBuyAction(_sender : UIButton) {
+    @IBAction func btnBuyAction(_ sender : UIButton) {
+        let item = self.arrItems?[sender.tag]
         let vc = secondStoryBoard.instantiateViewController(withIdentifier: "PaymentVC") as! PaymentVC
+        vc.amount = Int((Double(item?.price ?? "0.0") ?? 0.0) * 100.0)
         self.navigationController?.show(vc, sender: nil)
     }
     
@@ -455,7 +457,8 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource, UITabl
             cell.btnBookmark.setImage(UIImage.init(named: "bookmark_outline"), for: .normal)
         }
         
-        cell.btnBuy?.addTarget(self, action: #selector(self.btnBuyAction(_sender:)), for: .touchUpInside)
+        cell.btnBuy?.addTarget(self, action: #selector(self.btnBuyAction(_:)), for: .touchUpInside)
+        cell.btnBuy.tag = indexPath.row
         
         return cell
     }
