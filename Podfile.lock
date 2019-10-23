@@ -159,6 +159,7 @@ PODS:
     - SDWebImage/Core (= 5.1.0)
   - SDWebImage/Core (5.1.0)
   - SkyFloatingLabelTextField (3.7.0)
+  - Stripe (16.0.6)
 
 DEPENDENCIES:
   - Crashlytics (~> 3.13.4)
@@ -175,6 +176,7 @@ DEPENDENCIES:
   - InstantSearchClient
   - IQKeyboardManagerSwift
   - SkyFloatingLabelTextField (~> 3.0)
+  - Stripe
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -211,6 +213,7 @@ SPEC REPOS:
     - Protobuf
     - SDWebImage
     - SkyFloatingLabelTextField
+    - Stripe
 
 SPEC CHECKSUMS:
   AppAuth: bce82c76043657c99d91e7882e8a9e1a93650cd4
@@ -246,7 +249,8 @@ SPEC CHECKSUMS:
   Protobuf: 1097ca58584c8d9be81bfbf2c5ff5975648dd87a
   SDWebImage: fb387001955223213dde14bc08c8b73f371f8d8f
   SkyFloatingLabelTextField: 4b46db0ab1ccde0919cded29c656e6b4805eda04
+  Stripe: bbfdfb44bcc604bd3d29771f80d5d72710301fe3
 
-PODFILE CHECKSUM: f22d5d09a43557f5d6970fc3a2d1717958ad52aa
+PODFILE CHECKSUM: 8ae48b7d71f5d4621e4cdf77b260ba3cabfb959b
 
 COCOAPODS: 1.7.5

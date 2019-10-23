@@ -61,6 +61,8 @@ class ItemsDetail : Codable {
     var seller_name : String?
     var id          : String?
     var subdivision : String?
+    var isPaid      : Bool?
+    var payment_id  : String?
 }
 
 class ItemImages : NSObject {
