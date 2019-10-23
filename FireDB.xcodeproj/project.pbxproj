@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		34DE87A20455B1DC6323C8EA /* Pods_FireDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DDBE3F41CDCB03F6128F25D /* Pods_FireDB.framework */; };
 		840C9C502302CF8B004A63AD /* MyListedItemsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */; };
+		840D760A2358769B002D7FAA /* PaymentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840D76092358769B002D7FAA /* PaymentVC.swift */; };
+		840D761923588C46002D7FAA /* MyAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840D761823588C46002D7FAA /* MyAPIClient.swift */; };
+		840D761C23588C5E002D7FAA /* PaymentContextFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840D761A23588C5D002D7FAA /* PaymentContextFooterView.swift */; };
 		840ED100234F2EE7000E0B9E /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840ED0FF234F2EE7000E0B9E /* DateExtension.swift */; };
 		842C007023192A570061CE46 /* SoldItemsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842C006F23192A570061CE46 /* SoldItemsListVC.swift */; };
 		842FFED6230D1BB0000DADF2 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FFED5230D1BB0000DADF2 /* Helper.swift */; };
@@ -44,6 +47,7 @@
 		8493467822F88641006C72E7 /* 124010.png in Resources */ = {isa = PBXBuildFile; fileRef = 8493467722F88641006C72E7 /* 124010.png */; };
 		849464DD22FC3CD000ED0213 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849464DC22FC3CD000ED0213 /* UserModel.swift */; };
 		849E18CD230ECDDF00C94431 /* TabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849E18CC230ECDDF00C94431 /* TabBarVC.swift */; };
+		84A0FCC0236055CD00978589 /* PendingDispatchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A0FCBF236055CD00978589 /* PendingDispatchVC.swift */; };
 		84A827D0233BA907009C1FED /* up-arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A827CF233BA907009C1FED /* up-arrow.png */; };
 		84B1ACC0230D0813002E6B30 /* ProgressHud.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84B1ACBF230D0813002E6B30 /* ProgressHud.xib */; };
 		84B1ACC2230D09E2002E6B30 /* ProgressHud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B1ACC1230D09E2002E6B30 /* ProgressHud.swift */; };
@@ -76,6 +80,9 @@
 		123B6045BA866FD499EBBCF7 /* Pods-FireDB.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FireDB.release.xcconfig"; path = "Target Support Files/Pods-FireDB/Pods-FireDB.release.xcconfig"; sourceTree = "<group>"; };
 		3DDBE3F41CDCB03F6128F25D /* Pods_FireDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FireDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyListedItemsVC.swift; sourceTree = "<group>"; };
+		840D76092358769B002D7FAA /* PaymentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentVC.swift; sourceTree = "<group>"; };
+		840D761823588C46002D7FAA /* MyAPIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyAPIClient.swift; sourceTree = "<group>"; };
+		840D761A23588C5D002D7FAA /* PaymentContextFooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentContextFooterView.swift; sourceTree = "<group>"; };
 		840ED0FF234F2EE7000E0B9E /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		842C006F23192A570061CE46 /* SoldItemsListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoldItemsListVC.swift; sourceTree = "<group>"; };
 		842FFED5230D1BB0000DADF2 /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
@@ -117,6 +124,7 @@
 		8493467722F88641006C72E7 /* 124010.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 124010.png; sourceTree = "<group>"; };
 		849464DC22FC3CD000ED0213 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		849E18CC230ECDDF00C94431 /* TabBarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarVC.swift; sourceTree = "<group>"; };
+		84A0FCBF236055CD00978589 /* PendingDispatchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingDispatchVC.swift; sourceTree = "<group>"; };
 		84A827CF233BA907009C1FED /* up-arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "up-arrow.png"; sourceTree = "<group>"; };
 		84B1ACBF230D0813002E6B30 /* ProgressHud.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProgressHud.xib; sourceTree = "<group>"; };
 		84B1ACC1230D09E2002E6B30 /* ProgressHud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHud.swift; sourceTree = "<group>"; };
@@ -155,9 +163,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		840D760B23588BD4002D7FAA /* Stripe_Payment */ = {
+			isa = PBXGroup;
+			children = (
+				840D761823588C46002D7FAA /* MyAPIClient.swift */,
+				840D761A23588C5D002D7FAA /* PaymentContextFooterView.swift */,
+			);
+			path = Stripe_Payment;
+			sourceTree = "<group>";
+		};
 		845801DD22FDA42B00AE6FEE /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				840D760B23588BD4002D7FAA /* Stripe_Payment */,
 				847D49B923014B3E00FE900C /* Item List */,
 				845801EB22FDA74900AE6FEE /* Login */,
 				845801EA22FDA70100AE6FEE /* AddItemForSale */,
@@ -273,6 +291,8 @@
 				847D49BA23014B6D00FE900C /* ItemListForSaleVC.swift */,
 				840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */,
 				844EF2A3235486D200FF1E89 /* SearchItem.swift */,
+				840D76092358769B002D7FAA /* PaymentVC.swift */,
+				84A0FCBF236055CD00978589 /* PendingDispatchVC.swift */,
 			);
 			path = "Item List";
 			sourceTree = "<group>";
@@ -607,6 +627,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84A0FCC0236055CD00978589 /* PendingDispatchVC.swift in Sources */,
 				843D37E7233C8B6900BFBEB5 /* SearchVC.swift in Sources */,
 				84891B332327ACDE00448539 /* CropImageVC.swift in Sources */,
 				844EF2A623548D6A00FF1E89 /* SearchItemProtocol.swift in Sources */,
@@ -623,11 +644,14 @@
 				844EF2A4235486D200FF1E89 /* SearchItem.swift in Sources */,
 				840C9C502302CF8B004A63AD /* MyListedItemsVC.swift in Sources */,
 				842FFED8230D1BBF000DADF2 /* StringContants.swift in Sources */,
+				840D761923588C46002D7FAA /* MyAPIClient.swift in Sources */,
 				849E18CD230ECDDF00C94431 /* TabBarVC.swift in Sources */,
 				84B1ACC2230D09E2002E6B30 /* ProgressHud.swift in Sources */,
+				840D761C23588C5E002D7FAA /* PaymentContextFooterView.swift in Sources */,
 				842C007023192A570061CE46 /* SoldItemsListVC.swift in Sources */,
 				847D49BB23014B6D00FE900C /* ItemListForSaleVC.swift in Sources */,
 				84EBFCAA2338EA9E00A16419 /* UpdateProfileProtocol.swift in Sources */,
+				840D760A2358769B002D7FAA /* PaymentVC.swift in Sources */,
 				84891B2F2327A27A00448539 /* CustomCameraVC.swift in Sources */,
 				848A43DC22F04380002D9444 /* AppDelegate.swift in Sources */,
 				845801D822FD8C0D00AE6FEE /* SelectCategoryProtocol.swift in Sources */,

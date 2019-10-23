@@ -6,15 +6,17 @@
 //  Copyright © 2019 admin. All rights reserved.
 //
 
-import UIKit
 import Crashlytics
 import Fabric
 import FBSDKCoreKit
 import Firebase
 import FirebaseFirestore
 import GoogleSignIn
-import SDWebImage
 import IQKeyboardManagerSwift
+import SDWebImage
+import Stripe
+import UIKit
+
 
 var db = Firestore.firestore()
 var userdata = UserData()
@@ -46,6 +48,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             self.window?.rootViewController = mainStoryBoard.instantiateViewController(withIdentifier: "TabVc")
         }
+        
+        //Configure Stripe
+        Stripe.setDefaultPublishableKey("pk_test_4dJsL1teFhhtbNF8QaoyGlCp00VXw1CfBH")
+        STPPaymentConfiguration.shared().appleMerchantIdentifier = "pk_test_xOX9CL9odOMP0r4AUx01QSxC00yuuu3j2H"
         
 //        SDImageCache.shared.clearMemory()
 //        SDImageCache.shared.clearDisk()

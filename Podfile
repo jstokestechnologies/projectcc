@@ -26,5 +26,6 @@ pod 'SkyFloatingLabelTextField', '~> 3.0'
 pod 'IQKeyboardManagerSwift'
 
 pod 'InstantSearchClient'
+pod 'Stripe'
 
 end
