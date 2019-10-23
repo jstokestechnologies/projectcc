@@ -21,7 +21,7 @@ class ShowLoginDataVC: UIViewController {
     @IBOutlet weak var imgProfile: UIImageView!
     
     var loginDict = Dictionary<String,Any>()
-    let arrTitle = ["Edit Profile", "Listed Items", "Archived Items", "Logout"]
+    let arrTitle = ["Edit Profile", "Listed Items", "Archived Items", "Pending Dispatch", "Logout"]
 //    let arrKeys = ["first_name", "last_name", "email", "gender", "birthday", "hometown.name", "location.name"]
 //    let db = Firestore.firestore()
     
@@ -94,6 +94,11 @@ class ShowLoginDataVC: UIViewController {
         self.navigationController?.show(vc, sender: self)
     }
     
+    func showPendingDispatchList() {
+        let vc = secondStoryBoard.instantiateViewController(withIdentifier: "PendingDispatchVC") as! PendingDispatchVC
+        self.navigationController?.show(vc, sender: self)
+    }
+    
     /*
     // MARK: - Navigation
 
@@ -132,6 +137,8 @@ extension ShowLoginDataVC : UITableViewDelegate, UITableViewDataSource {
         case 2:
             self.showDeletedItemsList()
         case 3:
+        self.showPendingDispatchList()
+        case 4:
             self.logoutUser()
         default :
             tableView.deselectRow(at: indexPath, animated: true)

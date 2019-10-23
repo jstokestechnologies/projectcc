@@ -47,6 +47,7 @@
 		8493467822F88641006C72E7 /* 124010.png in Resources */ = {isa = PBXBuildFile; fileRef = 8493467722F88641006C72E7 /* 124010.png */; };
 		849464DD22FC3CD000ED0213 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849464DC22FC3CD000ED0213 /* UserModel.swift */; };
 		849E18CD230ECDDF00C94431 /* TabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849E18CC230ECDDF00C94431 /* TabBarVC.swift */; };
+		84A0FCC0236055CD00978589 /* PendingDispatchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A0FCBF236055CD00978589 /* PendingDispatchVC.swift */; };
 		84A827D0233BA907009C1FED /* up-arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A827CF233BA907009C1FED /* up-arrow.png */; };
 		84B1ACC0230D0813002E6B30 /* ProgressHud.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84B1ACBF230D0813002E6B30 /* ProgressHud.xib */; };
 		84B1ACC2230D09E2002E6B30 /* ProgressHud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B1ACC1230D09E2002E6B30 /* ProgressHud.swift */; };
@@ -123,6 +124,7 @@
 		8493467722F88641006C72E7 /* 124010.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 124010.png; sourceTree = "<group>"; };
 		849464DC22FC3CD000ED0213 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		849E18CC230ECDDF00C94431 /* TabBarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarVC.swift; sourceTree = "<group>"; };
+		84A0FCBF236055CD00978589 /* PendingDispatchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingDispatchVC.swift; sourceTree = "<group>"; };
 		84A827CF233BA907009C1FED /* up-arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "up-arrow.png"; sourceTree = "<group>"; };
 		84B1ACBF230D0813002E6B30 /* ProgressHud.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProgressHud.xib; sourceTree = "<group>"; };
 		84B1ACC1230D09E2002E6B30 /* ProgressHud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHud.swift; sourceTree = "<group>"; };
@@ -290,6 +292,7 @@
 				840C9C4F2302CF8B004A63AD /* MyListedItemsVC.swift */,
 				844EF2A3235486D200FF1E89 /* SearchItem.swift */,
 				840D76092358769B002D7FAA /* PaymentVC.swift */,
+				84A0FCBF236055CD00978589 /* PendingDispatchVC.swift */,
 			);
 			path = "Item List";
 			sourceTree = "<group>";
@@ -624,6 +627,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84A0FCC0236055CD00978589 /* PendingDispatchVC.swift in Sources */,
 				843D37E7233C8B6900BFBEB5 /* SearchVC.swift in Sources */,
 				84891B332327ACDE00448539 /* CropImageVC.swift in Sources */,
 				844EF2A623548D6A00FF1E89 /* SearchItemProtocol.swift in Sources */,

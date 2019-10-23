@@ -28,7 +28,7 @@ let kCellItemImage              = "CellImg"
 // Notification Name
 let kNotification_Category      = "Selected Category"
 let kNotification_Image         = "Selected Image"
-
+let kNotification_PaySuccess    = "Payment Success"
 
 // Stripe Keys
 let kStripePublicKey            = "pk_test_4dJsL1teFhhtbNF8QaoyGlCp00VXw1CfBH"
@@ -40,3 +40,4 @@ let kBaseURL                    = "https://us-central1-projectcc-a98a4.cloudfunc
 
 let URLEphemeralKeys            = "createEphemeralKeys"
 let URLPaymentIntent            = "createPaymentIntent"
+let URLCapturePayment           = "capturePaymentIntent"

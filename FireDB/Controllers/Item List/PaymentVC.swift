@@ -20,6 +20,9 @@ class PaymentVC: UIViewController {
     var paymentContext: STPPaymentContext?
     var amount = 0
     
+    var productId = ""
+    var productIndex = Int()
+    
     var parentVC : ViewController?
     
     override func viewDidLoad() {
@@ -45,7 +48,6 @@ class PaymentVC: UIViewController {
         paymentContext.hostViewController = self
 
         self.paymentContext = paymentContext
-        
     }
     
     @IBAction func choosePaymentButtonTapped(_ sender : UIButton) {
@@ -115,6 +117,10 @@ extension PaymentVC : STPPaymentContextDelegate {
                     // Handle cancel
                     case .succeeded:
                         print("success payment")
+                        let paymentDetails = ["index" : self.productIndex,
+                                              "id"    : self.productId,
+                                              "paymentId" : paymentIntent?.stripeId ?? ""] as [String : Any]
+                        NotificationCenter.default.post(name: NSNotification.Name(kNotification_PaySuccess), object: nil, userInfo: paymentDetails)
                     // Payment Intent is confirmed
                     default:
                         print("unknown error")

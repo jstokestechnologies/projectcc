@@ -48,6 +48,7 @@ class ItemListForSaleVC: UIViewController {
         self.initialSetup()
         if self.tabBarController?.selectedIndex == 0 {
             progressView.showActivity()
+            NotificationCenter.default.addObserver(self, selector: #selector(self.notificationPaySuccess(_:)), name: NSNotification.Name(kNotification_PaySuccess), object: nil)
             self.fetchItemList()
         }else {
             self.title = "Favorites"
@@ -147,6 +148,9 @@ class ItemListForSaleVC: UIViewController {
                 self.setTableFooter(count: arr.count + (self.arrItems?.count ?? 0))
                 self.parseFireBaseData(arr: arr)
                 self.changePageNumber()
+//                self.arrItems?.removeAll(where: { (item) -> Bool in
+//                    return item.isPaid ?? false
+//                })
             }else {
                 self.isNextPage = false
             }
@@ -244,6 +248,10 @@ class ItemListForSaleVC: UIViewController {
         }
     }
     
+    func savePaymentDetails(itemId : String, details : [String : Any]) {
+        db.collection(kListedItems).document(itemId).setData(details, merge: true)
+    }
+    
     //MARK: - Button IBAction
     @IBAction func btnLogoutAction(_ sender: Any) {
         self.view.endEditing(true)
@@ -331,7 +339,32 @@ class ItemListForSaleVC: UIViewController {
         let item = self.arrItems?[sender.tag]
         let vc = secondStoryBoard.instantiateViewController(withIdentifier: "PaymentVC") as! PaymentVC
         vc.amount = Int((Double(item?.price ?? "0.0") ?? 0.0) * 100.0)
+        guard let itemId = item?.id else {
+            return
+        }
+        vc.productId = itemId
+        vc.productIndex = sender.tag
         self.navigationController?.show(vc, sender: nil)
+    }
+    
+    @IBAction func notificationPaySuccess(_ sender : Notification?) {
+        guard let itemId = sender?.userInfo?["id"] as? String else {
+            return
+        }
+        self.arrItems?.removeAll(where: { (item) -> Bool in
+            return (item.id ?? "") == itemId
+        })
+        if let paymentId =  sender?.userInfo?["paymentId"] as? String {
+            let timestamp = Int(Date().timeIntervalSince1970 * 1000)
+            let payDict = ["buyer_id" : userdata.id,
+                           "payment_id" : paymentId,
+                           "isPaid"     : true,
+                           "isSold"     : false,
+                           "updated"    : timestamp] as [String : Any];
+            
+            self.savePaymentDetails(itemId: itemId, details: payDict)
+        }
+        self.tblItemList.reloadData()
     }
     
     //MARK: - Custom methods
