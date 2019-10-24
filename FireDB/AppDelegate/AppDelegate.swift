@@ -13,22 +13,26 @@ import Firebase
 import FirebaseFirestore
 import GoogleSignIn
 import IQKeyboardManagerSwift
+
 import SDWebImage
 import Stripe
 import UIKit
+import UserNotifications
+import UserNotificationsUI
 
 
 var db = Firestore.firestore()
 var userdata = UserData()
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
     
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Register remote notifications
+        self.applicationRegisterForNotifications()
         
         //Initialize Facebook SDK
         ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -37,7 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         
         //Initialize Fabric SDK
-        Fabric.with([Crashlytics.self])
+//        Fabric.with([Crashlytics.self])
         
         //Initialize Google Signin SDK
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
@@ -80,7 +84,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    
+    func applicationRegisterForNotifications() {
+        
+        UNUserNotificationCenter.current().delegate = self
 
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(
+            options: authOptions,
+            completionHandler: {_, _ in })
+        
+        UIApplication.shared.registerForRemoteNotifications()
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print(error.localizedDescription)
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        print(deviceToken)
+    }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
 
