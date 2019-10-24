@@ -344,6 +344,8 @@ class ItemListForSaleVC: UIViewController {
         }
         vc.productId = itemId
         vc.productIndex = sender.tag
+        vc.productName = item?.item_name ?? ""
+        vc.sellerId = item?.user_id ?? ""
         self.navigationController?.show(vc, sender: nil)
     }
     

@@ -12,6 +12,7 @@ class ProgressHud: UIView {
     
     @IBOutlet weak var lblViewBackground: UIView!
     @IBOutlet weak var viewActivity: UIActivityIndicatorView!
+    @IBOutlet weak var lblDetails: UILabel!
     /*
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
@@ -38,15 +39,24 @@ class ProgressHud: UIView {
     }
     
     func showActivity() {
+        self.removeFromSuperview()
         self.activityView?.viewActivity.startAnimating()
         UIApplication.shared.keyWindow?.addSubview(self)
         UIApplication.shared.beginIgnoringInteractionEvents()
     }
     
+    func showActivity(withDetails text : String) {
+        self.lblDetails?.text = text
+        self.showActivity()
+    }
+    
     func hideActivity() {
         self.activityView?.viewActivity.stopAnimating()
         self.removeFromSuperview()
-        UIApplication.shared.endIgnoringInteractionEvents()
+        self.lblDetails?.text = ""
+        if UIApplication.shared.isIgnoringInteractionEvents {
+            UIApplication.shared.endIgnoringInteractionEvents()
+        }
     }
     
     
