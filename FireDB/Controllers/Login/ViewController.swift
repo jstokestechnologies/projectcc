@@ -172,9 +172,36 @@ class ViewController: UIViewController {
         let timeStamp = Int(Date().timeIntervalSince1970 * 1000)
         loginData["last_login"] = timeStamp
         loginData["my_bookmarks"] = userdata.my_bookmarks ?? [String]()
-        self.saveDataToFireBase(loginDict: loginData)
+        
+        self.getFcmDeviceToken { (token) in
+            loginData["fcm_token"] = token
+            self.saveDataToFireBase(loginDict: loginData)
+        }
+        
+//        self.saveDataToFireBase(loginDict: loginData)
         UIApplication.shared.keyWindow?.rootViewController = mainStoryBoard.instantiateViewController(withIdentifier: "TabVc")
         progressView.hideActivity()
+    }
+    
+    func getFcmDeviceToken(completion : @escaping (String) -> Void) {
+        if let token = UserDefaults.standard.value(forKey: kDeviceToken) as? String {
+            completion(token)
+        }else {
+            InstanceID.instanceID().instanceID { (result, error) in
+                if let error = error {
+                    print("Error fetching remote instance ID: \(error)")
+                    completion("")
+                } else if let result = result {
+                    let token = result.token
+                    print("Remote instance ID token: \(token)")
+                    UserDefaults.standard.set(token, forKey: kDeviceToken)
+                    UserDefaults.standard.synchronize()
+                    completion(token)
+                }else {
+                    completion("")
+                }
+            }
+        }
     }
 }
 

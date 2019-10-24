@@ -12,7 +12,7 @@ import UIKit
 let kUserData                   = "user_login_data"
 let kUserId                     = "user_id"
 let kIsLoggedIn                 = "is_logged_in"
-
+let kDeviceToken                = "device_token"
 
 let secondStoryBoard            = UIStoryboard.init(name: "Second", bundle: Bundle.main)
 let mainStoryBoard              = UIStoryboard.init(name: "Main", bundle: Bundle.main)

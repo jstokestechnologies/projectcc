@@ -13,22 +13,26 @@ import Firebase
 import FirebaseFirestore
 import GoogleSignIn
 import IQKeyboardManagerSwift
+import FirebaseMessaging
 import SDWebImage
 import Stripe
 import UIKit
+import UserNotifications
+import UserNotificationsUI
 
 
 var db = Firestore.firestore()
 var userdata = UserData()
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
 
     var window: UIWindow?
 
     
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Register remote notifications
+        self.applicationRegisterForNotifications()
         
         //Initialize Facebook SDK
         ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -36,8 +40,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //Initialize FireBase SDK
         FirebaseApp.configure()
         
+        Messaging.messaging().delegate = self
+        Messaging.messaging().isAutoInitEnabled = true
+        
         //Initialize Fabric SDK
-        Fabric.with([Crashlytics.self])
+//        Fabric.with([Crashlytics.self])
         
         //Initialize Google Signin SDK
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
@@ -74,22 +81,69 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
+        application.applicationIconBadgeNumber = 0
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    
+    func applicationRegisterForNotifications() {
+        
+        UNUserNotificationCenter.current().delegate = self
 
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(
+            options: authOptions,
+            completionHandler: {_, _ in })
+        
+        UIApplication.shared.registerForRemoteNotifications()
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print(error.localizedDescription)
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        print(deviceToken)
+        Messaging.messaging().apnsToken = deviceToken
+    }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-
         if ApplicationDelegate.shared.application(app, open: url, options: options) {
             return true
         }else {
             return (GIDSignIn.sharedInstance()?.handle(url))!
         }
-
     }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        completionHandler()
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert, .badge, .sound])
+    }
+    
+    func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
+        print(remoteMessage.appData)
+    }
+    
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+        print("FCM Device token : \(fcmToken)");
+        if UserDefaults.standard.bool(forKey: kIsLoggedIn) && userdata.id != "" {
+            self.saveFcmToken(token: fcmToken)
+        }else {
+            UserDefaults.standard.set(fcmToken, forKey: kDeviceToken)
+            UserDefaults.standard.synchronize()
+        }
+    }
+    
+    func saveFcmToken(token : String) {
+        db.collection(kUsersCollection).document(userdata.id).setData(["fcm_token" : token], merge: true)
+    }
+    
+    
 }
 

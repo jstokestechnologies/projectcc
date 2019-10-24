@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseMessaging
 import Stripe
 
 class PaymentVC: UIViewController {
@@ -21,13 +22,18 @@ class PaymentVC: UIViewController {
     var amount = 0
     
     var productId = ""
+    var productName = ""
     var productIndex = Int()
+    
+    var sellerId = ""
+    var sellerDtoken = ""
     
     var parentVC : ViewController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        progressView.showActivity()
+        self.fetchSellerDeviceToken()
+        progressView.showActivity(withDetails: "Initiating payment")
         self.stripePublishableKey = kStripePublicKey
         self.backendBaseURL = kBaseURL 
         // Do any additional setup after loading the view.
@@ -54,6 +60,35 @@ class PaymentVC: UIViewController {
         self.paymentContext?.pushPaymentOptionsViewController()
 //        isPageLoaded = true
     }
+    
+    func fetchSellerDeviceToken() {
+        db.collection(kUsersCollection).document(self.sellerId).getDocument { (snap, error) in
+            if let doc = snap {
+                if let sellerData = doc.data() {
+                    self.sellerDtoken = sellerData["fcm_token"] as? String ?? ""
+                }
+            }
+        }
+    }
+    
+    func notifySeller() {
+        progressView.showActivity(withDetails: "Finalising payment")
+        let msgBody = ["aps" : [
+            "alert" : "\(userdata.name) has paid $\(self.amount) for \(self.productName). Dispatch/deliver it to finish the transaction.",
+                                    "badge" : 0,
+                                    "sound" : "default"
+                                ]]
+        let timestamp = Int(Date().timeIntervalSince1970 * 1000)
+        let msgId = "\(userdata.id)\(timestamp)"
+        Messaging.messaging().sendMessage(msgBody, to: self.sellerDtoken + "@fcm.googleapis.com", withMessageID: msgId, timeToLive: Int64(7200 + timestamp))
+        progressView.hideActivity()
+        self.paymentSuccess()
+    }
+    
+    func paymentSuccess() {
+        HelperClass.showAlert(msg: "Payment authorization successfull. Payment will be deducted once item will be shipped.", isBack: true, vc: self)
+    }
+    
     /*
      // MARK: - Navigation
      
@@ -88,7 +123,7 @@ extension PaymentVC : STPPaymentContextDelegate {
                 }
                 isPageLoaded = 2
             }else if isPageLoaded == 2 {
-                progressView.showActivity()
+                progressView.showActivity(withDetails: "Authenticating payment")
                 DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
                     self.paymentContext?.requestPayment()
                 }
@@ -121,15 +156,14 @@ extension PaymentVC : STPPaymentContextDelegate {
                                               "id"    : self.productId,
                                               "paymentId" : paymentIntent?.stripeId ?? ""] as [String : Any]
                         NotificationCenter.default.post(name: NSNotification.Name(kNotification_PaySuccess), object: nil, userInfo: paymentDetails)
+                        self.notifySeller()
                     // Payment Intent is confirmed
                     default:
                         print("unknown error")
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-                        DispatchQueue.main.async {
-                            progressView.hideActivity()
-                            HelperClass.showAlert(msg: "Payment authorization successfull. Payment will be deducted once item will be shipped.", isBack: true, vc: self)
-                        }
+                    DispatchQueue.main.async {
+                        progressView.hideActivity()
+                        
                     }
                 })
                 
