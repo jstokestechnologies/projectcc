@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -26,10 +24,19 @@
                                 <constraint firstAttribute="width" constant="100" id="yXt-9e-URG"/>
                             </constraints>
                         </activityIndicatorView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bOa-Cn-t9l">
+                            <rect key="frame" x="20" y="503" width="374" height="0.0"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                     </subviews>
                     <color key="backgroundColor" white="0.33333333333333331" alpha="0.69999999999999996" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
+                        <constraint firstItem="bOa-Cn-t9l" firstAttribute="leading" secondItem="0Dz-Cs-Xyo" secondAttribute="leading" constant="20" id="356-CA-yqH"/>
+                        <constraint firstAttribute="trailing" secondItem="bOa-Cn-t9l" secondAttribute="trailing" constant="20" id="3xV-26-4J8"/>
                         <constraint firstItem="F7Z-va-aGa" firstAttribute="centerX" secondItem="0Dz-Cs-Xyo" secondAttribute="centerX" id="IKB-Hw-1u5"/>
+                        <constraint firstItem="bOa-Cn-t9l" firstAttribute="top" secondItem="F7Z-va-aGa" secondAttribute="bottom" constant="5" id="Nwl-V6-oU7"/>
                         <constraint firstItem="F7Z-va-aGa" firstAttribute="centerY" secondItem="0Dz-Cs-Xyo" secondAttribute="centerY" id="kwb-VQ-4h6"/>
                     </constraints>
                 </view>
@@ -43,6 +50,7 @@
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
+                <outlet property="lblDetails" destination="bOa-Cn-t9l" id="oQy-KG-9CD"/>
                 <outlet property="lblViewBackground" destination="0Dz-Cs-Xyo" id="svq-6S-HLO"/>
                 <outlet property="viewActivity" destination="F7Z-va-aGa" id="gHH-Hd-Oeg"/>
             </connections>
