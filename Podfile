@@ -7,25 +7,26 @@ target 'FireDB' do
 
   # Pods for FireDB
 
-pod 'FacebookCore'
-pod 'FacebookLogin'
-pod 'FacebookShare'
+pod 'FacebookCore', '~> 0.8.0'
+pod 'FacebookLogin', '~> 0.8.0'
+pod 'FacebookShare', '~> 0.8.0'
 
 pod 'Firebase/Analytics'
 pod 'Firebase/Firestore'
 pod 'Firebase/Auth'
 pod 'Firebase/Storage'
 pod 'FirebaseUI/Storage'
+pod 'Firebase/Messaging'
 
-pod 'GoogleSignIn'
+pod 'GoogleSignIn', '~> 5.0.0'
 
 pod 'Fabric', '~> 1.10.2'
 pod 'Crashlytics', '~> 3.13.4'
 
 pod 'SkyFloatingLabelTextField', '~> 3.0'
-pod 'IQKeyboardManagerSwift'
+pod 'IQKeyboardManagerSwift', '~> 6.4.1'
 
-pod 'InstantSearchClient'
-pod 'Stripe'
+pod 'InstantSearchClient', '~> 7.0.0'
+pod 'Stripe', '~> 16.0.6'
 
 end
