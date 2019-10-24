@@ -13,7 +13,7 @@ import Firebase
 import FirebaseFirestore
 import GoogleSignIn
 import IQKeyboardManagerSwift
-
+import FirebaseMessaging
 import SDWebImage
 import Stripe
 import UIKit
@@ -24,7 +24,7 @@ import UserNotificationsUI
 var db = Firestore.firestore()
 var userdata = UserData()
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
 
     var window: UIWindow?
 
@@ -103,16 +103,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         print(deviceToken)
+        Messaging.messaging().apnsToken = deviceToken
+        Messaging.messaging().isAutoInitEnabled = true
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-
         if ApplicationDelegate.shared.application(app, open: url, options: options) {
             return true
         }else {
             return (GIDSignIn.sharedInstance()?.handle(url))!
         }
-
     }
+    
+    func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
+        
+    }
+    
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+        print("FCM Device token : \(fcmToken)");
+        if UserDefaults.standard.bool(forKey: kIsLoggedIn) && userdata.id != "" {
+            self.saveFcmToken(token: fcmToken)
+        }else {
+            UserDefaults.standard.set(fcmToken, forKey: kDeviceToken)
+            UserDefaults.standard.synchronize()
+        }
+    }
+    
+    func saveFcmToken(token : String) {
+        db.collection(kUsersCollection).document(userdata.id).setData(["fcm_token" : token], merge: true)
+    }
+    
+    
 }
 
