@@ -13,6 +13,8 @@
 		840D761923588C46002D7FAA /* MyAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840D761823588C46002D7FAA /* MyAPIClient.swift */; };
 		840D761C23588C5E002D7FAA /* PaymentContextFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840D761A23588C5D002D7FAA /* PaymentContextFooterView.swift */; };
 		840ED100234F2EE7000E0B9E /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840ED0FF234F2EE7000E0B9E /* DateExtension.swift */; };
+		84124C8723696E43009B4ADD /* SelectItemConditionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84124C8623696E43009B4ADD /* SelectItemConditionVC.swift */; };
+		84124C8923697386009B4ADD /* ItemConditionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84124C8823697386009B4ADD /* ItemConditionProtocol.swift */; };
 		842C007023192A570061CE46 /* SoldItemsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842C006F23192A570061CE46 /* SoldItemsListVC.swift */; };
 		842FFED6230D1BB0000DADF2 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FFED5230D1BB0000DADF2 /* Helper.swift */; };
 		842FFED8230D1BBF000DADF2 /* StringContants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FFED7230D1BBF000DADF2 /* StringContants.swift */; };
@@ -84,6 +86,8 @@
 		840D761823588C46002D7FAA /* MyAPIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyAPIClient.swift; sourceTree = "<group>"; };
 		840D761A23588C5D002D7FAA /* PaymentContextFooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentContextFooterView.swift; sourceTree = "<group>"; };
 		840ED0FF234F2EE7000E0B9E /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		84124C8623696E43009B4ADD /* SelectItemConditionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectItemConditionVC.swift; sourceTree = "<group>"; };
+		84124C8823697386009B4ADD /* ItemConditionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemConditionProtocol.swift; sourceTree = "<group>"; };
 		842C006F23192A570061CE46 /* SoldItemsListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoldItemsListVC.swift; sourceTree = "<group>"; };
 		842FFED5230D1BB0000DADF2 /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		842FFED7230D1BBF000DADF2 /* StringContants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringContants.swift; sourceTree = "<group>"; };
@@ -224,6 +228,7 @@
 				845801DB22FD992800AE6FEE /* SelectBrandProtocol.swift */,
 				84EBFCA92338EA9E00A16419 /* UpdateProfileProtocol.swift */,
 				844EF2A523548D6A00FF1E89 /* SearchItemProtocol.swift */,
+				84124C8823697386009B4ADD /* ItemConditionProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -274,6 +279,7 @@
 				84891B2E2327A27A00448539 /* CustomCameraVC.swift */,
 				84891B322327ACDE00448539 /* CropImageVC.swift */,
 				84B61DA62330B45500CEA14B /* SystemCropVC.swift */,
+				84124C8623696E43009B4ADD /* SelectItemConditionVC.swift */,
 			);
 			path = AddItemForSale;
 			sourceTree = "<group>";
@@ -641,6 +647,7 @@
 				848A440A22F04839002D9444 /* ShowLoginDataVC.swift in Sources */,
 				848A43DE22F04380002D9444 /* ViewController.swift in Sources */,
 				84B61DA72330B45500CEA14B /* SystemCropVC.swift in Sources */,
+				84124C8923697386009B4ADD /* ItemConditionProtocol.swift in Sources */,
 				848293052320DEBF001DF6F5 /* ItemCardTableCell.swift in Sources */,
 				845801D622FD48FE00AE6FEE /* SelectCategoryVC.swift in Sources */,
 				844EF2A4235486D200FF1E89 /* SearchItem.swift in Sources */,
@@ -651,6 +658,7 @@
 				84B1ACC2230D09E2002E6B30 /* ProgressHud.swift in Sources */,
 				840D761C23588C5E002D7FAA /* PaymentContextFooterView.swift in Sources */,
 				842C007023192A570061CE46 /* SoldItemsListVC.swift in Sources */,
+				84124C8723696E43009B4ADD /* SelectItemConditionVC.swift in Sources */,
 				847D49BB23014B6D00FE900C /* ItemListForSaleVC.swift in Sources */,
 				84EBFCAA2338EA9E00A16419 /* UpdateProfileProtocol.swift in Sources */,
 				840D760A2358769B002D7FAA /* PaymentVC.swift in Sources */,
