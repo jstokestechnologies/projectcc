@@ -56,6 +56,10 @@ class PaymentVC: UIViewController {
         self.paymentContext = paymentContext
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        
+    }
+    
     @IBAction func choosePaymentButtonTapped(_ sender : UIButton) {
         self.paymentContext?.pushPaymentOptionsViewController()
 //        isPageLoaded = true

@@ -13,6 +13,9 @@
 		840D761923588C46002D7FAA /* MyAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840D761823588C46002D7FAA /* MyAPIClient.swift */; };
 		840D761C23588C5E002D7FAA /* PaymentContextFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840D761A23588C5D002D7FAA /* PaymentContextFooterView.swift */; };
 		840ED100234F2EE7000E0B9E /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840ED0FF234F2EE7000E0B9E /* DateExtension.swift */; };
+		84124C8123695C6B009B4ADD /* got_it.png in Resources */ = {isa = PBXBuildFile; fileRef = 84124C8023695C6A009B4ADD /* got_it.png */; };
+		84124C8323695E41009B4ADD /* NextStepVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84124C8223695E41009B4ADD /* NextStepVC.swift */; };
+		84124C8523695FB9009B4ADD /* NextStepToBuyProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84124C8423695FB9009B4ADD /* NextStepToBuyProtocol.swift */; };
 		842C007023192A570061CE46 /* SoldItemsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842C006F23192A570061CE46 /* SoldItemsListVC.swift */; };
 		842FFED6230D1BB0000DADF2 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FFED5230D1BB0000DADF2 /* Helper.swift */; };
 		842FFED8230D1BBF000DADF2 /* StringContants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FFED7230D1BBF000DADF2 /* StringContants.swift */; };
@@ -84,6 +87,9 @@
 		840D761823588C46002D7FAA /* MyAPIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyAPIClient.swift; sourceTree = "<group>"; };
 		840D761A23588C5D002D7FAA /* PaymentContextFooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentContextFooterView.swift; sourceTree = "<group>"; };
 		840ED0FF234F2EE7000E0B9E /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		84124C8023695C6A009B4ADD /* got_it.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = got_it.png; sourceTree = "<group>"; };
+		84124C8223695E41009B4ADD /* NextStepVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextStepVC.swift; sourceTree = "<group>"; };
+		84124C8423695FB9009B4ADD /* NextStepToBuyProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextStepToBuyProtocol.swift; sourceTree = "<group>"; };
 		842C006F23192A570061CE46 /* SoldItemsListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoldItemsListVC.swift; sourceTree = "<group>"; };
 		842FFED5230D1BB0000DADF2 /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		842FFED7230D1BBF000DADF2 /* StringContants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringContants.swift; sourceTree = "<group>"; };
@@ -224,6 +230,7 @@
 				845801DB22FD992800AE6FEE /* SelectBrandProtocol.swift */,
 				84EBFCA92338EA9E00A16419 /* UpdateProfileProtocol.swift */,
 				844EF2A523548D6A00FF1E89 /* SearchItemProtocol.swift */,
+				84124C8423695FB9009B4ADD /* NextStepToBuyProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -294,6 +301,7 @@
 				844EF2A3235486D200FF1E89 /* SearchItem.swift */,
 				840D76092358769B002D7FAA /* PaymentVC.swift */,
 				84A0FCBF236055CD00978589 /* PendingDispatchVC.swift */,
+				84124C8223695E41009B4ADD /* NextStepVC.swift */,
 			);
 			path = "Item List";
 			sourceTree = "<group>";
@@ -377,6 +385,7 @@
 		84F9F6C422FAAF9B00E754A7 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				84124C8023695C6A009B4ADD /* got_it.png */,
 				8486F8C722FB1227009BE82C /* minus.png */,
 				84F9F6C722FAB35A00E754A7 /* border_dot.png */,
 				8493467722F88641006C72E7 /* 124010.png */,
@@ -517,6 +526,7 @@
 				84A827D0233BA907009C1FED /* up-arrow.png in Resources */,
 				8493467822F88641006C72E7 /* 124010.png in Resources */,
 				845D40A7234E1417004C6A5C /* GoogleService-Info.plist in Resources */,
+				84124C8123695C6B009B4ADD /* got_it.png in Resources */,
 				8451D5E722F9511A005169D5 /* email_logo.png in Resources */,
 				843D37E9233C8DD100BFBEB5 /* Second.storyboard in Resources */,
 				84B1ACC0230D0813002E6B30 /* ProgressHud.xib in Resources */,
@@ -631,6 +641,7 @@
 			files = (
 				84A0FCC0236055CD00978589 /* PendingDispatchVC.swift in Sources */,
 				843D37E7233C8B6900BFBEB5 /* SearchVC.swift in Sources */,
+				84124C8523695FB9009B4ADD /* NextStepToBuyProtocol.swift in Sources */,
 				84891B332327ACDE00448539 /* CropImageVC.swift in Sources */,
 				844EF2A623548D6A00FF1E89 /* SearchItemProtocol.swift in Sources */,
 				845801DC22FD992800AE6FEE /* SelectBrandProtocol.swift in Sources */,
@@ -649,6 +660,7 @@
 				840D761923588C46002D7FAA /* MyAPIClient.swift in Sources */,
 				849E18CD230ECDDF00C94431 /* TabBarVC.swift in Sources */,
 				84B1ACC2230D09E2002E6B30 /* ProgressHud.swift in Sources */,
+				84124C8323695E41009B4ADD /* NextStepVC.swift in Sources */,
 				840D761C23588C5E002D7FAA /* PaymentContextFooterView.swift in Sources */,
 				842C007023192A570061CE46 /* SoldItemsListVC.swift in Sources */,
 				847D49BB23014B6D00FE900C /* ItemListForSaleVC.swift in Sources */,
