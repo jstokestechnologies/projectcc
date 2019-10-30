@@ -338,6 +338,7 @@ class ItemListForSaleVC: UIViewController {
     @IBAction func btnBuyAction(_ sender : UIButton) {
         let nsVc = secondStoryBoard.instantiateViewController(withIdentifier: "NextStepVC") as! NextStepVC
         nsVc.delegate = self
+//        nsVc.modalPresentationStyle = .overCurrentContext
         self.present(nsVc, animated: true, completion: nil)
     }
     

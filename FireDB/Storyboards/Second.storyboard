@@ -486,6 +486,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ola-iy-cxf">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t1x-1X-DAh">
                                 <rect key="frame" x="20" y="74" width="335" height="431"/>
                                 <subviews>
@@ -546,16 +550,20 @@ Got It</string>
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="t1x-1X-DAh" firstAttribute="centerX" secondItem="YoW-rW-o9X" secondAttribute="centerX" id="2ep-fd-fsU"/>
                             <constraint firstItem="t1x-1X-DAh" firstAttribute="top" secondItem="DW3-JY-C2I" secondAttribute="top" constant="30" id="CiV-Bh-vpw"/>
                             <constraint firstItem="t1x-1X-DAh" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="DW3-JY-C2I" secondAttribute="leading" constant="20" id="N0k-Nb-Liq"/>
+                            <constraint firstAttribute="trailing" secondItem="ola-iy-cxf" secondAttribute="trailing" id="N97-B8-af1"/>
                             <constraint firstItem="DW3-JY-C2I" firstAttribute="trailing" secondItem="t1x-1X-DAh" secondAttribute="trailing" priority="750" constant="20" id="aXU-MV-vKX"/>
+                            <constraint firstAttribute="bottom" secondItem="ola-iy-cxf" secondAttribute="bottom" id="bic-RN-wS1"/>
                             <constraint firstItem="Q1Z-bj-KQg" firstAttribute="top" secondItem="t1x-1X-DAh" secondAttribute="bottom" constant="-35" id="dmc-T8-GLW"/>
+                            <constraint firstItem="ola-iy-cxf" firstAttribute="leading" secondItem="YoW-rW-o9X" secondAttribute="leading" id="e0F-Jg-YCr"/>
                             <constraint firstItem="DW3-JY-C2I" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="t1x-1X-DAh" secondAttribute="trailing" constant="20" id="iSr-qg-wGb"/>
                             <constraint firstItem="DW3-JY-C2I" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="t1x-1X-DAh" secondAttribute="bottom" constant="55" id="jAX-bx-mL0"/>
                             <constraint firstItem="Q1Z-bj-KQg" firstAttribute="centerX" secondItem="YoW-rW-o9X" secondAttribute="centerX" id="mzR-KC-EDg"/>
+                            <constraint firstItem="ola-iy-cxf" firstAttribute="top" secondItem="YoW-rW-o9X" secondAttribute="top" id="nmC-o1-4MH"/>
                             <constraint firstItem="t1x-1X-DAh" firstAttribute="leading" secondItem="DW3-JY-C2I" secondAttribute="leading" priority="750" constant="20" id="s9U-aw-m77"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="DW3-JY-C2I"/>
