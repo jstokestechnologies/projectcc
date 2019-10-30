@@ -547,7 +547,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sR6-7G-KE8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3508.6956521739135" y="121.875"/>
-
+        </scene>
         <!--Next StepVC-->
         <scene sceneID="O6Y-cX-kfo">
             <objects>
