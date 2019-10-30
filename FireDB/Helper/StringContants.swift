@@ -41,3 +41,17 @@ let kBaseURL                    = "https://us-central1-projectcc-a98a4.cloudfunc
 let URLEphemeralKeys            = "createEphemeralKeys"
 let URLPaymentIntent            = "createPaymentIntent"
 let URLCapturePayment           = "capturePaymentIntent"
+
+
+
+
+
+
+
+
+let kArrConditions = [["title":"New",
+                       "description":"New with tags (NWT). Unopened packaging. Unused."],
+                      ["title":"Like New",
+                       "description":"NNew without tags (NWOT). No signs of usage. Looks Unused."],
+                      ["title":"Good",
+                       "description":"Gently used having few minor scratches. Functioning properly."]]

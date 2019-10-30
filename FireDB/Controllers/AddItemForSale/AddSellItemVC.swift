@@ -29,6 +29,7 @@ class AddSellItemVC: UIViewController {
     @IBOutlet weak var lblPrice: UILabel!
     @IBOutlet weak var lblCategory: UILabel!
     @IBOutlet weak var lblBrand: UILabel!
+    @IBOutlet weak var lblCondition: UILabel!
     
     @IBOutlet weak var btnPost: UIButton!
     @IBOutlet weak var btnCancel: UIButton!
@@ -38,13 +39,11 @@ class AddSellItemVC: UIViewController {
     
     //MARK: - Properties
     let picker = UIImagePickerController()
-    let arrConditions = [["title":"New","description":"New with tags (NWT). Unopened packaging. Unused."],
-                         ["title":"Like New","description":"NNew without tags (NWOT). No signs of usage. Looks Unused."],
-                         ["title":"Good","description":"Gently used having few minor scratches. Functioning properly."]]
+    
     let maxImages = 5
     var arrImages = [ItemImages]()
     var arrRemovedImages = [ItemImages]()
-    var itemCondition = 0
+    var itemCondition = -1
     var categories = String()
     var category = [String : Any]()
     var subCategory = [String : [String : Any]]()
@@ -128,11 +127,13 @@ class AddSellItemVC: UIViewController {
         self.category = (self.itemData?.category)!
         
         // Fetch Category and subcategories of the item
-        self.getPreviousSubcategory()
+//        self.getPreviousSubcategory()
+        self.showCategoryAndSubCategory()
         
         // Set item condition
-        let conditionIndex = self.arrConditions.firstIndex(where: {"\($0["title"] ?? "")" == self.itemData?.condition ?? ""})
+        let conditionIndex = kArrConditions.firstIndex(where: {"\($0["title"] ?? "")" == self.itemData?.condition ?? ""})
         self.itemCondition = conditionIndex ?? 0
+        self.lblCondition.text = "\(kArrConditions[self.itemCondition]["title"] ?? "New")"
         
         // Add Images To Array
         for img in itemData?.item_images ?? [String]() {
@@ -217,6 +218,13 @@ class AddSellItemVC: UIViewController {
                 self.present(alert, animated: true, completion: nil)
             }
         }
+    }
+    
+    @IBAction func btnItemConditionAction(_ sender: UIButton) {
+        let vc = secondStoryBoard.instantiateViewController(withIdentifier: "SelectItemConditionVC") as! SelectItemConditionVC
+        vc.delegate = self
+        vc.selectedIndex = self.itemCondition
+        self.navigationController?.show(vc, sender: nil)
     }
     
     @IBAction func btnCloseAction(_ sender: UIButton) {
@@ -387,7 +395,7 @@ class AddSellItemVC: UIViewController {
                                             "category"      : self.category,
                                             "sub_category"  : [""],//Array(self.subCategory.keys),
                                             "brand"         : self.brand,
-                                            "condition"     : "\(self.arrConditions[self.itemCondition]["title"] ?? "")",
+                                            "condition"     :  "\(kArrConditions[self.itemCondition]["title"] ?? "New")",
                                             "price"         : (self.txtItemPrice.text)!,
                                             "user_id"       : userdata.id,
                                             "item_images"   : imgPath,
@@ -572,7 +580,7 @@ class AddSellItemVC: UIViewController {
 extension AddSellItemVC : UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == self.collectionCondition {
-            return self.arrConditions.count
+            return kArrConditions.count
         }
         
         return self.arrImages.count + 1
@@ -593,8 +601,8 @@ extension AddSellItemVC : UICollectionViewDelegate, UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
         
         if collectionView == self.collectionCondition {
-            (cell.viewWithTag(1) as! UILabel).text = "\(self.arrConditions[indexPath.row]["title"] ?? "New")"
-            (cell.viewWithTag(2) as! UILabel).text = "\(self.arrConditions[indexPath.row]["description"] ?? "New")"
+            (cell.viewWithTag(1) as! UILabel).text = "\(kArrConditions[indexPath.row]["title"] ?? "New")"
+            (cell.viewWithTag(2) as! UILabel).text = "\(kArrConditions[indexPath.row]["description"] ?? "New")"
             let borderColor = self.itemCondition == indexPath.row ? UIColor.blue.cgColor : UIColor.lightGray.cgColor
             cell.layer.borderColor = borderColor
             return cell
@@ -813,6 +821,13 @@ extension AddSellItemVC : UpdateProfileDelegate {
             self.saveData()
 //            self.showSaveAlert(msg: "Are you sure you want to list this item for sale?")
         }
+    }
+}
+
+extension AddSellItemVC : ItemConditionDelegate {
+    func didSelectItemCondition(index: Int) {
+        self.lblCondition.text = "\(kArrConditions[index]["title"] ?? "New")"
+        self.itemCondition = index
     }
 }
 
