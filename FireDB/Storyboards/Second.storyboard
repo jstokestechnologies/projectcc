@@ -255,10 +255,10 @@
             </objects>
             <point key="canvasLocation" x="926" y="122"/>
         </scene>
-        <!--PaymentVC-->
+        <!--View Controller-->
         <scene sceneID="Cut-Fj-pWP">
             <objects>
-                <viewController storyboardIdentifier="PaymentVC" hidesBottomBarWhenPushed="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="w3w-fJ-whw" customClass="PaymentVC" customModule="FireDB" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PaymentVC" hidesBottomBarWhenPushed="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="w3w-fJ-whw" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="xBq-cW-xVQ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -11,7 +11,7 @@ import UIKit
 class NextStepVC: UIViewController {
     
     var delegate : NextStepDelegate?
-    let itemIndex = Int()
+    var itemIndex = Int()
 
     override func viewDidLoad() {
         super.viewDidLoad()

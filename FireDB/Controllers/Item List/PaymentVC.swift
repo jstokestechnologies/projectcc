@@ -10,7 +10,7 @@ import UIKit
 import FirebaseMessaging
 import Stripe
 
-class PaymentVC: UIViewController {
+class PaymentVC: NSObject {
     
     var stripePublishableKey = ""
     var backendBaseURL: String? = nil
@@ -27,15 +27,24 @@ class PaymentVC: UIViewController {
     
     var sellerId = ""
     var sellerDtoken = ""
+    var hostVc = UIViewController()
     
     var parentVC : ViewController?
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override init() {
+        super.init()
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        
+    }
+    
+    func initializePayment() {
         self.fetchSellerDeviceToken()
         progressView.showActivity(withDetails: "Initiating payment")
         self.stripePublishableKey = kStripePublicKey
-        self.backendBaseURL = kBaseURL 
+        self.backendBaseURL = kBaseURL
         // Do any additional setup after loading the view.
         MyAPIClient.sharedClient.baseURLString = self.backendBaseURL
         
@@ -51,14 +60,19 @@ class PaymentVC: UIViewController {
         paymentContext.paymentAmount = self.amount
         paymentContext.paymentCurrency = "USD"
         paymentContext.delegate = self
-        paymentContext.hostViewController = self
+        paymentContext.hostViewController = hostVc
 
         self.paymentContext = paymentContext
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        
-    }
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//
+//    }
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//
+//    }
     
     @IBAction func choosePaymentButtonTapped(_ sender : UIButton) {
         self.paymentContext?.pushPaymentOptionsViewController()
@@ -90,7 +104,7 @@ class PaymentVC: UIViewController {
     }
     
     func paymentSuccess() {
-        HelperClass.showAlert(msg: "Payment authorization successfull. Payment will be deducted once item will be shipped.", isBack: true, vc: self)
+        HelperClass.showAlert(msg: "Payment authorization successfull. Payment will be deducted once item will be shipped.", isBack: true, vc: hostVc)
     }
     
     /*
@@ -110,7 +124,7 @@ extension PaymentVC : STPPaymentContextDelegate {
     func paymentContext(_ paymentContext: STPPaymentContext, didFailToLoadWithError error: Error) {
         print(error.localizedDescription)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-        self.navigationController?.popViewController(animated: true)
+//        self.navigationController?.popViewController(animated: true)
         progressView.hideActivity()
         }
     }

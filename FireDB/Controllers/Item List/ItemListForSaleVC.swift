@@ -42,6 +42,8 @@ class ItemListForSaleVC: UIViewController {
     var isSearching = false
     var searchItem = SearchItem()
     
+    var paymentInstanceController : PaymentVC?
+    
     //MARK: - ViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -338,6 +340,7 @@ class ItemListForSaleVC: UIViewController {
     @IBAction func btnBuyAction(_ sender : UIButton) {
         let nsVc = secondStoryBoard.instantiateViewController(withIdentifier: "NextStepVC") as! NextStepVC
         nsVc.delegate = self
+        nsVc.itemIndex = sender.tag
 //        nsVc.modalPresentationStyle = .overCurrentContext
         self.present(nsVc, animated: true, completion: nil)
     }
@@ -359,7 +362,9 @@ class ItemListForSaleVC: UIViewController {
             
             self.savePaymentDetails(itemId: itemId, details: payDict)
         }
-        self.tblItemList.reloadData()
+        self.pullToRefresh(sender!)
+//        self.tblItemList.reloadData()
+        self.paymentInstanceController = nil
     }
     
     //MARK: - Custom methods
@@ -618,7 +623,7 @@ extension ItemListForSaleVC : UISearchBarDelegate, SearchItemDelegate {
 extension ItemListForSaleVC : NextStepDelegate {
     func didRemoveNextStepPopup(withIndex index: Int){
         let item = self.arrItems?[index]
-        let vc = secondStoryBoard.instantiateViewController(withIdentifier: "PaymentVC") as! PaymentVC
+        let vc = /*secondStoryBoard.instantiateViewController(withIdentifier: "PaymentVC") as*/ PaymentVC()
         vc.amount = Int((Double(item?.price ?? "0.0") ?? 0.0) * 100.0)
         guard let itemId = item?.id else {
             return
@@ -627,11 +632,15 @@ extension ItemListForSaleVC : NextStepDelegate {
         vc.productIndex = index
         vc.productName = item?.item_name ?? ""
         vc.sellerId = item?.user_id ?? ""
+        vc.hostVc = self
+        
+        self.paymentInstanceController = vc
+        self.paymentInstanceController?.initializePayment()
 
-        let navVC = UINavigationController.init(rootViewController: vc)
-        navVC.modalPresentationStyle = .popover
+//        let navVC = UINavigationController.init(rootViewController: vc)
+//        navVC.modalPresentationStyle = .popover
 //        self.present(navVC, animated: true, completion: nil)
-        self.navigationController?.show(vc, sender: self)
+//        self.navigationController?.show(vc, sender: self)
     }
     
     
