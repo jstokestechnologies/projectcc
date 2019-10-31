@@ -106,7 +106,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        print(deviceToken)
+        print("\n\n\n\nAPN Device Token : \(deviceToken.hexString)")
         Messaging.messaging().apnsToken = deviceToken
     }
     
@@ -131,7 +131,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-        print("FCM Device token : \(fcmToken)");
+        print("FCM Device token : \(fcmToken)")
         if UserDefaults.standard.bool(forKey: kIsLoggedIn) && userdata.id != "" {
             self.saveFcmToken(token: fcmToken)
         }else {
@@ -145,5 +145,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     
+}
+
+extension Data {
+    var hexString: String {
+        let hexString = map { String(format: "%02.2hhx", $0) }.joined()
+        return hexString
+    }
 }
 
