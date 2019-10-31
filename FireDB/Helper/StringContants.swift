@@ -32,7 +32,7 @@ let kNotification_PaySuccess    = "Payment Success"
 
 // Stripe Keys
 let kStripePublicKey            = "pk_test_4dJsL1teFhhtbNF8QaoyGlCp00VXw1CfBH"
-
+let kFcmServerKey               = "AAAAwL3bgj8:APA91bGWRb39elxwZUM1Tewz3KwPVWtcj8zUcC9tTpehiu1Yz_bfptQ-821222jz0dzGn5qVfMPhtcMkttwXeaw74Y-JdFJKK1aTFXhPKLxZE1chLrXHOXRqWBCXlKGxfKCEYmfM6CG2"
 
 // URLs
 
@@ -41,7 +41,7 @@ let kBaseURL                    = "https://us-central1-projectcc-a98a4.cloudfunc
 let URLEphemeralKeys            = "createEphemeralKeys"
 let URLPaymentIntent            = "createPaymentIntent"
 let URLCapturePayment           = "capturePaymentIntent"
-
+let URLSendNotification         = "sendNotification"
 
 
 

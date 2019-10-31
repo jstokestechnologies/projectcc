@@ -90,16 +90,40 @@ class PaymentVC: NSObject {
     }
     
     func notifySeller() {
-        progressView.showActivity(withDetails: "Finalising payment")
-        let msgBody = ["aps" : [
-            "alert" : "\(userdata.name) has paid $\(self.amount) for \(self.productName). Dispatch/deliver it to finish the transaction.",
-                                    "badge" : 0,
-                                    "sound" : "default"
-                                ]]
-        let timestamp = Int(Date().timeIntervalSince1970 * 1000)
-        let msgId = "\(userdata.id)\(timestamp)"
-        Messaging.messaging().sendMessage(msgBody, to: self.sellerDtoken + "@fcm.googleapis.com", withMessageID: msgId, timeToLive: Int64(7200 + timestamp))
-        progressView.hideActivity()
+        progressView.showActivity()
+//        let msgBody = ["aps" : [
+//            "alert" : "\(userdata.name) has paid $\(self.amount) for \(self.productName). Dispatch/deliver it to finish the transaction.",
+//                                    "badge" : 0,
+//                                    "sound" : "default"
+//                                ]]
+//        let timestamp = Int(Date().timeIntervalSince1970 * 1000)
+//        let msgId = "\(userdata.id)\(timestamp)"
+//        Messaging.messaging().sendMessage(msgBody, to: self.sellerDtoken + "@fcm.googleapis.com", withMessageID: msgId, timeToLive: Int64(7200 + timestamp))
+        
+        let message = "\(userdata.name) has paid $\(self.amount) for \(self.productName). Dispatch/deliver it to finish the transaction."
+        
+        let url = URL.init(string: kBaseURL + URLSendNotification)
+        
+        var urlComponents = URLComponents(url: url!, resolvingAgainstBaseURL: false)! //cus_G0wB7Ps2IeYt1h
+        urlComponents.queryItems = [URLQueryItem(name: "title", value: "Payment received"), URLQueryItem(name: "message", value: message), URLQueryItem(name: "token", value: self.sellerDtoken)]
+        var request = URLRequest(url: urlComponents.url!)
+        request.httpMethod = "POST"
+        request.timeoutInterval = 120
+        let task = URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) in
+            if let data = data, error == nil {
+                do {
+                    let jsonData = try JSONSerialization.jsonObject(with: data, options: .mutableContainers)
+                }catch {
+                    print(error.localizedDescription)
+                }
+            }else {
+            }
+            DispatchQueue.main.async {
+                progressView.hideActivity()
+            }
+            
+        })
+        task.resume()
         self.paymentSuccess()
     }
     
