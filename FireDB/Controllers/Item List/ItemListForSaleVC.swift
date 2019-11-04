@@ -323,6 +323,12 @@ class ItemListForSaleVC: UIViewController {
         self.present(vc, animated: false, completion: nil)
     }
     
+    @IBAction func btnFilterAction(_ sender : UIButton) {
+        let vc = secondStoryBoard.instantiateViewController(withIdentifier: "FilterItemVC") as! FilterItemVC
+        vc.delegate = self
+        self.navigationController?.show(vc, sender: self)
+    }
+    
     @IBAction func pullToRefresh(_ sender : Any) {
         if self.tabBarController?.selectedIndex == 3 {
             progressView.showActivity()
@@ -646,3 +652,8 @@ extension ItemListForSaleVC : NextStepDelegate {
     
 }
 
+extension ItemListForSaleVC : FilterDelegate {
+    func filterItemsWithData() {
+        
+    }
+}
