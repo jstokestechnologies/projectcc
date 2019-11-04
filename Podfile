@@ -29,4 +29,7 @@ pod 'IQKeyboardManagerSwift', '~> 6.4.1'
 pod 'InstantSearchClient', '~> 7.0.0'
 pod 'Stripe', '~> 16.0.6'
 
+pod 'RangeSeekSlider'
+
+
 end

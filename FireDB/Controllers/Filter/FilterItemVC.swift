@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseStorage
+import RangeSeekSlider
 
 class FilterItemVC: UIViewController {
     
@@ -19,6 +20,9 @@ class FilterItemVC: UIViewController {
     var arrCategories = [[String : Any]]()
     var arrBrands = [[String : Any]]()
     var arrSelectedHeader = [Int]()
+    
+    var arrSelectedCategory = [String]()
+    var arrSelectedBrand = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,6 +65,11 @@ class FilterItemVC: UIViewController {
             self.arrSelectedHeader.append(sender.tag)
         }
         self.tblFilter.reloadData()
+    }
+    
+    @IBAction func btnApplyAction(_ sender : UIButton) {
+        self.delegate?.filterItems(withCategory: self.arrSelectedCategory, withBrand: self.arrSelectedBrand, minPrice: 0.00, maxPrice: 100.00)
+        self.navigationController?.popViewController(animated: true)
     }
     
     /*
@@ -111,20 +120,51 @@ extension FilterItemVC : UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CellFilterOption", for: indexPath) as! FilterViewCell
         var dictTitle = [String : Any]()
+        var isHighlight = false
         switch indexPath.section {
         case 0:
             dictTitle = self.arrCategories[indexPath.row]
+            let id = dictTitle["id"] as? String ?? ""
+            isHighlight = self.arrSelectedCategory.contains(id)
         case 1:
             dictTitle = self.arrBrands[indexPath.row]
+            let id = dictTitle["id"] as? String ?? ""
+            isHighlight = self.arrSelectedBrand.contains(id)
         default:
             print("No Data")
         }
         cell.lblTitle.text = dictTitle["name"] as? String ?? "No data"
+        cell.accessoryType = isHighlight ? .checkmark : .none
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        var isHighlight = false
+        switch indexPath.section {
+        case 0:
+            guard let catId = (self.arrCategories[indexPath.row])["id"] as? String else { return }
+            if arrSelectedCategory.contains(catId) {
+                self.arrSelectedCategory.removeAll(where: {$0 == catId})
+            }else {
+                self.arrSelectedCategory.append(catId)
+                isHighlight = true
+            }
+        case 1:
+            guard let brandId = (self.arrBrands[indexPath.row])["id"] as? String else { return }
+            if arrSelectedBrand.contains(brandId) {
+                self.arrSelectedBrand.removeAll(where: {$0 == brandId})
+            }else {
+                self.arrSelectedBrand.append(brandId)
+                isHighlight = true
+            }
+        default:
+            print("No Data")
+        }
+        
+        let cell = tableView.cellForRow(at: indexPath) as? FilterViewCell
+        
+        cell?.accessoryType = isHighlight ? .checkmark : .none
     }
 }
 

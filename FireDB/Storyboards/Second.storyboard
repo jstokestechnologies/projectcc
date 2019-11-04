@@ -568,12 +568,51 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9k4-5l-gbY" customClass="RangeSeekSlider" customModule="RangeSeekSlider">
+                                            <rect key="frame" x="20" y="51" width="335" height="30"/>
+                                            <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="30" id="bVG-8l-SQf"/>
+                                            </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="minValue">
+                                                    <real key="value" value="0.0"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="maxValue">
+                                                    <real key="value" value="1000"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="selectedMinValue">
+                                                    <real key="value" value="0.0"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="selectedMaxValue">
+                                                    <real key="value" value="1000"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="minDistance">
+                                                    <real key="value" value="50"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="handleColor">
+                                                    <color key="value" red="0.9463866353" green="0.51777386670000003" blue="0.23071467879999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="colorBetweenHandles">
+                                                    <color key="value" red="0.86619719230000003" green="0.46802152879999998" blue="0.2149145499" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="minLabelColor">
+                                                    <color key="value" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="maxLabelColor">
+                                                    <color key="value" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </view>
                                     </subviews>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                     <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="9k4-5l-gbY" secondAttribute="trailing" constant="20" id="Jrv-M8-IRK"/>
                                         <constraint firstAttribute="trailing" secondItem="3GP-At-w5r" secondAttribute="trailing" constant="20" id="Kfg-Xb-W0E"/>
+                                        <constraint firstItem="9k4-5l-gbY" firstAttribute="top" secondItem="3GP-At-w5r" secondAttribute="bottom" constant="10" id="Lv1-0S-adZ"/>
                                         <constraint firstItem="3GP-At-w5r" firstAttribute="leading" secondItem="DLh-Dn-GfQ" secondAttribute="leading" constant="20" id="MNR-FH-jfR"/>
                                         <constraint firstItem="3GP-At-w5r" firstAttribute="top" secondItem="DLh-Dn-GfQ" secondAttribute="top" constant="20" id="kOy-NH-4fN"/>
+                                        <constraint firstItem="9k4-5l-gbY" firstAttribute="leading" secondItem="DLh-Dn-GfQ" secondAttribute="leading" constant="20" id="kjA-1b-gcR"/>
                                     </constraints>
                                 </view>
                                 <prototypes>
@@ -674,6 +713,9 @@
                                 <state key="normal" title="Apply">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
+                                <connections>
+                                    <action selector="btnApplyAction:" destination="nEh-Sv-MYZ" eventType="touchUpInside" id="HlZ-ol-W5h"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>

@@ -653,7 +653,8 @@ extension ItemListForSaleVC : NextStepDelegate {
 }
 
 extension ItemListForSaleVC : FilterDelegate {
-    func filterItemsWithData() {
+    
+    func filterItems(withCategory categories: [String], withBrand brand: [String], minPrice: Double, maxPrice: Double) {
         
     }
 }
