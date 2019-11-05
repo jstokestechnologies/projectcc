@@ -132,7 +132,7 @@ class SearchItem {
         
         itemObj.created = Int("\((itemDict.value(forKey: "created") as? NSDictionary)?.value(forKey: "integerValue") ?? "0")")
         
-        itemObj.price = "\((itemDict.value(forKey: "price") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"
+        itemObj.price = Double("\((itemDict.value(forKey: "price") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")") ?? 0.0
         itemObj.subdivision = "\((itemDict.value(forKey: "subdivision") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"
         
         let brand = ((itemDict.value(forKey: "brand") as? NSDictionary)?.object(forKey: "mapValue") as? NSDictionary)?.object(forKey: "fields") as? NSDictionary

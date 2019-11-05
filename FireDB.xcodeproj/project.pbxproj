@@ -23,6 +23,7 @@
 		842FFED8230D1BBF000DADF2 /* StringContants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FFED7230D1BBF000DADF2 /* StringContants.swift */; };
 		843D37E7233C8B6900BFBEB5 /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843D37E6233C8B6900BFBEB5 /* SearchVC.swift */; };
 		843D37E9233C8DD100BFBEB5 /* Second.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 843D37E8233C8DD100BFBEB5 /* Second.storyboard */; };
+		8441C75023714D7700B90B63 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8441C74F23714D7700B90B63 /* Filter.swift */; };
 		844EF2A4235486D200FF1E89 /* SearchItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844EF2A3235486D200FF1E89 /* SearchItem.swift */; };
 		844EF2A623548D6A00FF1E89 /* SearchItemProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844EF2A523548D6A00FF1E89 /* SearchItemProtocol.swift */; };
 		8451D5E222F94A42005169D5 /* particle41-squarelogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8451D5E022F94A42005169D5 /* particle41-squarelogo.png */; };
@@ -59,6 +60,8 @@
 		84B61DA72330B45500CEA14B /* SystemCropVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B61DA62330B45500CEA14B /* SystemCropVC.swift */; };
 		84C2ADD32343341600EE6F30 /* SearchResultVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C2ADD22343341600EE6F30 /* SearchResultVC.swift */; };
 		84DDCBA4232BCBCD00613C2F /* EditProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DDCBA3232BCBCD00613C2F /* EditProfileVC.swift */; };
+		84E16BCF23700BC400E8B034 /* FilterItemVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E16BCE23700BC400E8B034 /* FilterItemVC.swift */; };
+		84E16BD523702EF900E8B034 /* FilterDataProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E16BD423702EF900E8B034 /* FilterDataProtocol.swift */; };
 		84EBFCAA2338EA9E00A16419 /* UpdateProfileProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EBFCA92338EA9E00A16419 /* UpdateProfileProtocol.swift */; };
 		84F9F6C822FAB35A00E754A7 /* border_dot.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F9F6C722FAB35A00E754A7 /* border_dot.png */; };
 		84F9F6CA22FAB67C00E754A7 /* AddSellItemVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F9F6C922FAB67C00E754A7 /* AddSellItemVC.swift */; };
@@ -100,6 +103,7 @@
 		8437441023619AB4004041D5 /* FireDB.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FireDB.entitlements; sourceTree = "<group>"; };
 		843D37E6233C8B6900BFBEB5 /* SearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		843D37E8233C8DD100BFBEB5 /* Second.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Second.storyboard; sourceTree = "<group>"; };
+		8441C74F23714D7700B90B63 /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 		844EF2A3235486D200FF1E89 /* SearchItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchItem.swift; sourceTree = "<group>"; };
 		844EF2A523548D6A00FF1E89 /* SearchItemProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchItemProtocol.swift; sourceTree = "<group>"; };
 		8451D5E022F94A42005169D5 /* particle41-squarelogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "particle41-squarelogo.png"; sourceTree = "<group>"; };
@@ -142,6 +146,8 @@
 		84B61DA62330B45500CEA14B /* SystemCropVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemCropVC.swift; sourceTree = "<group>"; };
 		84C2ADD22343341600EE6F30 /* SearchResultVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultVC.swift; sourceTree = "<group>"; };
 		84DDCBA3232BCBCD00613C2F /* EditProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileVC.swift; sourceTree = "<group>"; };
+		84E16BCE23700BC400E8B034 /* FilterItemVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterItemVC.swift; sourceTree = "<group>"; };
+		84E16BD423702EF900E8B034 /* FilterDataProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterDataProtocol.swift; sourceTree = "<group>"; };
 		84EBFCA92338EA9E00A16419 /* UpdateProfileProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProfileProtocol.swift; sourceTree = "<group>"; };
 		84F9F6C722FAB35A00E754A7 /* border_dot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = border_dot.png; sourceTree = "<group>"; };
 		84F9F6C922FAB67C00E754A7 /* AddSellItemVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSellItemVC.swift; sourceTree = "<group>"; };
@@ -186,6 +192,7 @@
 		845801DD22FDA42B00AE6FEE /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				84E16BCD237009ED00E8B034 /* Filter */,
 				840D760B23588BD4002D7FAA /* Stripe_Payment */,
 				847D49B923014B3E00FE900C /* Item List */,
 				845801EB22FDA74900AE6FEE /* Login */,
@@ -236,6 +243,7 @@
 				844EF2A523548D6A00FF1E89 /* SearchItemProtocol.swift */,
 				84124C8823697386009B4ADD /* ItemConditionProtocol.swift */,
 				84124C8423695FB9009B4ADD /* NextStepToBuyProtocol.swift */,
+				84E16BD423702EF900E8B034 /* FilterDataProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -386,6 +394,15 @@
 				84B1ACC1230D09E2002E6B30 /* ProgressHud.swift */,
 			);
 			path = ProgressHud;
+			sourceTree = "<group>";
+		};
+		84E16BCD237009ED00E8B034 /* Filter */ = {
+			isa = PBXGroup;
+			children = (
+				84E16BCE23700BC400E8B034 /* FilterItemVC.swift */,
+				8441C74F23714D7700B90B63 /* Filter.swift */,
+			);
+			path = Filter;
 			sourceTree = "<group>";
 		};
 		84F9F6C422FAAF9B00E754A7 /* Images */ = {
@@ -649,11 +666,13 @@
 				843D37E7233C8B6900BFBEB5 /* SearchVC.swift in Sources */,
 				84124C8523695FB9009B4ADD /* NextStepToBuyProtocol.swift in Sources */,
 				84891B332327ACDE00448539 /* CropImageVC.swift in Sources */,
+				84E16BCF23700BC400E8B034 /* FilterItemVC.swift in Sources */,
 				844EF2A623548D6A00FF1E89 /* SearchItemProtocol.swift in Sources */,
 				845801DC22FD992800AE6FEE /* SelectBrandProtocol.swift in Sources */,
 				84891B312327AA0000448539 /* LyEditImageView.swift in Sources */,
 				842FFED6230D1BB0000DADF2 /* Helper.swift in Sources */,
 				840ED100234F2EE7000E0B9E /* DateExtension.swift in Sources */,
+				8441C75023714D7700B90B63 /* Filter.swift in Sources */,
 				84DDCBA4232BCBCD00613C2F /* EditProfileVC.swift in Sources */,
 				848A440A22F04839002D9444 /* ShowLoginDataVC.swift in Sources */,
 				848A43DE22F04380002D9444 /* ViewController.swift in Sources */,
@@ -671,6 +690,7 @@
 				840D761C23588C5E002D7FAA /* PaymentContextFooterView.swift in Sources */,
 				842C007023192A570061CE46 /* SoldItemsListVC.swift in Sources */,
 				84124C8723696E43009B4ADD /* SelectItemConditionVC.swift in Sources */,
+				84E16BD523702EF900E8B034 /* FilterDataProtocol.swift in Sources */,
 				847D49BB23014B6D00FE900C /* ItemListForSaleVC.swift in Sources */,
 				84EBFCAA2338EA9E00A16419 /* UpdateProfileProtocol.swift in Sources */,
 				840D760A2358769B002D7FAA /* PaymentVC.swift in Sources */,
@@ -867,7 +887,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.23;
+				MARKETING_VERSION = 1.1.24;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jmj.projectCC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -891,7 +911,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.23;
+				MARKETING_VERSION = 1.1.24;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jmj.projectCC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
