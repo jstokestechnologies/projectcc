@@ -118,8 +118,8 @@ class AddSellItemVC: UIViewController {
         self.lblItemDescriptionRange.text = "\(self.txtItemDescription.text!.count)/1000"
         
         // Price of the item
-        self.lblPrice.text = "$\(self.itemData?.price ?? "")"
-        self.txtItemPrice.text = self.itemData?.price
+        self.lblPrice.text = "$\(self.itemData?.price ?? 0.0)"
+        self.txtItemPrice.text = "\(self.itemData?.price ?? 0.0)"
         
         // Set brand and category of the item
         self.brand = (self.itemData?.brand)!
@@ -396,7 +396,7 @@ class AddSellItemVC: UIViewController {
                                             "sub_category"  : [""],//Array(self.subCategory.keys),
                                             "brand"         : self.brand,
                                             "condition"     :  "\(kArrConditions[self.itemCondition]["title"] ?? "New")",
-                                            "price"         : (self.txtItemPrice.text)!,
+                                            "price"         : Double((self.txtItemPrice.text)!)!,
                                             "user_id"       : userdata.id,
                                             "item_images"   : imgPath,
                                             "images_added"  : self.arrImages.count,

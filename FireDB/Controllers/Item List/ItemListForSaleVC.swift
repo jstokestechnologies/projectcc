@@ -42,6 +42,9 @@ class ItemListForSaleVC: UIViewController {
     var isSearching = false
     var searchItem = SearchItem()
     
+    var isFiltered = false
+    var filter = FilterItems()
+    
     var paymentInstanceController : PaymentVC?
     
     //MARK: - ViewController LifeCycle
@@ -149,10 +152,8 @@ class ItemListForSaleVC: UIViewController {
                 })
                 self.setTableFooter(count: arr.count + (self.arrItems?.count ?? 0))
                 self.parseFireBaseData(arr: arr)
-                self.changePageNumber()
-//                self.arrItems?.removeAll(where: { (item) -> Bool in
-//                    return item.isPaid ?? false
-//                })
+                self.changePageNumber(count: arr.count)
+//                self.changeDateFormat()
             }else {
                 self.isNextPage = false
             }
@@ -160,6 +161,14 @@ class ItemListForSaleVC: UIViewController {
             self.refreshControl.endRefreshing()
         }
     }
+    
+//    func changeDateFormat() {
+//        for item in self.arrItems! {
+//            let data = ["price" : Double(item.price!) ]
+//            db.collection(kListedItems).document(item.id!).setData(data, merge: true)
+//        }
+//
+//    }
     
     func addListnerOnNewEntry() {
         listner = db.collection(kListedItems).addSnapshotListener { querySnapshot, error in
@@ -203,7 +212,7 @@ class ItemListForSaleVC: UIViewController {
             //                                    var userdata = UserData.sharedInstance
             let arrItemData = try jsonDecoder.decode([ItemsDetail].self, from: jsonData!)
             if self.arrItems == nil || self.pageNo <= 1 {
-                if self.listner == nil {
+                if self.listner == nil && !isSearching && !isFiltered {
                     self.addListnerOnNewEntry()
                 }
                 self.arrItems = arrItemData
@@ -219,7 +228,7 @@ class ItemListForSaleVC: UIViewController {
         }
     }
     
-    func changePageNumber() {
+    func changePageNumber(count : Int) {
         if (self.arrItems?.count ?? 0) < (self.pageNo*self.itemPerPage) {
             self.isNextPage = false
         }else {
@@ -323,6 +332,14 @@ class ItemListForSaleVC: UIViewController {
         self.present(vc, animated: false, completion: nil)
     }
     
+    @IBAction func btnFilterAction(_ sender : UIButton) {
+        let vc = secondStoryBoard.instantiateViewController(withIdentifier: "FilterItemVC") as! FilterItemVC
+        vc.delegate = self
+        vc.arrSelectedCategory = self.filter.arrSelectedCategory
+        vc.arrSelectedBrand = self.filter.arrSelectedBrand
+        self.navigationController?.show(vc, sender: self)
+    }
+    
     @IBAction func pullToRefresh(_ sender : Any) {
         if self.tabBarController?.selectedIndex == 3 {
             progressView.showActivity()
@@ -332,6 +349,8 @@ class ItemListForSaleVC: UIViewController {
             self.lastDoc = nil
             self.pageNo = 1
             self.isNextPage = false
+            self.isFiltered = false
+            self.isSearching = false
             self.latestTime = Int(Date().timeIntervalSince1970 * 1000)
             self.fetchItemList()
         }
@@ -391,7 +410,7 @@ class ItemListForSaleVC: UIViewController {
         let itemObj = ItemsDetail()
         itemObj.item_name = "\((itemDict.value(forKey: "item_name") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"
         
-        itemObj.price = "\((itemDict.value(forKey: "price") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"
+        itemObj.price = Double("\((itemDict.value(forKey: "price") as? NSDictionary)?.value(forKey: "stringValue") ?? "0.0")")!
         itemObj.created = Int("\((itemDict.value(forKey: "created") as? NSDictionary)?.value(forKey: "integerValue") ?? "0")")
         itemObj.subdivision = "\((itemDict.value(forKey: "subdivision") as? NSDictionary)?.value(forKey: "stringValue") ?? "N/A")"
         
@@ -467,7 +486,7 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource, UITabl
         cell.lblItemName.text = item.item_name
         cell.lblItemBrand.text = item.brand?["name"]
         cell.lblDesciption.text = item.description
-        cell.lblItemPrice.text = "$\(item.price ?? "0.00")"
+        cell.lblItemPrice.text = "$\(item.price ?? 0.0)"
         cell.lblSubDivision.text = item.subdivision ?? "N/A"
         
         let postedDate = Date(timeIntervalSince1970: TimeInterval(item.created ?? 0)/1000)
@@ -520,6 +539,9 @@ extension ItemListForSaleVC : UITableViewDelegate, UITableViewDataSource, UITabl
             if ((scrollOffset + scrollViewHeight) >= (scrollContentSizeHeight - 600)) && self.isNextPage
             {
                 self.isNextPage = false
+                if self.isFiltered {
+                    self.filter.initialiseFilters()
+                } else
                 if self.isSearching {
                     self.searchItem.initialSetup()
                 }else {
@@ -624,7 +646,7 @@ extension ItemListForSaleVC : NextStepDelegate {
     func didRemoveNextStepPopup(withIndex index: Int){
         let item = self.arrItems?[index]
         let vc = /*secondStoryBoard.instantiateViewController(withIdentifier: "PaymentVC") as*/ PaymentVC()
-        vc.amount = Int((Double(item?.price ?? "0.0") ?? 0.0) * 100.0)
+        vc.amount = Int((Double(item?.price ?? 0.0) ?? 0.0) * 100.0)
         guard let itemId = item?.id else {
             return
         }
@@ -646,3 +668,45 @@ extension ItemListForSaleVC : NextStepDelegate {
     
 }
 
+extension ItemListForSaleVC : FilterUIDelegate {
+    
+    func filterItems(withCategory categories: [String], withBrand brand: [String], minPrice: Double, maxPrice: Double) {
+        if categories.count == 0 && brand.count == 0 && minPrice <= 0 && maxPrice <= 0 {
+            if self.isFiltered {
+                self.pullToRefresh(self)
+                self.isFiltered = false
+            }
+            return
+        }
+        
+        self.filter = .init(with: self, categories: categories, brands: brand)
+        self.isFiltered = true
+        self.filter.delegate = self
+        self.filter.itemPerPage = self.itemPerPage
+        if minPrice >= 0 && maxPrice > 0 {
+            self.filter.minPrice = minPrice
+            self.filter.maxPrice = maxPrice
+        }
+        self.filter.initialiseFilters()
+    }
+}
+
+extension ItemListForSaleVC : FilterDelegate {
+    func filtedItems(_ items: [[String : Any]], pageNo: Int, nextPage: Bool) {
+        self.arrNewItems?.removeAll()
+        self.btnNewPosts.isHidden = true
+        self.pageNo = pageNo
+        self.lastDoc = nil
+        self.isNextPage = nextPage
+        if self.arrItems == nil || self.pageNo == 0 || (self.pageNo == 1 && nextPage == true) {
+            self.arrItems?.removeAll()
+            DispatchQueue.main.async {
+                if (self.tblItemList.indexPathsForVisibleRows?.count ?? 0) > 0 {
+                    self.tblItemList?.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: false)
+                }
+            }
+        }
+        self.setTableFooter(count: items.count + (self.arrItems?.count ?? 0))
+        self.parseFireBaseData(arr: items)
+    }
+}

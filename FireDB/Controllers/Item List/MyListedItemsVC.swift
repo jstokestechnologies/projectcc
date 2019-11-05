@@ -211,7 +211,7 @@ extension MyListedItemsVC : UITableViewDelegate, UITableViewDataSource {
         cell.lblItemName.text = item.item_name
         cell.lblItemBrand.text = item.brand?["name"]
         cell.lblDesciption.text = item.description
-        cell.lblItemPrice.text = "$\(item.price ?? "0.00")"
+        cell.lblItemPrice.text = "$\(item.price ?? 0.0)"
         cell.pageImgPages.numberOfPages = item.item_images?.count ?? 0
         cell.pageImgPages.isHidden = (item.item_images?.count ?? 0) <= 1
         cell.collectionImages.tag = indexPath.row
