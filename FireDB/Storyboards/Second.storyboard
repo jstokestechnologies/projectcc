@@ -630,10 +630,10 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="right_arrow" translatesAutoresizingMaskIntoConstraints="NO" id="p5u-3f-xIz">
-                                                    <rect key="frame" x="330" y="20" width="30" height="21"/>
+                                                    <rect key="frame" x="345" y="22" width="15" height="17"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="30" id="JnD-eV-dam"/>
-                                                        <constraint firstAttribute="height" constant="30" id="us8-gT-ard"/>
+                                                        <constraint firstAttribute="width" constant="15" id="JnD-eV-dam"/>
+                                                        <constraint firstAttribute="height" constant="17" id="us8-gT-ard"/>
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mkA-ym-PZC">
@@ -652,7 +652,6 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="mkA-ym-PZC" firstAttribute="leading" secondItem="cFL-2X-ekL" secondAttribute="leading" id="3wa-rW-uzC"/>
-                                                <constraint firstAttribute="bottom" secondItem="p5u-3f-xIz" secondAttribute="bottom" constant="20" id="7IQ-eu-UP9"/>
                                                 <constraint firstItem="p5u-3f-xIz" firstAttribute="centerY" secondItem="cFL-2X-ekL" secondAttribute="centerY" id="Bs8-oo-K9m"/>
                                                 <constraint firstAttribute="bottom" secondItem="mkA-ym-PZC" secondAttribute="bottom" id="Eid-lt-Wab"/>
                                                 <constraint firstItem="qup-4r-Ozb" firstAttribute="centerY" secondItem="cFL-2X-ekL" secondAttribute="centerY" id="HKc-mB-gCj"/>
@@ -664,7 +663,6 @@
                                                 <constraint firstAttribute="trailing" secondItem="mkA-ym-PZC" secondAttribute="trailing" id="aap-bc-v20"/>
                                                 <constraint firstAttribute="trailing" secondItem="qup-4r-Ozb" secondAttribute="trailing" constant="50" id="kQn-kK-syE"/>
                                                 <constraint firstItem="qup-4r-Ozb" firstAttribute="leading" secondItem="cFL-2X-ekL" secondAttribute="leading" constant="20" id="o5l-jg-s61"/>
-                                                <constraint firstItem="p5u-3f-xIz" firstAttribute="top" secondItem="cFL-2X-ekL" secondAttribute="top" constant="20" id="z6w-ld-flY"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
