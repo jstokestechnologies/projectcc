@@ -138,7 +138,7 @@ class ItemListForSaleVC: UIViewController {
     }
     
     func fetchItemList() {
-        var query = db.collection(kListedItems).whereField("isPosted", isEqualTo: true).whereField("isArchived", isEqualTo: false).order(by: "created", descending: true).whereField("created", isLessThanOrEqualTo: self.latestTime).limit(to: self.itemPerPage)
+        var query = db.collection(kListedItems).whereField("isPosted", isEqualTo: true).whereField("isArchived", isEqualTo: false).order(by: "created", descending: true).whereField("isPaid", isEqualTo: false).whereField("created", isLessThanOrEqualTo: self.latestTime).limit(to: self.itemPerPage)
         if self.pageNo > 1 && self.lastDoc != nil {
             query = query.start(afterDocument: self.lastDoc!)
         }
@@ -152,8 +152,12 @@ class ItemListForSaleVC: UIViewController {
                 })
                 self.setTableFooter(count: arr.count + (self.arrItems?.count ?? 0))
                 self.parseFireBaseData(arr: arr)
-                self.changePageNumber(count: arr.count)
-//                self.changeDateFormat()
+                self.changePageNumber()
+//                self.addPaidFlag()
+                self.arrItems?.removeAll(where: { (item) -> Bool in
+                    return item.isPaid ?? false
+                })
+
             }else {
                 self.isNextPage = false
             }
@@ -161,14 +165,6 @@ class ItemListForSaleVC: UIViewController {
             self.refreshControl.endRefreshing()
         }
     }
-    
-//    func changeDateFormat() {
-//        for item in self.arrItems! {
-//            let data = ["price" : Double(item.price!) ]
-//            db.collection(kListedItems).document(item.id!).setData(data, merge: true)
-//        }
-//
-//    }
     
     func addListnerOnNewEntry() {
         listner = db.collection(kListedItems).addSnapshotListener { querySnapshot, error in
