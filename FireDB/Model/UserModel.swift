@@ -54,7 +54,7 @@ class ItemsDetail : Codable {
     var brand       : [String : String]?
     var item_images : [String]?
     var category    : [String : String]?
-    var price       : String?
+    var price       : Double?
     var used_category : String?
     var sub_category: [String]?
     var watchers    : String?

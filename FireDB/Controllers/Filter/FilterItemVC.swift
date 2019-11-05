@@ -13,8 +13,9 @@ import RangeSeekSlider
 class FilterItemVC: UIViewController {
     
     @IBOutlet weak var tblFilter: UITableView!
+    @IBOutlet weak var rangeSlider: RangeSeekSlider!
     
-    var delegate : FilterDelegate?
+    var delegate : FilterUIDelegate?
     
     let arrTitle = ["Category", "Brand", "Subdivision"];
     var arrCategories = [[String : Any]]()
@@ -24,10 +25,13 @@ class FilterItemVC: UIViewController {
     var arrSelectedCategory = [String]()
     var arrSelectedBrand = [String]()
     
+    var isPriceFiltered = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.fetchCateogry()
         self.fetchBrands()
+        self.rangeSlider.delegate = self
         // Do any additional setup after loading the view.
     }
     
@@ -56,19 +60,26 @@ class FilterItemVC: UIViewController {
         }
     }
     
+    @IBAction func btnResetAction(_ sender: Any) {
+        self.delegate?.filterItems(withCategory: [String](), withBrand: [String](), minPrice: -1, maxPrice: 0)
+        self.navigationController?.popViewController(animated: true)
+    }
+    
     @IBAction func btnHeaderAction(_ sender : UIButton) {
         if self.arrSelectedHeader.contains(sender.tag) {
             self.arrSelectedHeader.removeAll { (index) -> Bool in
                 return index == sender.tag
             }
         }else {
-            self.arrSelectedHeader.append(sender.tag)
+            self.arrSelectedHeader = [sender.tag]
         }
         self.tblFilter.reloadData()
     }
     
     @IBAction func btnApplyAction(_ sender : UIButton) {
-        self.delegate?.filterItems(withCategory: self.arrSelectedCategory, withBrand: self.arrSelectedBrand, minPrice: 0.00, maxPrice: 100.00)
+        let minPrice = self.isPriceFiltered ? Double(self.rangeSlider.selectedMinValue) : -1.0
+        let maxPrice = self.isPriceFiltered ? Double(self.rangeSlider.selectedMaxValue) : 0.0
+        self.delegate?.filterItems(withCategory: self.arrSelectedCategory, withBrand: self.arrSelectedBrand, minPrice: minPrice, maxPrice: maxPrice)
         self.navigationController?.popViewController(animated: true)
     }
     
@@ -96,6 +107,11 @@ extension FilterItemVC : UITableViewDataSource, UITableViewDelegate {
         cell.contentView.backgroundColor = .white
         cell.btnHeader.addTarget(self, action: #selector(self.btnHeaderAction(_:)), for: .touchUpInside)
         cell.btnHeader.tag = section
+        if self.arrSelectedHeader.contains(section) {
+            cell.imgCheck.image = UIImage.init(named: "down_arrow")
+        }else {
+            cell.imgCheck.image = UIImage.init(named: "next")
+        }
         return cell
     }
     
@@ -140,35 +156,44 @@ extension FilterItemVC : UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        var isHighlight = false
+//        var isHighlight = false
         switch indexPath.section {
         case 0:
             guard let catId = (self.arrCategories[indexPath.row])["id"] as? String else { return }
-            if arrSelectedCategory.contains(catId) {
-                self.arrSelectedCategory.removeAll(where: {$0 == catId})
-            }else {
-                self.arrSelectedCategory.append(catId)
-                isHighlight = true
-            }
+            self.arrSelectedCategory = [catId]
+//            if arrSelectedCategory.contains(catId) {
+//                self.arrSelectedCategory.removeAll(where: {$0 == catId})
+//            }else {
+//                self.arrSelectedCategory.append(catId)
+//                isHighlight = true
+//            }
         case 1:
             guard let brandId = (self.arrBrands[indexPath.row])["id"] as? String else { return }
-            if arrSelectedBrand.contains(brandId) {
-                self.arrSelectedBrand.removeAll(where: {$0 == brandId})
-            }else {
-                self.arrSelectedBrand.append(brandId)
-                isHighlight = true
-            }
+            self.arrSelectedBrand = [brandId]
+//            if arrSelectedBrand.contains(brandId) {
+//                self.arrSelectedBrand.removeAll(where: {$0 == brandId})
+//            }else {
+//                self.arrSelectedBrand.append(brandId)
+//                isHighlight = true
+//            }
         default:
             print("No Data")
         }
         
-        let cell = tableView.cellForRow(at: indexPath) as? FilterViewCell
-        
-        cell?.accessoryType = isHighlight ? .checkmark : .none
+//        let cell = tableView.cellForRow(at: indexPath) as? FilterViewCell
+        tblFilter.reloadData()
+//        cell?.accessoryType = isHighlight ? .checkmark : .none
+    }
+}
+
+extension FilterItemVC : RangeSeekSliderDelegate {
+    func rangeSeekSlider(_ slider: RangeSeekSlider, didChange minValue: CGFloat, maxValue: CGFloat) {
+        self.isPriceFiltered = true
     }
 }
 
 class FilterViewCell: UITableViewCell {
     @IBOutlet weak var lblTitle: UILabel!
     @IBOutlet weak var btnHeader: UIButton!
+    @IBOutlet weak var imgCheck: UIImageView!
 }

@@ -98,8 +98,8 @@ class PendingDispatchVC: UIViewController {
     
     @IBAction func btnDispatchAction(_ sender : UIButton) {
         let item = self.arrItems?[sender.tag]
-        if let payId = item?.payment_id, let price = item?.price, let amount = Double(price) {
-            
+        if let payId = item?.payment_id, let price = item?.price  {
+            let amount = price
             self.capturePaymentIntent(withIntentId: payId, amount: Int(amount * 100), index: sender.tag, itemId: item?.id ?? "")
             progressView.showActivity()
         }
@@ -170,7 +170,7 @@ extension PendingDispatchVC : UITableViewDelegate, UITableViewDataSource {
         cell.lblItemName.text = item.item_name
         cell.lblItemBrand.text = item.brand?["name"]
         cell.lblDesciption.text = item.description
-        cell.lblItemPrice.text = "$\(item.price ?? "0.00")"
+        cell.lblItemPrice.text = "$\(item.price ?? 0.0)"
         cell.lblSubDivision.text = item.subdivision ?? "N/A"
         
         let postedDate = Date(timeIntervalSince1970: TimeInterval(item.created ?? 0)/1000)
